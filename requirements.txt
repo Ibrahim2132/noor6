@@ -31,3 +31,4 @@ google
 google.generativeai
 python-dotenv
 werkzeug
+pywin32
