@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter cards</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+        .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+
+      .card-btn {
+  display: inline-block;
+ 
+  color: #fff; 
+  padding: 10px 15px; 
+  border: none; 
+  border-radius: 5px; 
+  font-size: 14px; 
+  cursor: pointer; 
+  text-align: center;
+  width: 100px; 
+  box-sizing: border-box;}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 400px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #21797d;
+}
+
+.popup-content h2 {
+  color: #21797d;
+  margin-bottom: 20px;
+}
+
+.popup-content p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.popup-btn {
+  background-color: #21797d;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-btn:hover {
+  background-color: #0b6a56;
+}
+
+.popup-close {
+  margin-top: 20px;
+  background-color: #ff4757;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-close:hover {
+  background-color: #d63031;
+}
+.popup-content input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 2px solid #21797d;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.popup-content input:focus {
+  outline: none;
+  border-color: #0b6a56;
+  box-shadow: 0px 0px 5px rgba(13, 124, 102, 0.5);
+}
+
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.popup-buttons .popup-btn,
+.popup-buttons .popup-close {
+  flex: 1;
+  margin: 0 5px;
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-top: 50px;
+}
+
+h1 {
+  text-align: center;
+  color: #21797d;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #21797d;
+  border-radius: 5px;
+  margin: 0 5px;
+  background-color: white;
+  color: #21797d;
+}
+
+.tab.active {
+  background-color: #21797d;
+  color: white;
+}
+
+.upload-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.upload-box {
+  border: 2px dashed #21797d;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.upload-box p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.upload-btn {
+  padding: 10px 20px;
+  background-color: #21797d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.lesson-details {
+  margin-top: 20px;
+}
+
+.lesson-details h2 {
+  color: #21797d;
+  margin-bottom: 10px;
+}
+
+.lesson-details input, 
+.lesson-details textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .lesson-details .submit-btn {
+    display: inline-block; /* لضمان توافق العرض مع كل من الزر والرابط */
+  background-color: #21797d; /* نفس لون الخلفية */
+  color: white; /* لون النص */
+  text-decoration: none; /* إزالة الخط تحت الرابط */
+  font-size: 16px; /* حجم النص */
+  padding: 10px 20px; /* الحشوة الداخلية */
+  border: none; /* إزالة الحدود */
+  border-radius: 5px; /* حواف دائرية */
+  cursor: pointer; /* مؤشر اليد عند التمرير */
+  text-align: center; /* محاذاة النص في الوسط */
+  }
+
+.hidden {
+  display: none;
+}
+    /* تنسيق عام للقسم */
+    .file-section {
+        display: flex;
+        justify-content: center; /* لجعل الأزرار في المنتصف أفقيًا */
+        align-items: center; /* لمحاذاة الأزرار عموديًا */
+        margin-top: 20px; /* مسافة علوية حسب الحاجة */
+    }
+
+    /* تنسيق الأزرار */
+    .file-actions {
+        display: flex;
+        align-items: center;
+        gap: 15px; /* مسافة بين زر التحميل وزر الحذف */
+    }
+
+
+    /* تنسيق الرابط (Download) */
+    .download-link {
+        color: #21797d;
+        text-decoration: none;
+        font-weight: bold;
+        border: 1px solid #21797d;
+        border-radius: 5px;
+        padding: 6px 12px;
+        transition: all 0.3s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px; /* لإضافة مسافة بين الأيقونة والنص */
+    }
+
+    .download-link:hover {
+        background-color: #21797d;
+        color: #fff;
+    }
+
+    /* تحسين تنسيق زر الحذف */
+    .delete-button {
+        background-color: transparent;
+        color: #d9534f;
+        border: 1px solid #d9534f;
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px; /* لإضافة مسافة بين الأيقونة والنص */
+    }
+
+    .delete-button:hover {
+        background-color: #d9534f;
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+    /* تحسين عرض النموذج لتجنب مشاكل التوسيط */
+    .delete-form {
+        margin: 0;
+    }
+    .file-name {
+    margin-right: 5px;
+    line-height: 30px;
+    margin-bottom: 0;
+    margin-top: 10px; /* تحديد المسافة المطلوبة للأسفل */
+}
+</style>
+    
+  </head>
+  <body>
+    
+      <div class="main-content">
+        <div id="sidebar" class="sidebar">
+          <div class="logo">
+            <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+          </div>
+          <ul>
+            <li>
+              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+                ><i class="fa-solid fa-house"></i> Dashboard
+                <i class="fas fa-caret-down"></i
+              ></a>
+              <ul id="dropdown-1" class="dropdown">
+                <li><a href="employee_profile"> profile</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+            </li>
+            <li>
+              <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+            </li>
+            <li>
+              <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+            </li>
+            <li>
+              <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+         
+        </div>
+
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+        <div class="main-section">
+        
+          <div class="navigation-steps">
+            <i class="fas fa-home"></i>
+            <span>Home > Dashboard > category > Chapter > lesson</span>
+          </div>
+          <div class="container">
+            <h1>Lesson</h1>
+            <br>
+            
+            <div class="tabs">
+              <button  type="button" class="tab active" onclick="switchTab('files')">Files</button>
+              <button  type="button" class="tab" onclick="switchTab('image')">Image</button>
+              <button  type="button" class="tab" onclick="switchTab('video')">Video</button>
+              <button  type="button" class="tab" onclick="switchTab('voice')">Voice</button>
+            </div>
+            <form action="" method="POST" enctype="multipart/form-data">
+            <div class="upload-section" id="files">
+              <div class="upload-box">
+                  <p>Select Files (PDF, Word)</p>
+                  <input class="upload-btn" type="file" name="file" accept=".pdf,.doc,.docx" id="fileInput" multiple>
+                  <button class="upload-btn">UPLOAD</button>
+              
+              </form>
+              <br><br>
+              {% if lesson.file_path %}
+    <div class="file-section">
+        <p class="file-name">File1:</p>
+        <div class="file-actions">
+            <a href="{{ url_for('static', filename=lesson.file_path) }}" class="download-link">
+                <i class="fas fa-download"></i> Download
+            </a>
+            <form method="POST" class="delete-form">
+                <input type="hidden" name="delete_file" value="file_path">
+                <button type="submit" class="delete-button">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+{% endif %}
+{% if lesson.file_path1 %}
+    <div class="file-section">
+        <p class="file-name">File2:</p>
+        <div class="file-actions">
+            <a href="{{ url_for('static', filename=lesson.file_path1) }}" class="download-link">
+                <i class="fas fa-download"></i> Download
+            </a>
+            <form method="POST" class="delete-form">
+                <input type="hidden" name="delete_file" value="file_path1">
+                <button type="submit" class="delete-button">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+{% endif %}
+{% if lesson.file_path2 %}
+    <div class="file-section">
+       <p class="file-name">File3:</p>
+       <div class="file-actions">
+        <a href="{{ url_for('static', filename=lesson.file_path2) }}" class="download-link">
+                <i class="fas fa-download"></i> Download
+            </a>
+            <form method="POST" class="delete-form">
+                <input type="hidden" name="delete_file" value="file_path2">
+                <button type="submit" class="delete-button">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+{% endif %}
+{% if lesson.file_path3 %}
+    <div class="file-section">
+        <p class="file-name">File4:</p>
+        <div class="file-actions">
+            <a href="{{ url_for('static', filename=lesson.file_path3) }}" class="download-link">
+                <i class="fas fa-download"></i> Download
+            </a>
+            <form method="POST" class="delete-form">
+                <input type="hidden" name="delete_file" value="file_path3">
+                <button type="submit" class="delete-button">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </form>
+        </div>
+    </div>
+{% endif %}
+          {% if lesson.file_path4 %}
+          <div class="file-section">
+              <p class="file-name">File5:
+                  <div class="file-actions">
+                      <a href="{{ url_for('static', filename=lesson.file_path4) }}" class="download-link">
+                          <i class="fas fa-download"></i> Download
+                      </a>
+                      <form method="POST" class="delete-form">
+                          <input type="hidden" name="delete_file" value="file_path4">
+                          <button type="submit" class="delete-button">
+                              <i class="fas fa-trash"></i> Delete
+                          </button>
+                      </form>
+                  </div>
+              </p>
+          </div>
+      {% endif %}
+        </div>
+            </div>
+            <div class="upload-section hidden" id="image">
+              <div class="upload-box">
+                <p>Select Images</p>
+                <input class="upload-btn" type="file" name="image" id="imageInput" accept="image/*" multiple>
+                <button class="upload-btn">UPLOAD</button>
+                {% if lesson.image_path %}
+                <div class="file-section">
+                   <img src="{{ url_for('static', filename=lesson.image_path) }}" alt="Lesson Image" width="200">
+                </div>
+              {% endif %}
+              </div>
+            </div>
+        
+            <div class="upload-section hidden" id="video">
+              <div class="upload-box">
+                <p>Select Videos</p>
+                <input class="upload-btn" type="file" id="videoInput" name="video" accept="video/*" multiple>
+                <button class="upload-btn">UPLOAD</button>
+                {% if lesson.video_path %}
+                    <div class="file-section">
+                        
+                            <video width="320" height="240" controls>
+                                <source src="{{ url_for('static', filename=lesson.video_path) }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        
+                    </div>
+                {% endif %}
+              </div>
+            </div>
+        
+            <div class="upload-section hidden" id="voice">
+              <div class="upload-box">
+                <p>Select Audio Files</p>
+                <input class="upload-btn" type="file" id="voiceInput" name="audio" accept="audio/*" multiple>
+                <button class="upload-btn">UPLOAD</button>
+                {% if lesson.audio_path %}
+                    <div class="file-section">
+    
+                            <audio controls>
+                                <source src="{{ url_for('static', filename=lesson.audio_path) }}" type="audio/mp3">
+                                Your browser does not support the audio tag.
+                            </audio>
+                       
+                    </div>
+                {% endif %}
+              </div>
+            </div>
+            <form action="" method="POST" enctype="multipart/form-data">
+            <div class="lesson-details">
+              <h2>Lesson Details</h2>
+                <input type="text" name="title" placeholder="Lesson Title"  value="{{ lesson.title if lesson.title else '' }}" required>
+                <input type="url" name="link" placeholder="Links" value="{{ lesson.link if lesson.link else '' }}" required>
+                <textarea name="description" placeholder="Lesson Description" rows="5" required>{{ lesson.description if lesson.description else '' }}</textarea>
+                <div class="button-group">
+                <button type="submit" class="submit-btn">Submit</button>
+                <a href="/questions?id={{ lesson.id }}" class="submit-btn">Add Quiz</a>
+              </div>
+
+              </form>
+            </div>
+          </div>
+        </div>
+      
+    </div>
+    <script>
+     function switchTab(tabId) {
+
+  const sections = document.querySelectorAll('.upload-section');
+  sections.forEach(section => section.classList.add('hidden'));
+
+  document.getElementById(tabId).classList.remove('hidden');
+
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => tab.classList.remove('active'));
+
+  event.target.classList.add('active');
+}
+
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fill in the blank</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+     button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-color: #21797d;
+}
+
+#set-time-btn {
+  position: absolute;
+  right: 0px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: #21797d; 
+  font-size: 20px; 
+  cursor: pointer; 
+}
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > Fill in blank </span>
+        </div>
+        <form method="POST"enctype="multipart/form-data">
+        <div class="question-container">
+          <div class="question-div">
+           
+            <!-- Modal to display the image -->
+            <div id="imageModal" class="modal">
+              <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <img
+                  src="assets/excel-img.jpg"
+                  alt="How to upload an Excel file"
+                  id="modalImage"
+                />
+              </div>
+            </div>
+            <div class="dropdown-div">
+              <div class="dropdown">
+                  <label for="">Difficulty</label>
+                  <select name="difficulty">
+                      <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                      <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                      <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                      <option value="Very Hard" {% if question.difficulty == 'Very Hard' %}selected{% endif %}>Very Hard</option>
+                  </select>
+              </div>
+
+              <div class="dropdown">
+                  <label for="">Importance</label>
+                  <select name="importance">
+                      <option value="Necessary" {% if question.importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+                      <option value="Optional" {% if question.importance == 'Optional' %}selected{% endif %}>Optional</option>
+                      <option value="Important" {% if question.importance == 'Important' %}selected{% endif %}>Important</option>
+                  </select>
+              </div>
+
+              <div class="dropdown">
+                  <label >Bloom's Taxonomy</label>
+                  <select name="bloom_taxonomy">
+                    <option value="General" {% if question.bloom_taxonomy == 'General' %}selected{% endif %}>General</option>
+                    <option value="Remember" {% if question.bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+                    <option value="Understand" {% if question.bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+                    <option value="Apply" {% if question.bloom_taxonomy == 'Apply' %}selected{% endif %}>Apply</option>
+                    <option value="Analyze" {% if question.bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+                    <option value="Evaluate" {% if question.bloom_taxonomy == 'Evaluate' %}selected{% endif %}>Evaluate</option>
+                    <option value="Create" {% if question.bloom_taxonomy == 'Create' %}selected{% endif %}>Create</option>
+                  </select>
+              </div>
+
+              <div class="dropdown">
+                <label for="grade">Grade</label>
+                <div class="input-container">
+                  
+                  <input type="number" name="grade" id="grade" value="{{ question.grade }}" min="1" step="1" />
+              </div>
+              </div>
+              <div class="dropdown">
+              <label for="times">Time (S)</label>
+              <div class="input-container">
+                <i id="set-time-btn" data-expected-time="{{ expected_time }}" class="fas fa-robot"></i>
+                <input type="number" name="times" id="times" value="{{ question.times }}" min="1" step="1" />
+            </div>
+              </div>
+          </div>
+      
+       
+       <div class="textarea-div">
+        <div id="questions-container">
+         
+          <div class="question">
+            <div class="textarea-div">
+              <textarea name="question_text" placeholder="Type your question here...">{{ question.question_text }}</textarea>
+            </div>
+            <div class="upload-div">
+              <div class="blank-div">
+                <h1 class="fill-in">
+                  <span>*</span>To set the correct answer for the blank just edit the text within the blank
+                </h1>
+                <input type="text" class="answer-blank" value="{{ question.answer_text }}" name="answer" placeholder="answer">
+              </div>
+            </div>
+          </div>
+        
+          
+            <div class="textarea-div">
+              <textarea name="question_text1" placeholder="Type your question here...">{{ question.question_text1 }}</textarea>
+            </div>
+            <div class="upload-div">
+              <div class="blank-div">
+                <h1 class="fill-in">
+                  <span>*</span>To set the correct answer for the blank just edit the text within the blank
+                </h1>
+                <input type="text" class="answer-blank" value="{{ question.answer_text1 }}" name="answer1" placeholder="answer">
+              </div>
+            
+          </div>
+        
+      
+            <div class="textarea-div">
+              <textarea name="question_text2" placeholder="Type your question here...">{{ question.question_text2 }}</textarea>
+            </div>
+            <div class="upload-div">
+              <div class="blank-div">
+                <h1 class="fill-in">
+                  <span>*</span>To set the correct answer for the blank just edit the text within the blank
+                </h1>
+                <input type="text" class="answer-blank" value="{{ question.answer_text2 }}" name="answer2" placeholder="answer">
+              </div>
+           
+          </div>
+          <div class="question hidden">
+            <div class="textarea-div">
+              <textarea name="question_text3" placeholder="Type your question here...">{{ question.question_text3 or'' }}</textarea>
+            </div>
+            <div class="upload-div">
+              <div class="blank-div">
+                <h1 class="fill-in">
+                  <span>*</span>To set the correct answer for the blank just edit the text within the blank
+                </h1>
+                <input type="text" class="answer-blank" value="{{ question.answer_text3 or'' }}" name="answer3" placeholder="answer">
+              </div>
+            </div>
+          </div>
+          <div class="question hidden">
+            <div class="textarea-div">
+                <textarea name="question_text4" placeholder="Type your question here...">{{ question.question_text4 or'' }}</textarea>
+            </div>
+            <div class="upload-div">
+                <div class="blank-div">
+                    <h1 class="fill-in">
+                        <span>*</span>To set the correct answer for the blank just edit the text within the blank
+                    </h1>
+                    <input type="text" class="answer-blank" value="{{ question.answer_text4 or'' }}" name="answer4" placeholder="answer">
+                </div>
+            </div>
+        </div>
+        <div class="question hidden">
+          <div class="textarea-div">
+              <textarea name="question_text5" placeholder="Type your question here...">{{ question.question_text5 or'' }}</textarea>
+          </div>
+          <div class="upload-div">
+              <div class="blank-div">
+                  <h1 class="fill-in">
+                      <span>*</span>To set the correct answer for the blank just edit the text within the blank
+                  </h1>
+                  <input type="text" class="answer-blank" value="{{ question.answer_text5 or'' }}" name="answer5" placeholder="answer">
+              </div>
+          </div>
+      </div>
+      <div class="question hidden">
+        <div class="textarea-div">
+            <textarea name="question_text6" placeholder="Type your question here...">{{ question.question_text6 or'' }}</textarea>
+        </div>
+        <div class="upload-div">
+            <div class="blank-div">
+                <h1 class="fill-in">
+                    <span>*</span>To set the correct answer for the blank just edit the text within the blank
+                </h1>
+                <input type="text" class="answer-blank" value="{{ question.answer_text6 or'' }}" name="answer6" placeholder="answer">
+            </div>
+        </div>
+    </div>
+      
+  
+        <button class="save-btn" id="show-more-btn">Show More Questions</button>
+        
+        
+        
+        </div>
+        
+        </div>
+        
+        </div>
+        <div class="confirm-btns">
+          <div class="button-section">
+              <button class="save-btn">Save</button>
+          </div>
+      </div>
+      </form>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+          
+                const questions = document.querySelectorAll(".question.hidden");
+                questions.forEach(question => {
+                    const textarea = question.querySelector("textarea");
+                    if (textarea && textarea.value.trim() !== "") {
+                        question.classList.remove("hidden");
+                    }
+                });
+        
+                updateShowMoreButtonState();
+        
+        
+            });
+        
+            document.getElementById("show-more-btn").addEventListener("click", function(event) {
+                event.preventDefault();
+        
+                const nextHiddenQuestion = document.querySelector(".question.hidden");
+        
+                if (nextHiddenQuestion) {
+                     // فحص قبل إظهار السؤال إذا كان النص في التكست إيريا فارغ
+                    const textarea = nextHiddenQuestion.querySelector("textarea");
+                    if (textarea && textarea.value.trim() === "") {
+                    nextHiddenQuestion.classList.remove("hidden");
+                    }
+                }
+                  updateShowMoreButtonState();
+            });
+        
+        
+             function updateShowMoreButtonState() {
+                const showMoreButton = document.getElementById("show-more-btn");
+                 // إخفاء الزر إذا لم يتبق أي أسئلة مخفية
+                if (!document.querySelector(".question.hidden")) {
+                    showMoreButton.style.display = "none";
+                }
+                else{
+                       showMoreButton.style.display = "block";
+                }
+            }
+            document.getElementById('set-time-btn').addEventListener('click', function() {
+  // الحصول على الوقت المتوقع من data-attribute
+  var expectedTime = this.getAttribute('data-expected-time');
+  
+  // تعيين الوقت المتوقع في حقل الإدخال
+  document.getElementById('times').value = expectedTime;
+});
+
+        </script>
+  </body>
+</html>

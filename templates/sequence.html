@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sequence</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      label[class="file_upload_image"], label[class="file_upload_audio"] {
+  color: #21797d; /* اللون الأخضر */
+}
+button{
+  padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-color: #21797d;
+}
+
+#set-time-btn {
+  position: absolute;
+  right: 0px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: #21797d; 
+  font-size: 20px; 
+  cursor: pointer; 
+}
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > Sequence </span>
+        </div>
+
+        <div class="question-container">
+          <form method="POST"enctype="multipart/form-data">
+            <div class="question-div">
+                <div class="textarea-div">
+                    <textarea name="question_text" placeholder="Type your question here...">{{ question.question_name }}</textarea>
+                </div>
+                <div class="btns-div">
+                  <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                  <input type="file" id="file_upload_image"  class="upload-btn" name="photo" accept="image/*" onchange="displayImage(event)">
+                  <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                  <input type="file" id="file_upload_audio"  class="upload-btn" name="audio" accept="audio/*" onchange="displayAudio(event)">
+              </div>
+              
+              <div class="media-preview">
+                <div class="media-preview">
+                  {% if question.photo_path %}
+                    <div id="imagePreview" class="media-item">
+                      <img id="previewImage" src="{{ url_for('static', filename='uploads/' + question.photo_path) }}" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                    </div>
+                  {% endif %}
+                
+                  {% if question.audio_path %}
+                    <div class="media-item">
+                      <audio id="previewAudio" controls>
+                        <source src="{{ url_for('static', filename='uploads/' + question.audio_path) }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  {% endif %}
+                </div>
+
+              </div>
+             
+                <div class="dropdown-div">
+                    <div class="dropdown">
+                        <label for="">Difficulty</label>
+                        <select name="difficulty">
+                            <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                            <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                            <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                            <option value="Very Hard" {% if question.difficulty == 'Very Hard' %}selected{% endif %}>Very Hard</option>
+                        </select>
+                    </div>
+    
+                    <div class="dropdown">
+                        <label for="">Importance</label>
+                        <select name="importance">
+                            <option value="Necessary" {% if question.importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+                            <option value="Optional" {% if question.importance == 'Optional' %}selected{% endif %}>Optional</option>
+                            <option value="Important" {% if question.importance == 'Important' %}selected{% endif %}>Important</option>
+                        </select>
+                    </div>
+    
+                    <div class="dropdown">
+                        <label >Bloom's Taxonomy</label>
+                        <select name="bloom_taxonomy">
+                          <option value="General" {% if question.bloom_taxonomy == 'General' %}selected{% endif %}>General</option>
+                          <option value="Remember" {% if question.bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+                          <option value="Understand" {% if question.bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+                          <option value="Apply" {% if question.bloom_taxonomy == 'Apply' %}selected{% endif %}>Apply</option>
+                          <option value="Analyze" {% if question.bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+                          <option value="Evaluate" {% if question.bloom_taxonomy == 'Evaluate' %}selected{% endif %}>Evaluate</option>
+                          <option value="Create" {% if question.bloom_taxonomy == 'Create' %}selected{% endif %}>Create</option>
+                        </select>
+                    </div>
+    
+                    <div class="dropdown">
+                      <label for="grade">Grade</label>
+                      <div class="input-container">
+                        
+                        <input type="number" name="grade" id="grade" value="{{ question.grade }}" min="1" step="1" />
+                    </div>
+                    </div>
+                    <div class="dropdown">
+                    <label for="times">Time (S)</label>
+                    <div class="input-container">
+                      <i id="set-time-btn" data-expected-time="{{ expected_time }}" class="fas fa-robot"></i>
+                      <input type="number" name="times" id="times" value="{{ question.times }}" min="1" step="1" />
+                  </div>
+                    </div>
+                </div>
+            <div class="answers-div"  data-answer-count="{{ answers | length }}">
+             
+            
+                
+                {% for answer in answers %}
+                <div class="answer">
+                    <div class="input-container">
+                        <input type="text" name="answer_text_{{ loop.index0 }}" value="{{ answer.answer_text }}"
+                            placeholder="Type your answer here..." />
+                    </div>
+                    
+                    <input type="text" class="num-input" name="order_{{ loop.index0 }}" value="{{ answer.index }}" required />
+                </div>
+                {% endfor %}
+        
+            </div>
+            <button type="button" class="save-btn" id="add-answer-btn">Add Answer</button>
+            
+            <!-- رسالة التحذير -->
+            <div id="warning-message" style="display: none; color: red;">
+                <p>يوجد رقم مكرر! الرجاء التحقق من الأرقام المدخلة.</p>
+            </div>
+            
+            
+            </div>
+            <div class="confirm-btns">
+              <div class="button-section">
+                  <button type="submit" id="save-btn" class="save-btn">Save</button>
+              </div>
+          </div>
+          </form>
+            <script>
+        let answerCount = document.querySelector('.answers-div').getAttribute('data-answer-count');
+  console.log("عدد الأسئلة: " + answerCount); 
+
+                
+                // دالة لإضافة إجابة جديدة
+                function addAnswer() {
+                    const answersDiv = document.querySelector('.answers-div');
+                    const newAnswerDiv = document.createElement('div');
+                    newAnswerDiv.classList.add('answer');
+            
+                     newAnswerDiv.innerHTML = `
+                        <div class="input-container">
+                            <input type="text" name="answer_text_${answerCount}" placeholder="Type your answer here..." />
+                        </div>
+                       
+                        <input type="text" class="num-input" name="order_${answerCount}" required  />
+                    `;
+                    answersDiv.appendChild(newAnswerDiv);
+                    
+                    // إضافة مستمع جديد للتحقق من التكرار
+                     const numInput = newAnswerDiv.querySelector('.num-input');
+                    numInput.addEventListener('input', checkDuplicateNumbers);
+                    
+                    answerCount++;
+                }
+            
+                // دالة للتحقق من الأرقام المتكررة
+                function checkDuplicateNumbers() {
+                  const numbers = [];
+                  const inputs = document.querySelectorAll('.num-input');
+                  let duplicateFound = false;
+              
+                  // التحقق من الأرقام المتكررة
+                  inputs.forEach(function(input) {
+                    const value = input.value;
+                    if (numbers.includes(value)) {
+                      duplicateFound = true;
+                    } else {
+                      numbers.push(value);
+                    }
+                  });
+              
+                  // إذا تم العثور على أرقام مكررة، عرض الرسالة ومنع حفظ البيانات
+                  const warningMessage = document.getElementById('warning-message');
+                  const saveBtn = document.getElementById('save-btn');
+                  
+                  if (duplicateFound) {
+                    warningMessage.style.display = 'block';
+                    saveBtn.disabled = true;  // تعطيل زر الحفظ
+                  } else {
+                    warningMessage.style.display = 'none';
+                    saveBtn.disabled = false;  // تمكين زر الحفظ
+                  }
+                }
+              
+                // تشغيل التحقق عند تغيير قيمة أي حقل
+                const numInputs = document.querySelectorAll('.num-input');
+                numInputs.forEach(function(input) {
+                  input.addEventListener('input', checkDuplicateNumbers);
+                });
+              
+                // التحقق عند الضغط على زر الحفظ
+                document.getElementById('save-btn').addEventListener('click', function(event) {
+                  // إذا كان هناك أرقام مكررة، منع تنفيذ الإجراء
+                  if (document.getElementById('warning-message').style.display === 'block') {
+                    event.preventDefault();
+                  }
+                });
+            
+                // إضافة مستمع لزر "Add Answer"
+                document.getElementById('add-answer-btn').addEventListener('click', addAnswer);
+                document.getElementById('set-time-btn').addEventListener('click', function() {
+  // الحصول على الوقت المتوقع من data-attribute
+  var expectedTime = this.getAttribute('data-expected-time');
+  
+  document.getElementById('times').value = expectedTime;
+});
+
+            </script>
+              
+  </body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classification</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      label[class="file_upload_image"], label[class="file_upload_audio"] {
+  color: #21797d; /* اللون الأخضر */
+}
+button{
+  padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-color: #21797d;
+}
+
+#set-time-btn {
+  position: absolute;
+  right: 0px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: #21797d; 
+  font-size: 20px; 
+  cursor: pointer; 
+}
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > Classification </span>
+        </div>
+
+        <div class="question-container" id="questionsContainer">
+          <form method="POST" action="">
+          <div class="question-div">
+            <div class="dropdown-div">
+              <div class="dropdown">
+                <label for="">Difficulty</label>
+                <select name="difficulty">
+                    <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                    <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                     <option value="Very Hard" {% if question.difficulty == 'Very Hard' %}selected{% endif %}>Very Hard</option>
+                </select>
+            </div>
+      
+              <div class="dropdown">
+                  <label for="">Importance</label>
+                  <select name="importance">
+                      <option value="Necessary" {% if question.importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+                      <option value="Optional" {% if question.importance == 'Optional' %}selected{% endif %}>Optional</option>
+                      <option value="Important" {% if question.importance == 'Important' %}selected{% endif %}>Important</option>
+                  </select>
+              </div>
+      
+              <div class="dropdown">
+                  <label >Bloom's Taxonomy</label>
+                  <select name="bloom_taxonomy">
+                    <option value="General" {% if question.bloom_taxonomy == 'General' %}selected{% endif %}>General</option>
+                    <option value="Remember" {% if question.bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+                    <option value="Understand" {% if question.bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+                    <option value="Apply" {% if question.bloom_taxonomy == 'Apply' %}selected{% endif %}>Apply</option>
+                    <option value="Analyze" {% if question.bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+                    <option value="Evaluate" {% if question.bloom_taxonomy == 'Evaluate' %}selected{% endif %}>Evaluate</option>
+                    <option value="Create" {% if question.bloom_taxonomy == 'Create' %}selected{% endif %}>Create</option>
+                  </select>
+              </div>
+      
+              <div class="dropdown">
+                <label for="grade">Grade</label>
+                <div class="input-container">
+                  
+                  <input type="number" name="grade" id="grade" value="{{ question.grade }}" min="1" step="1" />
+              </div>
+              </div>
+              <div class="dropdown">
+              <label for="times">Time (S)</label>
+              <div class="input-container">
+      
+                <i id="set-time-btn" data-expected-time="{{ expected_time }}" class="fas fa-robot"></i>
+                <input type="number" name="times" id="times" value="{{ question.times }}" min="1" step="1" />
+              </div>
+            </div>
+          </div>
+      
+            
+              <!-- أسماء الكلاسات -->
+              <div class="classes">
+                <div class="class" id="class1">
+                  <input type="text" name="label_text_1" class="class-name" placeholder="{{ question.label_text }}" value="{{ question.label_text }}" />
+                </div>
+                <div class="class" id="class2">
+                  <input type="text" name="label_text_2" class="class-name" placeholder="{{ question.label_text1 }}" value="{{ question.label_text1 }}" />
+                </div>
+                <div class="class" id="class3">
+                  <input type="text" name="label_text_3" class="class-name" placeholder="{{ question.label_text2 }}" value="{{ question.label_text2 }}" />
+                </div>
+                <div class="class" id="class4">
+                  <input type="text" name="label_text_4" class="class-name" placeholder="{{ question.label_text3 }}" value="{{ question.label_text3 }}" />
+                </div>
+              </div>
+              
+                
+                <div class="answers-div classify" id="answers-div">
+                  {% for answer in answers %}
+                    <div class="answer item"  id="answer{{ answer.answer_id }}">
+                      <div class="input-container">
+                        <input type="text" name="answer_text_{{ answer.answer_id }}" placeholder="Answer Text" value="{{ answer.answer_text }}" />
+                        <select name="label_{{ answer.answer_id }}">
+                          <option value="">Select Class</option>
+                          <option value="1" {% if answer.label == 1 %}selected{% endif %}>{{ question.label_text }}</option>
+                          <option value="2" {% if answer.label == 2 %}selected{% endif %}>{{ question.label_text1 }}</option>
+                          <option value="3" {% if answer.label == 3 %}selected{% endif %}>{{ question.label_text2 }}</option>
+                          <option value="4" {% if answer.label == 4 %}selected{% endif %}>{{ question.label_text3 }}</option>
+                        </select>
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+                 <!-- نموذج الإجابات الجديدة (مخفي) -->
+                  <div id="new-answers-container" style="display: none;">
+                  </div>
+                 <br>
+               <button type="button" id="add-answer-btn">Add Answer</button>
+                <!-- أزرار الحفظ -->
+                <div class="confirm-btns">
+                  
+                </div>
+               
+          </div>
+          <div class="button-section">
+            <button type="submit" class="save-btn" id="save-btn">save</button>
+          </div>
+        </form>
+      </div>
+       <script>
+      // دالة لجلب عدد الإجابات الحالية
+          function getAnswerCount() {
+              return document.querySelectorAll('#answers-div .answer').length;
+          }
+  
+       // دالة لإضافة إجابة جديدة
+          function addAnswer() {
+              const answersDiv = document.getElementById('answers-div');
+              const newAnswersContainer = document.getElementById('new-answers-container');
+              const answerCount = getAnswerCount();
+              const newAnswerDiv = document.createElement('div');
+              newAnswerDiv.classList.add('answer', 'item');
+               newAnswerDiv.id = `answer_new_${answerCount}`;
+  
+              newAnswerDiv.innerHTML = `
+                  <div class="input-container">
+                      <input type="text" name="new_answer_text[]" placeholder="Answer Text" />
+                      <select name="new_label[]">
+                          <option value="">Select Class</option>
+                          <option value="1">{{ question.label_text }}</option>
+                          <option value="2">{{ question.label_text1 }}</option>
+                          <option value="3">{{ question.label_text2 }}</option>
+                          <option value="4">{{ question.label_text3 }}</option>
+                      </select>
+                  </div>
+              `;
+  
+              answersDiv.appendChild(newAnswerDiv);
+                newAnswersContainer.appendChild(newAnswerDiv.cloneNode(true))
+            
+             const numInput = newAnswerDiv.querySelector('input[type="text"]');
+                numInput.addEventListener('input', checkDuplicateNumbers);
+          
+          }
+  
+              document.getElementById('add-answer-btn').addEventListener('click', addAnswer);
+            
+            function checkDuplicateNumbers() {
+                const numbers = [];
+                const inputs = document.querySelectorAll('.input-container input[type="text"]');
+                let duplicateFound = false;
+            
+                // التحقق من الأرقام المتكررة
+                inputs.forEach(function(input) {
+                  const value = input.value;
+                  if (numbers.includes(value)) {
+                    duplicateFound = true;
+                  } else {
+                    numbers.push(value);
+                  }
+                });
+            
+                // إذا تم العثور على أرقام مكررة، عرض الرسالة ومنع حفظ البيانات
+                const warningMessage = document.getElementById('warning-message');
+                const saveBtn = document.getElementById('save-btn');
+                
+                if (duplicateFound) {
+                  warningMessage.style.display = 'block';
+                  saveBtn.disabled = true;  // تعطيل زر الحفظ
+                } else {
+                  warningMessage.style.display = 'none';
+                  saveBtn.disabled = false;  // تمكين زر الحفظ
+                }
+              }
+            
+              // تشغيل التحقق عند تغيير قيمة أي حقل
+              const numInputs = document.querySelectorAll('.input-container input[type="text"]');
+              numInputs.forEach(function(input) {
+                input.addEventListener('input', checkDuplicateNumbers);
+              });
+            
+              // التحقق عند الضغط على زر الحفظ
+              document.getElementById('save-btn').addEventListener('click', function(event) {
+                   // إذا كان هناك أرقام مكررة، منع تنفيذ الإجراء
+                  if (document.getElementById('warning-message').style.display === 'block') {
+                        event.preventDefault();
+                  }
+                  else{
+                        document.getElementById('main-form').submit();
+                      }
+               
+              });
+              document.getElementById('set-time-btn').addEventListener('click', function() {
+              // الحصول على الوقت المتوقع من data-attribute
+              var expectedTime = this.getAttribute('data-expected-time');
+              
+              // تعيين الوقت المتوقع في حقل الإدخال
+              document.getElementById('times').value = expectedTime;
+            });
+
+      </script>
+      <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+  </html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missing Word Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #54a158, #0d7c66cc); 
+      color: #2e7d32;
+      text-align: center;
+      
+    }
+    
+     #sentence {
+      font-size: 1.5rem;
+      color: #2e7d32;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.3);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      width: 88%;
+      max-width: 380px;
+      margin-top: 20px;
+    }
+    .icon {
+      font-size: 4rem;
+      margin: 20px 0;
+    }
+    .input-container {
+      position: relative;
+      width: 90%;
+      max-width: 400px;
+      margin-bottom: 20px;
+    }
+    input {
+      position: relative;
+      margin-bottom: 20px;
+      padding: 12px;
+      font-size: 1.2rem;
+      width: 90%;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      color: #388e3c;
+    }
+    input:focus {
+      outline: none;
+      border: 2px solid #388e3c;
+      box-shadow: 0 0 10px rgba(56, 142, 60, 0.5);
+    }
+    .microphone {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(70%);
+      background: #388e3c;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    button {
+      background: #388e3c;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: #2e7d32;
+      transform: scale(1.1);
+    }
+    .score {
+      margin-top: 15px;
+      font-size: 1.2rem;
+    }
+    #message {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #d32f2f;
+    }
+    .timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2e7d32;
+      margin-bottom: 15px;
+    }
+    .info-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      width: 100%;
+      padding: 0 10px;
+    }
+    .info-item {
+      color: #388e3c;
+      font-size: 1.05rem;
+      padding: 10px 15px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .letters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    .letter {
+      width: 40px;
+      height: 40px;
+      margin: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ddd;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+    .letter:hover {
+      background-color: #bbb;
+    }
+    .letter.disabled {
+      background-color: #eee;
+      cursor: not-allowed;
+    }
+    @media screen and (max-width: 768px) {
+  body {
+    padding: 10px;
+    justify-content: flex-start;
+  }
+  h1 {
+    font-size: 1.8rem;
+  }
+  .container {
+    padding: 15px;
+    max-width: 350px; 
+  }
+  input {
+    font-size: 1rem;
+    padding: 10px;
+  }
+  .microphone {
+    width: 35px;
+    height: 35px;
+    font-size: 1.5rem;
+  }
+  button {
+    font-size: 0.9rem;
+    padding: 10px 15px;
+  }
+  .timer {
+    font-size: 1.2rem;
+  }
+  .icon {
+    font-size: 3rem;
+  }
+  .info-item {
+    font-size: 0.9rem;
+  }
+  .score {
+    font-size: 1rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <h1>Fill in the Missing Word Game</h1>
+  <div class="info-container">
+    <div class="info-item">Easy</div>
+    <div class="info-item">Fast</div>
+    <div class="info-item">Interactive</div>
+    <div class="info-item">Grade: A</div>
+  </div>
+  <div class="input-container">
+    <div id="sentence">Sentence: __ __ __ __ __</div>
+    <input type="text" id="answerInput" placeholder="Enter your answer">
+    <button class="microphone" id="microphoneButton">🎤</button>
+  </div>
+  <div class="container">
+    <div class="timer" id="timer">Time Remaining: 10</div>
+    <div class="letters" id="letters"></div>
+    <button id="submitAnswerButton">Submit</button>
+    <div id="message"></div>
+    <div class="score"><span id="score">0</span></div>
+    <ul id="wordListEnglish" style="display: none;">
+      {% for word in word_list %}
+          <li class="word-item">{{ word }}</li>
+      {% endfor %}
+  </ul>
+
+  <ul id="wordListArabic" style="display: none;">
+      {% for translate in translate_list %}
+          <li class="translate-item">{{ translate }}</li>
+      {% endfor %}
+  </ul>
+  </div>
+
+  <script>
+    const englishWords = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+    const arabicWords = Array.from(document.querySelectorAll('.translate-item')).map(item => item.textContent);
+
+        const sentences = englishWords.map((word, index) => ({
+          sentence: word,
+          word: arabicWords[index] || ''
+        }));
+    
+
+    let currentSentenceIndex = 0;
+    let currentSentence = sentences[currentSentenceIndex];
+    const maxAttempts = 4;
+    let timeLeft = 10;
+    let guessedWord = [];
+    let attemptsLeft = maxAttempts;
+    let guessedLetters = [];
+    let score = 0;
+    let timerInterval;
+
+
+    const sentenceElement = document.getElementById("sentence");
+    const timerElement = document.getElementById("timer");
+    const lettersElement = document.getElementById("letters");
+    const scoreElement = document.getElementById("score");
+    const answerInput = document.getElementById("answerInput");
+    const submitAnswerButton = document.getElementById("submitAnswerButton");
+    const microphoneButton = document.getElementById('microphoneButton');
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    microphoneButton.addEventListener('click', () => {
+        recognition.start();
+    });
+
+    recognition.addEventListener('result', (event) => {
+        const transcript = event.results[0][0].transcript;
+        answerInput.value = transcript; 
+    });
+
+    recognition.addEventListener('error', (event) => {
+        alert('Speech recognition error: ' + event.error);
+    });
+
+    function initializeGame() {
+      currentSentence = sentences[currentSentenceIndex];
+      guessedWord = Array(currentSentence.word.length).fill("_");
+      attemptsLeft = maxAttempts;
+      timeLeft = 10; 
+      guessedLetters = [];
+      updateDisplay();
+      resetLetters();
+      startTimer();
+    }
+
+    function updateDisplay() {
+      sentenceElement.textContent = `Sentence: ${currentSentence.sentence.replace("__" , guessedWord.join(" "))}`;
+      scoreElement.textContent = `Score: ${score}`;
+    }
+
+    function startTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          timerElement.textContent = `Time Remaining: ${timeLeft}`;
+        } else {
+          
+        }
+      }, 1000);
+    }
+
+    function createLetters() {
+      lettersElement.innerHTML = "";
+      for (let i = 65; i <= 90; i++) {
+        const letter = String.fromCharCode(i);
+        const letterElement = document.createElement("div");
+        letterElement.classList.add("letter");
+        letterElement.textContent = letter;
+        letterElement.addEventListener("click", () => handleGuess(letter));
+        lettersElement.appendChild(letterElement);
+      }
+    }
+
+    function resetLetters() {
+      const letterElements = document.querySelectorAll(".letter");
+      letterElements.forEach(el => el.classList.remove("disabled"));
+    }
+
+    function handleGuess(letter) {
+      letter = letter.toLowerCase(); 
+
+      if (guessedLetters.includes(letter)) return;
+
+      guessedLetters.push(letter);
+      const letterElements = document.querySelectorAll(".letter");
+      letterElements.forEach(el => {
+        if (el.textContent.toLowerCase() === letter) {  
+          el.classList.add("disabled");
+        }
+      });
+
+      let isCorrectGuess = false;
+      if (currentSentence.word.toLowerCase().includes(letter)) {
+        for (let i = 0; i < currentSentence.word.length; i++) {
+          if (currentSentence.word[i].toLowerCase() === letter) { 
+            guessedWord[i] = letter;
+            isCorrectGuess = true;
+          }
+        }
+      }
+
+      if (!isCorrectGuess) {
+        attemptsLeft--;
+      }
+
+      updateDisplay();
+      checkGameStatus();
+    }
+
+    function checkGameStatus() {
+      const currentGuessedWord = guessedWord.join("");
+      if (currentGuessedWord === currentSentence.word) {
+        score++;
+        nextSentenceOrEndGame();
+      } else if (attemptsLeft === 0) {
+        nextSentenceOrEndGame();
+      }
+    }
+
+    function nextSentenceOrEndGame() {
+      if (currentSentenceIndex < sentences.length - 1) {
+        currentSentenceIndex++;
+        setTimeout(initializeGame, 1000); 
+      } else {
+        sentenceElement.textContent = "🎉 Game Over!";
+        scoreElement.textContent = `Final Score: ${score} / ${sentences.length}`;
+        disableAllLetters();
+      }
+    }
+
+    function disableAllLetters() {
+      const letterElements = document.querySelectorAll(".letter");
+      letterElements.forEach(el => el.classList.add("disabled"));
+    }
+
+    function submitAnswer() {
+      const userAnswer = answerInput.value.trim().toLowerCase();
+      if (userAnswer === currentSentence.word.toLowerCase()) {
+        score++;
+        nextSentenceOrEndGame();
+      } else {
+        attemptsLeft--;
+        updateDisplay();
+        checkGameStatus();
+      }
+      answerInput.value = ''; 
+    }
+
+ 
+    submitAnswerButton.addEventListener("click", submitAnswer);
+
+    createLetters();
+    initializeGame();
+  </script>
+</body>

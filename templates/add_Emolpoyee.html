@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>show students</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+  <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+    <img class="navbar-img" src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" style=" height: auto;">
+  </div>
+  
+  <ul>
+      <li data-target="dropdown-1" style="margin-top: 20px;">
+        <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+          <i class="fa-solid fa-house"></i> Dashboard
+          <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+        </a>
+        <ul id="dropdown-1" class="dropdown">
+          <li ><a href="{{ url_for('owner') }}" id="owner-link">Profile</a></li>
+          <li ><a href="{{ url_for('manager') }}" id="manager-link">Managers</a></li>
+          <li ><a href="{{ url_for('managertomanger') }}" id="managertomanger-link">Managers to manager</a></li>
+
+        </ul>
+      </li>
+      <li style="margin-top: 5px;"data-target="dropdown-1">
+        <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">
+          <i class="bi bi-pie-chart-fill"></i> Show Data
+          <span class="arrow-icon" style="margin-left:15px ;"><i class="fa-solid fa-angle-down"></i></span>
+        </a>
+        <ul id="nested-dropdown" class="dropdown nested-dropdown">
+          
+                <li><a href="company_cards">  company cards</a></li>
+                <li><a href="show_adm">  show administrators</a></li>
+                <li><a href="show_org" >  show organizers</a></li>
+                <li><a href="show_emp" >  show employees</a></li>
+                <li><a href="show_stu" class="active-page">  show students</a></li>
+        </ul>
+
+      </li>
+      <li style="margin-top: 5px;">
+        <a href="#" ><i class="fa-solid fa-globe"></i> Language</a>
+      </li>
+      <li style="margin-top: 5px;">
+        <a href="{{ url_for('logout') }}" id="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
+      </li>
+  </ul>
+  
+</div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+<div class="navigation-steps">
+  <div>
+    <i class="fas fa-home"></i>
+    <span>Home > Dashboard > show students </span> 
+  </div>
+  <div class="notify-bell">
+    <a href="notification" 
+    style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+    onmouseover="this.style.color='#479b8a'" 
+    onmouseout="this.style.color='#0D7C66'">
+   
+   <i class="fa-solid fa-bell"></i>
+ 
+   {% if notification_dot_display %}
+     <span style="
+       position: absolute;
+       top: 0px;
+       right: 0px;
+       width: 10px;
+       height: 10px;
+       background: red;
+       border-radius: 50%;
+       display: inline-block;
+     "></span>
+   {% endif %}
+ </a>
+ 
+    
+  </div><!-- Notification Icon -->
+</div>
+        <div class="second-div">
+          <div class="search-filters">
+              <div class="input-row">
+                  <div class="input-container">
+                      <input
+                          type="text"
+                          id="search-query1"
+                          placeholder="Enter keywords separated by space"
+                          oninput="filterTable1()"
+                      />
+                  </div>
+              </div>
+          </div>
+          <form action="{{ url_for('add_emloyees_to_lesson', lesson_id=request.args.get('lesson_id')) }}" method="POST">
+              <div class="table-section">
+                  <table id="table1">
+                      <thead>
+                          <tr>
+                              <th>اختيار</th>
+                              <th>id</th>
+                              <th>Name</th>
+                              <th>major</th>
+                              <th>country</th>
+                              <th>province</th>
+                              <th>branch</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for employee in employees %}
+                          <tr>
+                              <td>
+                                  <input type="checkbox" name="student_ids" value="{{ employee.id }}">
+                              </td>
+                              <td>{{ employee.id }}</td>
+                              <td>{{ employee.username }}</td>
+                    
+                              <td>{{ employee.major }}</td>
+                              <td>{{ employee.country }}</td>
+                              <td>{{ employee.province }}</td>
+                              <td>{{ employee.branch }}</td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              </div>
+              <button type="submit" class="add-students-btn">إضافة موظف</button>
+          </form>
+      </div>
+          </div>
+      </div>
+    </div>
+
+    <script>
+      document.querySelectorAll(".employee-checkbox").forEach((checkbox) => {
+  checkbox.addEventListener("change", () => {
+    const allCheckboxes = document.querySelectorAll(
+      "#table2 tbody .employee-checkbox"
+    );
+    const allChecked = Array.from(allCheckboxes).every(
+      (cb) => cb.checked || cb.closest("tr").style.display === "none"
+    );
+
+    document.getElementById("select-all").checked = allChecked;
+  });
+});
+
+      function toggleSelectAll() {
+  // جلب حالة مربع "تحديد الكل"
+  const selectAllCheckbox = document.getElementById("select-all");
+  const isChecked = selectAllCheckbox.checked;
+
+  // جلب كل صفوف الجدول
+  const rows = document.querySelectorAll("#table2 tbody tr");
+
+  rows.forEach((row) => {
+    // إذا كان الصف مرئيًا، قم بتحديد أو إلغاء تحديد مربع الاختيار
+    if (row.style.display !== "none") {
+      const checkbox = row.querySelector(".employee-checkbox");
+      if (checkbox) {
+        checkbox.checked = isChecked;
+      }
+    }
+  });
+}
+
+    function filterTable() {
+  // جلب النص المدخل
+  let searchQuery = document.getElementById("search-query").value.toLowerCase();
+
+  // تقسيم النص إلى كلمات مفتاحية
+  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+
+  // جلب الجدول والصفوف
+  let table = document.getElementById("table2");
+  let rows = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < rows.length; i++) {
+    let cells = rows[i].getElementsByTagName("td");
+    let rowText = "";
+
+    // دمج النصوص داخل الصف
+    for (let j = 0; j < cells.length; j++) {
+      rowText += cells[j].textContent.toLowerCase() + " ";
+    }
+
+    // التحقق من تطابق جميع الكلمات المفتاحية
+    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+
+    // إظهار أو إخفاء الصف بناءً على النتيجة
+    rows[i].style.display = allMatch ? "" : "none";
+  }
+}
+function filterTable1() {
+  // جلب النص المدخل
+  let searchQuery = document.getElementById("search-query1").value.toLowerCase();
+
+  // تقسيم النص إلى كلمات مفتاحية
+  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+
+  // جلب الجدول والصفوف
+  let table = document.getElementById("table1");
+  let rows = table.getElementsByTagName("tr");
+
+  for (let i = 1; i < rows.length; i++) {
+    let cells = rows[i].getElementsByTagName("td");
+    let rowText = "";
+
+    // دمج النصوص داخل الصف
+    for (let j = 0; j < cells.length; j++) {
+      rowText += cells[j].textContent.toLowerCase() + " ";
+    }
+
+    // التحقق من تطابق جميع الكلمات المفتاحية
+    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+
+    // إظهار أو إخفاء الصف بناءً على النتيجة
+    rows[i].style.display = allMatch ? "" : "none";
+  }
+}
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

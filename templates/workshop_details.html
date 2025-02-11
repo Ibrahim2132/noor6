@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter cards</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+        .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+
+      .card-btn {
+  display: inline-block;
+ 
+  color: #fff; 
+  padding: 10px 15px; 
+  border: none; 
+  border-radius: 5px; 
+  font-size: 14px; 
+  cursor: pointer; 
+  text-align: center;
+  width: 100px; 
+  box-sizing: border-box;}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 400px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #21797d;
+}
+
+.popup-content h2 {
+  color: #21797d;
+  margin-bottom: 20px;
+}
+
+.popup-content p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.popup-btn {
+  background-color: #21797d;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-btn:hover {
+  background-color: #0b6a56;
+}
+
+.popup-close {
+  margin-top: 20px;
+  background-color: #ff4757;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-close:hover {
+  background-color: #d63031;
+}
+.popup-content input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 2px solid #21797d;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.popup-content input:focus {
+  outline: none;
+  border-color: #0b6a56;
+  box-shadow: 0px 0px 5px rgba(13, 124, 102, 0.5);
+}
+
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.popup-buttons .popup-btn,
+.popup-buttons .popup-close {
+  flex: 1;
+  margin: 0 5px;
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-top: 50px;
+}
+
+h1 {
+  text-align: center;
+  color: #21797d;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #21797d;
+  border-radius: 5px;
+  margin: 0 5px;
+  background-color: white;
+  color: #21797d;
+}
+
+.tab.active {
+  background-color: #21797d;
+  color: white;
+}
+
+.upload-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.upload-box {
+  border: 2px dashed #21797d;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.upload-box p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.upload-btn {
+  padding: 10px 20px;
+  background-color: #21797d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.lesson-details {
+  margin-top: 20px;
+}
+
+.lesson-details h2 {
+  color: #21797d;
+  margin-bottom: 10px;
+}
+
+.lesson-details input, 
+.lesson-details textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .lesson-details .submit-btn {
+    padding: 10px 20px;
+    background-color: #21797d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .gift-type {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* تقليل المسافة بين العناصر */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-bottom: 15px;
+    white-space: nowrap; /* منع النص من الالتفاف */
+}
+
+.gift-type label {
+    margin: 0;
+    color: #006d5b;
+    font-weight: bold;
+}
+
+.gift-type input[type="radio"] {
+    margin: 0 00px; /* تقليل المسافة بين النقاط والنص */
+    accent-color: #006d5b; /* لون الزر */
+}
+
+.gift-type label[for="internal"],
+.gift-type label[for="external"] {
+    margin-right: 300px; /* تقريب النصوص من بعضها */
+}
+
+
+.hidden {
+  display: none;
+}
+
+ .submit-btn {
+    display: inline-block; /* لضمان توافق العرض مع كل من الزر والرابط */
+  background-color: #21797d; /* نفس لون الخلفية */
+  color: white; /* لون النص */
+  text-decoration: none; /* إزالة الخط تحت الرابط */
+  font-size: 16px; /* حجم النص */
+  padding: 10px 20px; /* الحشوة الداخلية */
+  border: none; /* إزالة الحدود */
+  border-radius: 5px; /* حواف دائرية */
+  cursor: pointer; /* مؤشر اليد عند التمرير */
+  text-align: center; /* محاذاة النص في الوسط */
+  }
+  .lesson-details input, .lesson-details textarea, .lesson-details select {
+     width: 100%;
+     padding: 10px;
+     margin-bottom: 10px;
+     border: 1px solid #ccc;
+     border-radius: 5px;
+ }
+ .lesson-details .input-container{
+     width: 100%;
+  }
+    </style>
+  </head>
+  <body>
+    
+      <div class="main-content">
+        <div id="sidebar" class="sidebar">
+          <div class="logo">
+            <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+          </div>
+          <ul>
+            <li>
+              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+                ><i class="fa-solid fa-house"></i> Dashboard
+                <i class="fas fa-caret-down"></i
+              ></a>
+              <ul id="dropdown-1" class="dropdown">
+                <li><a href="employee_profile"> profile</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="exam_cards" ><i class="fas fa-plus"></i> Create New Exam</a>
+            </li>
+            <li>
+              <a href="gift"class="active-page"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+            </li>
+            <li>
+              <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+            </li>
+            <li>
+              <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+         
+        </div>
+
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+        <div class="main-section">
+        
+          <div class="navigation-steps">
+            <i class="fas fa-home"></i>
+            <span>Home > Dashboard > category > Chapter > lesson</span>
+          </div>
+          <div class="container">
+            <h1>Workshop Details</h1>
+            <form action="{{ url_for('workshop_details', workshop_id=workshop.id) }}" method="POST" enctype="multipart/form-data">
+                <div class="upload-section">
+                    <div class="upload-box">
+                        <p>Workshop Image</p>
+                        <br>
+                        <input class="upload-btn" type="file" name="image" accept="image/*">
+                        {% if workshop.image %}
+                        <div class="file-section">
+                            <img src="{{ url_for('static', filename=workshop.image) }}" alt="Workshop Image" width="200">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+        
+                <div class="lesson-details">
+                    <h2>Workshop Details</h2>
+                    <div class="input-row">
+                      <input type="text" name="name" placeholder="Workshop Name" value="{{ workshop.name }}" required>
+                      <select name="type" required>
+                        <option value="" disabled selected>Workshop Type</option>
+                        <option value="Others" {% if workshop.type == 'Others' %}selected{% endif %}>Others</option>
+                        <option value="Forum" {% if workshop.type == 'Forum' %}selected{% endif %}>Forum</option>
+                        <option value="Course" {% if workshop.type == 'Course' %}selected{% endif %}>Course</option>
+                        <option value="Training" {% if workshop.type == 'Training' %}selected{% endif %}>Training</option>
+                        <option value="Seminar" {% if workshop.type == 'Seminar' %}selected{% endif %}>Seminar</option>
+                        <option value="Continuing Program" {% if workshop.type == 'Continuing Program' %}selected{% endif %}>Continuing Program</option>
+                        <option value="Lecture" {% if workshop.type == 'Lecture' %}selected{% endif %}>Lecture</option>
+                        <option value="Conference" {% if workshop.type == 'Conference' %}selected{% endif %}>Conference</option>
+                        <option value="Workshop" {% if workshop.type == 'Workshop' %}selected{% endif %}>Workshop</option>
+                    </select>
+                  </div>
+                  <div class="input-row">
+                      <input type="number" name="days_count" placeholder="Days Count" value="{{ workshop.days_count }}" required>
+                      <input type="number" name="person_count" placeholder="Person Count" value="{{ workshop.person_count }}" required>
+                  </div>
+                  <div class="input-row">
+                      <input type="text" name="country" placeholder="Country" value="{{ workshop.country or '' }}" required>
+                      <input type="text" name="city" placeholder="City" value="{{ workshop.city or '' }}" required>
+                  </div>
+                  <input type="text" name="location" placeholder="Location" value="{{ workshop.location }}" required>
+                  <div class="input-row">
+                      <input type="date" name="start_date" placeholder="Start Date" value="{{ workshop.start_date }}" required>
+                      <input type="date" name="end_date" placeholder="End Date" value="{{ workshop.end_date }}" required>
+                  </div>
+                  <div class="input-row">
+                      <input type="time" name="start_time" placeholder="Start Time" value="{{ workshop.start_time }}" required>
+                      <input type="time" name="end_time" placeholder="End Time" value="{{ workshop.end_time }}" required>
+                  </div>
+                  <textarea name="description" placeholder="Workshop Description" rows="5" required>{{ workshop.description or '' }}</textarea>
+                  <textarea name="trainer" placeholder="Trainers" rows="5" required>{{ workshop.trainer or '' }}</textarea>
+                  <textarea name="keywords" placeholder="Keywords (space-separated)" rows="3" >{{ workshop.keywords or '' }}</textarea>
+                  
+                  <div class="button-group">
+                      <button type="submit" class="submit-btn">Update</button>
+                      <a href="{{ url_for('workshop_member', workshop_id=workshop.id) }}" class="submit-btn">Members</a>
+                      <a href="{{ url_for('lesson_workshop', workshop_id=workshop.id) }}" class="submit-btn">Add lessen</a>
+                     <a id="qrButton" href="data:image/png;base64,{{ qr_code }}" download="workshop_qr_code.png" class="submit-btn">Download / Open QR Code</a>
+                  </div>
+                  
+                </div>
+            </form>
+           <!--  <div class="qr-code-section">
+              <h3>QR Code</h3>
+              <img src="data:image/png;base64,{{ qr_code }}" alt="Workshop QR Code">
+            
+          </div>-->
+          
+        </div>
+        
+          
+        
+      </div>
+    </div>
+    <script>
+      document.getElementById('qrButton').addEventListener('click', function(event) {
+          event.preventDefault(); // منع السلوك الافتراضي للرابط
+  
+          var qrCodeBase64 = 'data:image/png;base64,{{ qr_code }}';
+          var newTab = window.open();
+          newTab.document.body.innerHTML = '<img src="' + qrCodeBase64 + '">';
+  
+          // عمل تنزيل بعد الفتح في تاب جديد
+           var downloadLink = document.createElement('a');
+          downloadLink.href = qrCodeBase64;
+          downloadLink.download = 'workshop_qr_code.png';
+          downloadLink.style.display = 'none';
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+      });
+  </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

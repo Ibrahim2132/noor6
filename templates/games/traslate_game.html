@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translate to arabic</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 95vh;
+            margin: 0;
+            background: linear-gradient(135deg, #54a158, #0d7c66cc); 
+            color: #2e7d32;
+            text-align: center;
+            direction: rtl; 
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+
+        .word {
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+
+        input {
+            padding: 12px;
+            font-size: 1.2rem;
+            width: 90%;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #388e3c;
+        }
+
+        input:focus {
+            outline: none;
+            border: 2px solid #388e3c;
+            box-shadow: 0 0 10px rgba(56, 142, 60, 0.5);
+        }
+
+        .voice-button {
+            position: absolute;
+    top: 63.2%;
+    right: 20;
+    transform: translateY(-50%);
+    background: #388e3c;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .voice-button:hover {
+            background: #2e7d32;
+        }
+
+        button {
+            background: #388e3c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px; 
+        }
+
+        button:hover {
+            background: #2e7d32;
+            transform: scale(1.1);
+        }
+
+        .score {
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .info-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .info-item {
+            color: #388e3c;
+            font-size: 1.2rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            body {
+                padding: 5px; 
+            }
+            .container {
+                padding: 15px;
+                width: 80%;
+                max-width: 320px; 
+            }
+
+            .word {
+                font-size: 1.5rem;
+            }
+
+            input {
+                font-size: 1rem;
+            }
+
+            .timer {
+                font-size: 1.2rem;
+            }
+
+            .info-item {
+                font-size: 0.9rem; 
+                padding: 8px 12px;
+            }
+            button {
+                padding: 10px 15px;
+            }
+            .voice-button {
+            position: absolute;
+    top: 60%;
+    
+        }
+        }
+    </style>
+</head>
+<body>
+    <h1>Translate to Arabic</h1>
+    <div class="info-container">
+        <div class="info-item">{{current_difficulty}}</div>
+        <div class="info-item">{{current_importance}}</div>
+        <div class="info-item">{{current_bloom_taxonomy}}</div>
+        <div class="info-item">Grade: {{current_grade}}</div>
+    </div>
+    <div class="container">
+        <div class="timer" id="timer">{{current_times}}</div>
+        <div class="word" id="word">Apple</div>
+        <input type="text" id="translationInput" placeholder="اكتب الترجمة هنا...">
+        <button class="voice-button" onclick="startVoiceRecognition()">🎤</button>
+        <button id="submitButton">إرسال</button>
+        <div id="message"></div>
+        <div class="score">score: <span id="score">0</span></div>
+        <ul id="wordListEnglish" style="display: none;">
+            {% for word in word_list %}
+                <li class="word-item">{{ word }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- الترجمات -->
+        <ul id="wordListArabic" style="display: none;">
+            {% for translate in translate_list %}
+                <li class="translate-item">{{ translate }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        const englishWords = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+        const arabicWords = Array.from(document.querySelectorAll('.translate-item')).map(item => item.textContent);
+
+        const words = englishWords.map((word, index) => ({
+            english: word,
+            arabic: arabicWords[index] || ''
+        }));
+        let currentWordIndex = 0;
+        let score = 0;
+        let timerInterval;
+    
+        const wordElement = document.getElementById('word');
+        const inputElement = document.getElementById('translationInput');
+        const messageElement = document.getElementById('message');
+        const scoreElement = document.getElementById('score');
+        const submitButton = document.getElementById('submitButton');
+        const timerElement = document.getElementById('timer');
+    
+        function loadWord() {
+            clearInterval(timerInterval);
+            wordElement.textContent = words[currentWordIndex].english;
+            inputElement.value = '';
+            messageElement.textContent = '';
+            startTimer();
+        }
+    
+        function startTimer() {
+            let timeLeft = "{{current_times}}";
+            timerElement.textContent = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
+            timerInterval = setInterval(function () {
+                timeLeft--;
+                timerElement.textContent = `00:${timeLeft < 10 ? '0' + timeLeft : timeLeft}`;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    showTimeoutMessage();
+                }
+            }, 1000);
+        }
+    
+        function showTimeoutMessage() {
+          
+        }
+    
+        function checkAnswer() {
+            clearInterval(timerInterval);
+            const userAnswer = inputElement.value.trim();
+            const correctAnswer = words[currentWordIndex].arabic;
+    
+            if (userAnswer === correctAnswer) {
+                score++;
+                messageElement.textContent = "إجابة صحيحة! 🎉";
+                messageElement.style.color = "green";
+            } else {
+                messageElement.textContent = `إجابة خاطئة! الإجابة الصحيحة: ${correctAnswer}`;
+                messageElement.style.color = "red";
+            }
+    
+            scoreElement.textContent = score;
+    
+            currentWordIndex = (currentWordIndex + 1) % words.length;
+            setTimeout(loadWord, 1500);
+        }
+    
+        submitButton.addEventListener('click', checkAnswer);
+    
+        function startVoiceRecognition() {
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("عذرًا، المتصفح لا يدعم خاصية التعرف على الصوت.");
+                return;
+            }
+    
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = "ar-EG";
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                inputElement.value = transcript;
+            };
+            recognition.onerror = (event) => {
+                alert("حدث خطأ أثناء التعرف على الصوت: " + event.error);
+            };
+            recognition.start();
+        }
+    
+        loadWord();
+    </script>
+</body>
+</html>

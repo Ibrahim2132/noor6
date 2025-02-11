@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>translate</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}" /> 
+    
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* تنسيق عام لكل الـ select و input */
+ select, input[type="number"] {
+     padding: 6px;
+     font-size: 12px;  /* تصغير حجم النص */
+     border: 1px solid #0D7C66;  /* لون الحدود */
+     border-radius: 5px;
+     background-color: #f9f9f9;  /* خلفية فاتحة */
+     color: #333;  /* لون النص */
+     margin-right: 10px;  /* مسافة بين العناصر */
+     transition: border-color 0.3s ease;
+     width: 18%;  /* عرض كل عنصر ليكون أصغر */
+     min-width: 100px;  /* تحديد عرض أدنى للعناصر */
+ }
+ 
+ /* تأثير عند التمرير على الـ select و input */
+ select:focus, input[type="number"]:focus {
+     border-color: #0D7C66;  /* نفس اللون عند التحديد */
+     background-color: #fff;  /* خلفية بيضاء عند التحديد */
+     outline: none;
+ }
+ 
+ /* تنسيق الـ div الذي يحتوي على الـ selects */
+ .dropdown-div {
+     display: flex;
+     justify-content: space-between;  /* ترتيب العناصر بجانب بعض */
+     flex-wrap: wrap;  /* ضمان توزيع العناصر بشكل جيد */
+     gap: 10px;  /* المسافة بين العناصر */
+     max-width: 1000px;  /* الحد الأقصى للعرض */
+     margin: 0 auto;  /* توسيط العناصر */
+     padding: 15px;
+     background-color: #fff;
+     border-radius: 8px;
+     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+ }
+ 
+ /* تخصيص الـ select والـ input عند التمرير */
+ .dropdown-div select:focus, .dropdown-div input:focus {
+     border-color: #0D7C66;  /* نفس اللون عند التحديد */
+     background-color: #fff;
+ }
+ 
+       .navbar-img {
+         transform: translateX(10px);
+         width: 60px;
+         height: 60px;
+         object-fit: cover;
+         border-radius: 50%;
+         
+       }
+ 
+      .submit-btn {
+      
+    display: inline-block; /* لضمان توافق العرض مع كل من الزر والرابط */
+background-color: #0D7C66; /* نفس لون الخلفية */
+color: white; /* لون النص */
+text-decoration: none; /* إزالة الخط تحت الرابط */
+font-size: 16px; /* حجم النص */
+padding: 10px 20px; /* الحشوة الداخلية */
+border: none; /* إزالة الحدود */
+border-radius: 5px; /* حواف دائرية */
+cursor: pointer; /* مؤشر اليد عند التمرير */
+text-align: center; /* محاذاة النص في الوسط */
+      }
+       .hidden {
+         display: none;
+       }
+     </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > category > Chapter > lesson > games</span>
+        </div>
+        <div class="choice1-div">
+        <form
+        method="POST"
+        enctype="multipart/form-data"
+        action="{{ url_for('traslate', lesson_id=lesson_id) }}"
+      >
+        <div class="fourth-div">
+          <div class="upload-section">
+         
+            <select name="col1" id="col1" required>
+              <option value="" disabled selected>Select Difficulty</option>
+              <option value="Easy" {% if current_difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+              <option value="Medium" {% if current_difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+              <option value="Hard" {% if current_difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+            </select>
+          
+            <select name="importance">
+              <option value="Necessary" {% if current_importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+              <option value="Optional" {% if current_importance == 'Optional' %}selected{% endif %}>Optional</option>
+            </select>
+          
+            <select name="bloom_taxonomy">
+              <option value="Analyze" {% if current_bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+              <option value="Understand" {% if current_bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+              <option value="Remember" {% if current_bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+            </select>
+          
+            <select name="grade">
+              <option value="1" {% if current_grade == 1 %}selected{% endif %}>1</option>
+              <option value="2" {% if current_grade == 2 %}selected{% endif %}>2</option>
+              <option value="3" {% if current_grade == 3 %}selected{% endif %}>3</option>
+            </select>
+          
+            <input type="number" name="times" id="times" value="{{ current_times }}" min="1" step="1" required/>
+
+        <br><br>
+      
+      
+          <div class="input-container">
+            <input
+              type="text"
+              name="Word_Puzzle"
+              id="Word_Puzzle"
+              placeholder="Enter Word English"
+            />
+            <label>Enter Word English</label>
+          </div>
+          <div class="input-container">
+            <input
+              type="text"
+              name="translate"
+              id="translate"
+              placeholder="Enter translate"
+            />
+            <label>Enter translate</label>
+          </div>
+      
+          <div class="uploade-btns">
+        
+            <button type="submit" class="upload-btn">Upload Excel File</button>
+          </div>
+        </div>
+      </form>
+      
+      <div class="table-section">
+        {% if games|length %}
+        <table>
+          <thead>
+            <tr>
+              <th>Word</th>
+              <th>translate</th>
+              <th>Difficulty</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for game in games %}
+            <tr>
+              <td>{{ game.words }}</td>
+              <td>{{ game.translate }}</td>
+              <td>{{ game.difficulty }}</td>
+              <td>
+                <a href="{{ url_for('delete_traslate', word_id=game.id) }}">
+                  <i class="fa-solid fa-trash-can"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% endif %}
+      </div>
+      <br>
+      <div class="play-game-btn">
+        <a href="{{ url_for('traslate_game', lesson_id=lesson_id) }}"class="submit-btn" class="btn btn-primary">
+          Go to Game
+        </a>
+      </div>
+    </div>
+      </div>
+        </div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

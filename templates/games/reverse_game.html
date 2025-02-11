@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Scramble Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #54a158, #0d7c66cc); /* تغيير الخلفية */
+            color: #2e7d32; 
+            text-align: center;
+            direction: rtl;
+        }
+    
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    
+        .container {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            margin-top: 20px;
+        }
+    
+        .scrambled-letters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+    
+        .letter {
+            background: #43a047;
+            color: white;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+        }
+    
+        .letter:hover {
+            transform: scale(1.2);
+            background: #37843b;
+        }
+    
+        .input-area {
+            margin: 20px 0;
+            position: relative;
+        }
+    
+        input {
+            padding: 12px;
+            font-size: 1.2rem;
+            width: 80%;
+            text-align: center;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #388e3c;
+        }
+    
+        input:focus {
+            outline: none;
+            border: 2px solid #388e3c;
+            box-shadow: 0 0 10px rgba(56, 142, 60, 0.5);
+        }
+    
+        button {
+            background: #388e3c;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+    
+        button:hover {
+            background: #2e7d32;
+            transform: scale(1.1);
+        }
+    
+        .score {
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+    
+        #message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+    
+        .mic-btn {
+            background: #388e3c;
+            position: absolute;
+            right: 10%;
+            top:25px;
+            color: white;
+            border: none;
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+    
+        .mic-btn:hover {
+            background: #e64a19;
+        }
+    
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+    
+        .info-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 0 10px;
+        }
+    
+        .info-item {
+            color: #388e3c;
+            font-size: 1.05rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .info-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            padding: 0 10px;
+        }
+
+        .info-item {
+            color: #388e3c;
+            font-size: 1.2rem;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.5);
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+    
+            .container {
+                padding: 15px;
+                width: 80%;
+                max-width: 350px;
+            }
+    
+            .word {
+                font-size: 1.5rem;
+            }
+    
+            input {
+                font-size: 1rem;
+            }
+    
+            .timer {
+                font-size: 1.2rem;
+            }
+    
+            .info-item {
+                font-size: 0.9rem; 
+                padding: 8px 12px;
+            }
+    
+            button {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+    </head>
+    <body>
+    <h1>Word Scramble Game</h1>
+<div class="info-container">
+    <div class="info-item">{{current_difficulty}}</div>
+    <div class="info-item">{{current_importance}}</div>
+    <div class="info-item">{{current_bloom_taxonomy}}</div>
+    <div class="info-item">Grade: {{current_grade}}</div>
+</div>
+<div class="container">
+    <div class="scrambled-letters" id="lettersContainer"></div>
+    <p id="timer"> <span id="time">{{current_times}}</span> </p>
+    <div class="input-area">
+        <input type="text" id="playerWord" placeholder="Arrange the letters">
+        <button class="mic-btn" onclick="startListening()">🎤</button>
+    </div>
+    <button onclick="checkWord()">Submit</button>
+    <p id="message"></p>
+    <p class="score">Score: <span id="score">0</span></p>
+    <ul id="wordListOriginal" style="display: none;">
+        {% for word in word_list %}
+            <li class="word-item">{{ word }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+const words = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+    let currentWordIndex = 0; 
+    let currentWord = "";
+    let scrambledWord = "";
+    let score = 0;
+    let timer;
+    let timeLeft ="{{ current_times }}"; 
+
+    const lettersContainer = document.getElementById("lettersContainer");
+    const message = document.getElementById("message");
+    const scoreDisplay = document.getElementById("score");
+    const playerWordInput = document.getElementById("playerWord");
+    const timerDisplay = document.getElementById("time");
+
+    function shuffleWord(word) {
+        const letters = word.split("");
+        for (let i = letters.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [letters[i], letters[j]] = [letters[j], letters[i]];
+        }
+        return letters.join("");
+    }
+
+    function displayScrambledWord() {
+        // Display words in order
+        if (currentWordIndex < words.length) {
+            currentWord = words[currentWordIndex];
+            scrambledWord = shuffleWord(currentWord);
+            lettersContainer.innerHTML = "";
+            scrambledWord.split("").forEach(letter => {
+                const letterDiv = document.createElement("div");
+                letterDiv.className = "letter";
+                letterDiv.textContent = letter.toUpperCase();
+                lettersContainer.appendChild(letterDiv);
+            });
+
+            // Reset the timer
+            timeLeft = "{{ current_times }}";
+            timerDisplay.textContent = `Time: ${timeLeft} seconds`;
+            startTimer();
+        } else {
+            message.textContent = "You've completed all the questions!";
+            message.style.color = "green";
+        }
+    }
+
+    function startTimer() {
+        timer = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = `Time: ${timeLeft} seconds`;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+             
+
+            }
+        }, 1000);
+    }
+
+    function checkWord() {
+        const input = playerWordInput.value.trim().toLowerCase();
+        if (input === currentWord) {
+            score++;
+            message.textContent = "Correct! Keep going!";
+            message.style.color = "lightgreen";
+            scoreDisplay.textContent = score;
+            clearInterval(timer); 
+            currentWordIndex++; 
+            setTimeout(displayScrambledWord, 1000);
+        } else {
+            message.textContent = "Try again!";
+            message.style.color = "red";
+            clearInterval(timer); 
+            currentWordIndex++; 
+            setTimeout(displayScrambledWord, 1000);
+
+        }
+        playerWordInput.value = "";
+    }
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = "en-US";
+
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        playerWordInput.value = transcript;
+    };
+
+    recognition.onerror = (event) => {
+        message.textContent = "Error with microphone!";
+        message.style.color = "red";
+    };
+
+    function startListening() {
+        recognition.start();
+    }
+
+    displayScrambledWord();
+</script>
+    </body>
+</html>

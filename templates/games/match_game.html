@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لعبة التوافق</title>
+  <style>
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #54a158, #0d7c66cc);
+    color: #2e7d32;
+    overflow: auto;
+    padding: 10px;
+}
+
+h1 {
+    color: #388e3c;
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+    animation: glow 1.5s infinite alternate;
+    text-align: center; 
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4), 0 0 8px #2e7d32, 0 0 18px #2e7d32;
+    }
+    to {
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4), 0 0 12px #2e7d32, 0 0 24px #2e7d32;
+    }
+}
+
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    gap: 15px;
+    margin-top: 20px;
+    justify-items: center;
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    perspective: 1000px;
+    cursor: pointer;
+    transition: transform 0.3s;
+    margin: 5px; 
+}
+
+.card:hover {
+    transform: scale(1.1);
+}
+
+.card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s ease-in-out;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, 
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.card-front {
+    background: linear-gradient(135deg, #ffffff, #e6e6e6);
+    color: #2e7d32;
+    transform: rotateY(180deg);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-back {
+    background: linear-gradient(135deg, #006400, #2e7d32);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.card.matched .card-inner {
+    transform: rotateY(180deg);
+    pointer-events: none;
+}
+
+.card.matched .card-front {
+    background: linear-gradient(135deg, #76c7a1, #98fb98);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.info-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.info-item {
+    color: #388e3c;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    #game-board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        width: 100%; 
+    }
+
+    .card {
+        width:70px; 
+        height: 70px;
+   
+    }
+
+    .info-container {
+        padding: 0 5px;
+    }
+
+    .info-item {
+        font-size: 0.8rem;
+        width: 45%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    footer {
+        font-size: 0.7rem;
+    }
+}
+
+  </style>
+<body>
+  <h1>Memory Match Game</h1>
+  <div class="info-container">
+    <div class="info-item">{{current_difficulty}}</div>
+    <div class="info-item">{{current_importance}}</div>
+    <div class="info-item">{{current_bloom_taxonomy}}</div>
+    <div class="info-item">Grade: {{current_grade}}</div>
+  </div>
+  <div id="timer">Time Left: <span id="time-left">{{current_times}}</span>s</div> 
+  <div id="game-board"></div>
+  <footer>Challenge yourself and achieve the highest level of focus! 🎮</footer>
+  <ul id="wordListOriginal" style="display: none;">
+    {% for word in word_list %}
+        <li class="word-item">{{ word }}</li>
+    {% endfor %}
+  </ul>
+  <script>
+    const symbols = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+    let cards = [...symbols, ...symbols];
+    let flippedCards = [];
+    let matchedCount = 0;
+    let timeLeft = "{{ current_times }}"; 
+    let timer;
+    let gameOver = false; 
+
+    const board = document.getElementById('game-board');
+    const timerDisplay = document.getElementById('time-left');
+
+    cards.sort(() => 0.5 - Math.random());
+
+    cards.forEach(symbol => {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">${symbol}</div>
+          <div class="card-back"></div>
+        </div>
+      `;
+      card.addEventListener('click', () => flipCard(card, symbol));
+      board.appendChild(card);
+    });
+
+    function startTimer() {
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+
+        if (timeLeft === 0) {
+          clearInterval(timer); 
+        }
+      }, 1000);
+    }
+
+    function flipCard(card, symbol) {
+      if (gameOver || flippedCards.length === 2 || card.classList.contains('flipped') || card.classList.contains('matched')) return;
+
+      card.classList.add('flipped');
+      flippedCards.push({ card, symbol });
+
+      if (flippedCards.length === 2) {
+        checkMatch();
+      }
+    }
+
+    function checkMatch() {
+      const [first, second] = flippedCards;
+
+      if (first.symbol === second.symbol) {
+        first.card.classList.add('matched');
+        second.card.classList.add('matched');
+        matchedCount += 2;
+
+        if (matchedCount === cards.length) {
+          clearInterval(timer); 
+          setTimeout(() => endGame(true), 300); 
+        }
+      } else {
+        setTimeout(() => {
+          first.card.classList.remove('flipped');
+          second.card.classList.remove('flipped');
+        }, 1000);
+      }
+      flippedCards = [];
+    }
+
+    function endGame(won) {
+      gameOver = true;
+      alert(won ? '🎉 فوز! لقد أتممت اللعبة!' : '⏰ Game Over! حاول مرة أخرى!');
+    }
+
+    startTimer();
+  </script>
+</body>

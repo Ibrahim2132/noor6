@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter cards</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+        .navbar-img {
+        transform: translateX(10px);
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        
+      }
+
+      .card-btn {
+  display: inline-block;
+ 
+  color: #fff; 
+  padding: 10px 15px; 
+  border: none; 
+  border-radius: 5px; 
+  font-size: 14px; 
+  cursor: pointer; 
+  text-align: center;
+  width: 100px; 
+  box-sizing: border-box;}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup.hidden {
+  display: none;
+}
+
+.popup-content {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  width: 400px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  border: 2px solid #21797d;
+}
+
+.popup-content h2 {
+  color: #21797d;
+  margin-bottom: 20px;
+}
+
+.popup-content p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.popup-btn {
+  background-color: #21797d;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-btn:hover {
+  background-color: #0b6a56;
+}
+
+.popup-close {
+  margin-top: 20px;
+  background-color: #ff4757;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.popup-close:hover {
+  background-color: #d63031;
+}
+.popup-content input {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 2px solid #21797d;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.popup-content input:focus {
+  outline: none;
+  border-color: #0b6a56;
+  box-shadow: 0px 0px 5px rgba(13, 124, 102, 0.5);
+}
+
+
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.popup-buttons .popup-btn,
+.popup-buttons .popup-close {
+  flex: 1;
+  margin: 0 5px;
+}
+
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-top: 50px;
+}
+
+h1 {
+  text-align: center;
+  color: #21797d;
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.tab {
+  padding: 10px 20px;
+  cursor: pointer;
+  border: 1px solid #21797d;
+  border-radius: 5px;
+  margin: 0 5px;
+  background-color: white;
+  color: #21797d;
+}
+
+.tab.active {
+  background-color: #21797d;
+  color: white;
+}
+
+.upload-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.upload-box {
+  border: 2px dashed #21797d;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.upload-box p {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.upload-btn {
+  padding: 10px 20px;
+  background-color: #21797d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.lesson-details {
+  margin-top: 20px;
+}
+
+.lesson-details h2 {
+  color: #21797d;
+  margin-bottom: 10px;
+}
+
+.lesson-details input, 
+.lesson-details textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .lesson-details .submit-btn {
+    padding: 10px 20px;
+    background-color: #21797d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .gift-type {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* تقليل المسافة بين العناصر */
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-bottom: 15px;
+    white-space: nowrap; /* منع النص من الالتفاف */
+}
+
+.gift-type label {
+    margin: 0;
+    color: #006d5b;
+    font-weight: bold;
+}
+
+.gift-type input[type="radio"] {
+    margin: 0 00px; /* تقليل المسافة بين النقاط والنص */
+    accent-color: #006d5b; /* لون الزر */
+}
+
+.gift-type label[for="internal"],
+.gift-type label[for="external"] {
+    margin-right: 300px; /* تقريب النصوص من بعضها */
+}
+
+
+.hidden {
+  display: none;
+}
+    </style>
+  </head>
+  <body>
+    
+      <div class="main-content">
+        <div id="sidebar" class="sidebar">
+          <div class="logo">
+            <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+          </div>
+          <ul>
+            <li>
+              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+                ><i class="fa-solid fa-house"></i> Dashboard
+                <i class="fas fa-caret-down"></i
+              ></a>
+              <ul id="dropdown-1" class="dropdown">
+                <li><a href="employee_profile"> profile</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="exam_cards" ><i class="fas fa-plus"></i> Create New Exam</a>
+            </li>
+            <li>
+              <a href="gift"class="active-page"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+            </li>
+            <li>
+              <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+            </li>
+            <li>
+              <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+          </ul>
+         
+        </div>
+
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+        <div class="main-section">
+        
+          <div class="navigation-steps">
+            <i class="fas fa-home"></i>
+            <span>Home > Dashboard > category > Chapter > lesson</span>
+          </div>
+          <div class="container">
+            <h1>Create Gift</h1>
+            <br>
+            <form action="" method="POST" enctype="multipart/form-data">
+                <div class="upload-section" id="image">
+                    <div class="upload-box">
+                        <p>Select Images</p>
+                        <br>
+                        <input class="upload-btn" type="file" name="image" id="imageInput" accept="image/*" multiple>
+                    
+                        <br><br>
+                        {% if gift.image %}
+                        <div class="file-section">
+                           <img src="{{ url_for('static', filename=gift.image) }}" alt="Lesson Image" width="200">
+                        </div>
+                      {% endif %}
+                    </div>
+                   
+                </div>
+        
+                <form method="POST">
+                  <div class="lesson-details">
+                    <h2>Gift Details</h2>
+                    <div class="input-row">
+                      <input type="text" name="title" placeholder="Gift Name" value="{{ gift.name }}" required>
+                      <input type="number" name="number_of_gifts" placeholder="Quantity of Gifts" value="{{ gift.total_gifts }}" required>
+                    </div>
+                
+                    <div class="hidden-gifts">
+                      <div class="input-row hidden" id="gift1">
+                        <input type="text" name="title1" placeholder="Gift Name" value="{{ gift.name1 or '' }}">
+                        <input type="number" name="number_of_gifts1" placeholder="Quantity of Gifts" value="{{ gift.total_gifts1 or '' }}">
+                      </div>
+                      <div class="input-row hidden" id="gift2">
+                        <input type="text" name="title2" placeholder="Gift Name" value="{{ gift.name2 or '' }}">
+                        <input type="number" name="number_of_gifts2" placeholder="Quantity of Gifts" value="{{ gift.total_gifts2 or '' }}">
+                      </div>
+                      <div class="input-row hidden" id="gift3">
+                        <input type="text" name="title3" placeholder="Gift Name" value="{{ gift.name3 or '' }}">
+                        <input type="number" name="number_of_gifts3" placeholder="Quantity of Gifts" value="{{ gift.total_gifts3 or '' }}">
+                      </div>
+                      <div class="input-row hidden" id="gift4">
+                        <input type="text" name="title4" placeholder="Gift Name" value="{{ gift.name4 or '' }}">
+                        <input type="number" name="number_of_gifts4" placeholder="Quantity of Gifts" value="{{ gift.total_gifts4 or '' }}">
+                      </div>
+                    </div>
+          
+                    <textarea name="description" placeholder="Gift Description" rows="5" >{{ gift.description }}</textarea>
+                    <div class="input-row">
+                      <input type="text" name="start_date" placeholder="Start Date" value="{{ gift.start_date }}" >
+                      <input type="text" name="end_date" placeholder="End Date" value="{{ gift.end_date }}" >
+                    </div>
+                    <div class="input-row">
+                      <input type="text" name="start_time" placeholder="Start Time" value="{{ gift.start_time }}" >
+                      <input type="text" name="end_time" placeholder="End Time" value="{{ gift.end_time }}" >
+                    </div>
+                
+                    <div class="gift-type">
+                      <label>The Gift is:</label>
+                      <input type="radio" id="internal" name="gift_type" value="Internal" {% if gift.is_internal %}checked{% endif %}>
+                      <label for="internal">Internal</label>
+                      <input type="radio" id="external" name="gift_type" value="External" {% if not gift.is_internal %}checked{% endif %}>
+                      <label for="external">External</label>
+                      
+                    </div>
+                    <button type="button" class="submit-btn" id="add-gift-btn">Add Gift</button>
+                  </div>
+                </div>
+
+              <div class="container">
+                <div class="lesson-details">
+                  <h2>Gift Additional Details</h2>
+                  <div class="input-row">
+                    <input type="text" name="percentage" placeholder="Percentage in Test" value="{{ gift.percentage }}" required>
+                    <input type="text" name="number_of_tests" placeholder="Number of Tests" value="{{ gift.exam_count }}" required>
+                  </div>
+                  <div class="input-row">
+                    <input type="text" name="number_of_practices" placeholder="Number of Practices" value="{{ gift.practice_count }}" required>
+                    <input type="text" name="account_type" placeholder="Account Type" value="{{ gift.account_type }}" required>
+                  </div>
+                  <div class="button-group">
+                    <button type="submit" class="submit-btn">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            
+            </form>
+            </div>
+          
+        
+      </div>
+    </div>
+    <script>
+     function switchTab(tabId) {
+
+  const sections = document.querySelectorAll('.upload-section');
+  sections.forEach(section => section.classList.add('hidden'));
+
+  document.getElementById(tabId).classList.remove('hidden');
+
+  const tabs = document.querySelectorAll('.tab');
+  tabs.forEach(tab => tab.classList.remove('active'));
+
+  event.target.classList.add('active');
+}
+document.addEventListener('DOMContentLoaded', () => {
+    const addGiftBtn = document.getElementById('add-gift-btn');
+    const hiddenGifts = document.querySelectorAll('.hidden-gifts .input-row.hidden');
+
+    addGiftBtn.addEventListener('click', () => {
+      for (let gift of hiddenGifts) {
+        if (gift.style.display === 'none' || gift.classList.contains('hidden')) {
+          gift.style.display = 'flex'; // يظهر الحقل
+          gift.classList.remove('hidden');
+          break; // يظهر فقط أول حقل مخفي
+        }
+      }
+    });
+
+    // إذا كانت الحقول تحتوي على قيم مسبقًا، يتم عرضها
+    hiddenGifts.forEach(gift => {
+      const inputs = gift.querySelectorAll('input');
+      if (Array.from(inputs).some(input => input.value.trim() !== '')) {
+        gift.style.display = 'flex';
+        gift.classList.remove('hidden');
+      }
+    });
+  });
+    </script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>

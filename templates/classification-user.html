@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>quiz</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../style4.css" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img src="" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a
+              href="#"
+              class="dropdown-toggle"
+              onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="owner.html"> > Company owner</a></li>
+              <li><a href="organizer.html"> > Organizer</a></li>
+              <li><a href="administrator.html"> > Administrators</a></li>
+              <li><a href="manager.html"> > Managers</a></li>
+
+              <li>
+                <a href="manager to manager.html"> > Managers to manager</a>
+              </li>
+
+              <li>
+                <a
+                  href="#"
+                  class="dropdown-toggle"
+                  onclick="toggleDropdown(event, 'nested-dropdown')"
+                >
+                  > Users <i class="fas fa-caret-right"></i>
+                </a>
+                <ul id="nested-dropdown" class="dropdown nested-dropdown">
+                  <li><a href="student.html"> > Students</a></li>
+                  <li><a href="employee.html"> > Employees</a></li>
+                </ul>
+              </li>
+              <li><a href="lectures.html"> > Lectures</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Quiz </span>
+        </div>
+
+        <div class="question-container">
+          <div class="container">
+            <div class="exam-details">
+              <h1 class="exam-name">lesson name Quiz</h1>
+            </div>
+            <div class="question-details">
+              <div class="question-type">
+                <h3>Question 1 of 5 : <span class="bloom">(Analyze)</span></h3>
+              </div>
+              <div class="question-detail">
+                <div class="question-timer">
+                  <i class="fa-solid fa-stopwatch-20"></i>
+                  <h4 class="time">60s</h4>
+                </div>
+                <div class="degree">
+                  <h4>1 degree</h4>
+                </div>
+              </div>
+            </div>
+            <div class="question-detail head">
+              <h2 class="question-header">
+                classify each rock into the correct group :
+              </h2>
+              <div class="question-importance">
+                <h4 class="importance">* Necessary</h4>
+                <h4 class="difficulty">Easy</h4>
+              </div>
+            </div>
+            <div class="dragdrop">
+              <div id="items" class="objects">
+                <div class="item" draggable="true">Apple</div>
+                <div class="item" draggable="true">Carrot</div>
+                <div class="item" draggable="true">Banana</div>
+                <div class="item" draggable="true">Broccoli</div>
+                <div class="item" draggable="true">Orange</div>
+              </div>
+              <div class="dropzones">
+                <div id="fruits" class="category">
+                  <h2>Fruits</h2>
+                </div>
+                <div id="vegetables" class="category">
+                  <h2>Vegetables</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="btns">
+            <button class="nxt-btn" id="submit">
+              <i class="fa-solid fa-arrow-right"></i> Next
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../Script.js"></script>
+    <script>
+      const items = document.querySelectorAll(".item");
+      const categories = document.querySelectorAll(".category");
+
+      const submitButton = document.getElementById("submit");
+
+      let draggedItem = null;
+
+      items.forEach((item) => {
+        item.addEventListener("dragstart", () => {
+          draggedItem = item;
+          item.classList.add("dragging");
+        });
+
+        item.addEventListener("dragend", () => {
+          item.classList.remove("dragging");
+          draggedItem = null;
+        });
+      });
+
+      categories.forEach((category) => {
+        category.addEventListener("dragover", (e) => {
+          e.preventDefault();
+        });
+
+        category.addEventListener("drop", () => {
+          if (draggedItem) {
+            category.appendChild(draggedItem);
+
+          }
+        });
+      });
+
+      submitButton.addEventListener("click", () => {
+        const allCorrect = Array.from(items).every((item) =>
+          item.classList.contains("correct")
+        );
+
+        if (allCorrect) {
+          showCelebration();
+        } else {
+          alert("Some items are not correctly classified. Try again!");
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Summary</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; }
+        h2 { margin-bottom: 15px; }
+        .summary-item { margin-bottom: 8px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>ملخص الاختبار</h2>
+
+    <div class="summary-item"><strong>إجمالي الدرجات:</strong> {{ total_grade }}</div>
+    <div class="summary-item"><strong>إجمالي عدد الأسئلة:</strong> {{ total_questions }}</div>
+    <div class="summary-item"><strong>عدد الإجابات الصحيحة:</strong> {{ correct_answers_count }}</div>
+    <div class="summary-item"><strong>عدد الإجابات الخاطئة:</strong> {{ incorrect_answers_count }}</div>
+    <div class="summary-item"><strong>عدد الإجابات الصحيحة في الوقت المحدد:</strong> {{ correct_in_time_count }}</div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>رقم السؤال</th>
+                <th>هل الإجابة صحيحة؟</th>
+                <th>الوقت المستغرق (ثانية)</th>
+                <th>الوقت المسموح (ثانية)</th>
+                <th>الدرجة</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for answer in answers %}
+                <tr>
+                   <td>{{ answer.question_id }}</td>
+                   <td>{{ answer.is_correct }}</td>
+                    <td>{{ answer.time_taken }}</td>
+                    <td>{{ answer.time_allowed }}</td>
+                     <td>{{ answer.grade }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>

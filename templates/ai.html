@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <style>
+        /* General styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e3f2fd; /* Light blue background */
+            color: #333;
+        }
+
+        /* Centered container */
+        .container {
+            width: 90%;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Title styling */
+        h1 {
+            font-size: 28px;
+            color: #0d47a1; /* Dark blue */
+            margin-bottom: 20px;
+        }
+
+        /* Dropdown and input styling */
+        .input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+         .input-group > * {
+           flex: 0 0 auto;
+         }
+
+         .input-group select,
+        .input-group input[type="number"] {
+            padding: 10px;
+            border: 1px solid #90caf9;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #f4f9ff;
+            color: #333;
+            /* Add this to prevent the dropdown arrow from being cropped */
+            appearance: none; /* Remove default browser style */
+           -webkit-appearance: none; /* Remove for chrome and safari */
+           -moz-appearance: none; /* Remove for firefox */
+            padding-right: 2.5em; /* Make space for the arrow */
+           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23757575'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Add arrow icon */
+            background-repeat: no-repeat;
+            background-position: right 0.8em top 50%;
+
+        }
+
+         .input-group select:focus,
+         .input-group input[type="number"]:focus{
+                border-color: #0d47a1;
+                outline: none;
+        }
+
+        /* Textarea styling */
+        textarea {
+            padding: 12px;
+            margin: 20px 0;
+            width: 100%;
+            background-color: #f4f9ff; /* Subtle blue */
+            border: 1px solid #90caf9; /* Light blue border */
+            border-radius: 6px;
+            resize: vertical;
+            min-height: 120px;
+            font-size: 14px;
+        }
+
+        textarea:focus {
+            border-color: #0d47a1;
+            outline: none;
+        }
+
+        /* Button styling */
+        #classifyButton {
+            padding: 12px 25px;
+            background-color: #1976d2; /* Medium blue */
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #classifyButton:hover {
+            background-color: #0d47a1; /* Darker blue */
+            transform: scale(1.05);
+        }
+
+        /* Results styling */
+        #result {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #0d47a1;
+            font-weight: bold;
+            text-align: left;
+        }
+
+        #result ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #result li {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+
+        #result ul ul {
+            padding-left: 20px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            #classifyButton {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+    <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+    <div class="container">
+        <h1>Text Classifier</h1>
+        <div class="input-group">
+            <select id="questionTypeSelect">
+                <option value="true_false" selected>True/False</option>
+                <option value="mcq">Multiple Choice (Single Correct)</option>
+                <option value="multiple_mcq">Multiple Choice (Multiple Correct)</option>
+                <option value="fill_blank">Fill in the blank</option>
+                <option value="fill_blank_choice">fill_blank_choice</option>
+                <option value="essay">Essay</option>
+                 <option value="sequence">Sequence</option>
+                <option value="matching">Matching</option>
+            </select>
+             <input type="number" id="numberOfQuestionsInput" placeholder="Number of Questions" value="1" min="1">
+        </div>
+        <textarea id="textInput" placeholder="Enter text here"></textarea>
+        <button id="classifyButton">Classify</button>
+        <div id="result"></div>
+    </div>
+</div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const lessonId = urlParams.get('lesson_id');
+
+console.log(lessonId); // ستظهر القيمة في الكونسول
+    
+        const textInput = document.getElementById('textInput');
+        const classifyButton = document.getElementById('classifyButton');
+        const resultDiv = document.getElementById('result');
+        const questionTypeSelect = document.getElementById('questionTypeSelect');
+        const numberOfQuestionsInput = document.getElementById('numberOfQuestionsInput');
+
+        classifyButton.addEventListener('click', async () => {
+            const text = textInput.value.trim();
+            const questionType = questionTypeSelect.value;
+            const numberOfQuestions = numberOfQuestionsInput.value; // Get the value of input
+
+            if (!text) {
+                alert('Please enter some text first.');
+                return;
+            }
+
+           resultDiv.textContent = "Loading classification...";
+            const url = `http://127.0.0.1:5000/classify?lesson_id=${lessonId}&number_of_questions=${numberOfQuestions}`;
+            console.log("URL:",url)
+            try {
+                
+                const response = await fetch(url, {
+
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text, questionType: questionType }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                 console.log("Data:", data);
+
+
+                if (data.error) {
+                    resultDiv.textContent = `Error: ${data.error}`;
+                }
+                else if (data.redirect_url) {
+                    window.location.href = data.redirect_url; // Redirect to the specified URL
+
+                }
+                 else if (data.message && data.questions && questionType === "true_false"){
+                    let questionsHTML = '<p>'+data.message+'</p>'; // Display message first
+                    questionsHTML += '<ul>';
+                    data.questions.forEach(question => {
+                        questionsHTML += `<li>${question.question} - Answer: ${question.answer}</li>`;
+                    });
+                    questionsHTML += '</ul>';
+                    resultDiv.innerHTML = questionsHTML;
+                }
+                 else if (data.message && data.questions && (questionType === "mcq" || questionType ==="multiple_mcq")) {
+                    let questionsHTML = '<p>' + data.message + '</p>';
+                    questionsHTML += '<ul>';
+                        data.questions.forEach(question => {
+                        questionsHTML += `<li>${question.question}</li>`;
+                        questionsHTML += '<ul>';
+                        question.options.forEach((option, index) => {
+                                 const isCorrect = question.correct_answers.includes(option) ? " (Correct)" : "";
+                                questionsHTML += `<li>${option}${isCorrect}</li>`;
+                            });
+                           questionsHTML += '</ul>';
+                    });
+                    questionsHTML += '</ul>';
+                    resultDiv.innerHTML = questionsHTML;
+                     }
+                  else if (data.message && data.questions && questionType === "fill_blank") {
+                    let questionsHTML = '<p>' + data.message + '</p>';
+                     questionsHTML += '<ul>';
+                         data.questions.forEach(question => {
+                             const parts = [];
+                              if(question.question_text)
+                                parts.push(question.question_text);
+                              if(question.question_text1)
+                                parts.push(question.question_text1);
+                              if(question.question_text2)
+                                 parts.push(question.question_text2);
+                             if(question.question_text3)
+                               parts.push(question.question_text3);
+                            if(question.question_text4)
+                                parts.push(question.question_text4);
+                            if(question.question_text5)
+                              parts.push(question.question_text5);
+                             if(question.question_text6)
+                                parts.push(question.question_text6);
+
+
+                           const answers = [];
+                           if (question.answer_text)
+                             answers.push(question.answer_text)
+                           if (question.answer_text1)
+                            answers.push(question.answer_text1)
+                           if (question.answer_text2)
+                             answers.push(question.answer_text2)
+                           if (question.answer_text3)
+                             answers.push(question.answer_text3)
+                            if (question.answer_text4)
+                             answers.push(question.answer_text4)
+                           if (question.answer_text5)
+                            answers.push(question.answer_text5)
+                           if (question.answer_text6)
+                            answers.push(question.answer_text6)
+
+
+                       questionsHTML += `<li>${parts.join(' ')} - Answer: ${answers.join(', ')}</li>`;
+                    });
+                    questionsHTML += '</ul>';
+                    resultDiv.innerHTML = questionsHTML;
+                  }
+                  else if (data.message && data.questions && questionType === "fill_blank_choice") {
+                    let questionsHTML = '<p>' + data.message + '</p>';
+                     questionsHTML += '<ul>';
+                         data.questions.forEach(question => {
+                             const parts = [];
+                              if(question.question_text)
+                                parts.push(question.question_text);
+                              if(question.question_text1)
+                                parts.push(question.question_text1);
+                              if(question.question_text2)
+                                 parts.push(question.question_text2);
+                             if(question.question_text3)
+                               parts.push(question.question_text3);
+                            if(question.question_text4)
+                                parts.push(question.question_text4);
+                            if(question.question_text5)
+                              parts.push(question.question_text5);
+                             if(question.question_text6)
+                                parts.push(question.question_text6);
+
+
+                           const answers = [];
+                           if (question.answer_text)
+                             answers.push(question.answer_text)
+                           if (question.answer_text1)
+                            answers.push(question.answer_text1)
+                           if (question.answer_text2)
+                             answers.push(question.answer_text2)
+                           if (question.answer_text3)
+                             answers.push(question.answer_text3)
+                            if (question.answer_text4)
+                             answers.push(question.answer_text4)
+                           if (question.answer_text5)
+                            answers.push(question.answer_text5)
+                           if (question.answer_text6)
+                            answers.push(question.answer_text6)
+
+
+                       questionsHTML += `<li>${parts.join(' ')} - Answer: ${answers.join(', ')}</li>`;
+                    });
+                    questionsHTML += '</ul>';
+                    resultDiv.innerHTML = questionsHTML;
+                  }
+                else if (data.message && data.questions && questionType === "essay") {
+                    let questionsHTML = '<p>' + data.message + '</p>';
+                    questionsHTML += '<ul>';
+                    data.questions.forEach(question => {
+                        questionsHTML += `<li>${question.question}</li>`;
+                    });
+                    questionsHTML += '</ul>';
+                    resultDiv.innerHTML = questionsHTML;
+                }
+               else if (data.message && data.questions && questionType === "sequence") {
+                   let questionsHTML = '<p>' + data.message + '</p>';
+                   questionsHTML += `<li>${data.questions.question}</li>`;
+                   questionsHTML += '<ol>';
+                   data.questions.answers.forEach(answer => {
+                    questionsHTML += `<li>${answer.text}</li>`;
+
+                   });
+                    questionsHTML += '</ol>';
+                   resultDiv.innerHTML = questionsHTML;
+                  }
+                else if (data.message && data.questions && questionType === "matching") {
+                    let questionsHTML = '<p>' + data.message + '</p>';
+                    questionsHTML += '<ul>';
+                         data.questions.forEach(question => {
+                            const parts = [];
+                            if(question.question_text)
+                                parts.push(question.question_text);
+                            if(question.question_text1)
+                                 parts.push(question.question_text1);
+                           if(question.question_text2)
+                                  parts.push(question.question_text2);
+                            if(question.question_text3)
+                                  parts.push(question.question_text3);
+
+
+                            const answers = [];
+                            if (question.answer_text)
+                                 answers.push(question.answer_text)
+                            if (question.answer_text1)
+                                 answers.push(question.answer_text1)
+                            if (question.answer_text2)
+                                answers.push(question.answer_text2)
+                             if (question.answer_text3)
+                                answers.push(question.answer_text3)
+
+
+                       questionsHTML += `<li>${parts.join(' , ')} - Answer: ${answers.join(' , ')}</li>`;
+                   });
+                  questionsHTML += '</ul>';
+                  resultDiv.innerHTML = questionsHTML;
+                }
+                 else if (data.message){
+                    resultDiv.textContent = `Message: ${data.message}`;
+                }
+                 else {
+                    resultDiv.textContent = 'No message or questions found.';
+                }
+            } catch (error) {
+                console.error("Error during classification:", error);
+                resultDiv.textContent = 'Error during classification.';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administrators</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* تنسيق الحاوية التي تحتوي على حقل رفع الصورة والصوت */
+      label[class="file_upload_image"], label[class="file_upload_audio"] {
+  color: #21797d; /* اللون الأخضر */
+}
+/* تخصيص الأيقونة */
+.input-container {
+  position: relative;
+}
+
+#set-time-btn {
+  position: absolute;
+  right: 0px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: #21797d; 
+  font-size: 20px; 
+  cursor: pointer; 
+}
+
+/* تخصيص الحقل نفسه ليتناسب مع الأيقونة */
+input[type="number"] {
+  padding-left: 30px; /* ترك مساحة لظهور الأيقونة داخل الحقل */
+}
+
+/* تنسيق الصورة */
+
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > True or false</span>
+        </div>
+        <div class="question-container">
+          <form method="POST"enctype="multipart/form-data">
+              <div class="question-div">
+                  <div class="textarea-div">
+                      <textarea name="question_name" placeholder="Type your question here...">{{ question.question_name }}</textarea>
+                  </div>
+                  <div class="btns-div">
+            
+                    <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                    <input type="file" id="file_upload_image" class="upload-btn"  name="photo" accept="image/*" onchange="displayImage(event)">
+            
+                    <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                    <input type="file" id="file_upload_audio"  class="upload-btn"  name="audio" accept="audio/*" onchange="displayAudio(event)">
+                </div>
+                
+                <div class="media-preview">
+                  <div class="media-preview">
+                    {% if question.photo_path %}
+                      <div id="imagePreview" class="media-item">
+                        <img id="previewImage" src="{{ url_for('static', filename='uploads/' + question.photo_path) }}" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                      </div>
+                    {% endif %}
+                  
+                    {% if question.audio_path %}
+                      <div class="media-item">
+                        <audio id="previewAudio" controls>
+                          <source src="{{ url_for('static', filename='uploads/' + question.audio_path) }}" type="audio/mpeg">
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    {% endif %}
+                  </div>
+
+                </div>
+                <div class="dropdown-div">
+                  <div class="dropdown">
+                      <label for="">Difficulty</label>
+                      <select name="difficulty">
+                          <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                          <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                          <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                          <option value="Very Hard" {% if question.difficulty == 'Very Hard' %}selected{% endif %}>Very Hard</option>
+                      </select>
+                  </div>
+          
+                  <div class="dropdown">
+                      <label for="">Importance</label>
+                      <select name="importance">
+                          <option value="Necessary" {% if question.importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+                          <option value="Optional" {% if question.importance == 'Optional' %}selected{% endif %}>Optional</option>
+                          <option value="Important" {% if question.importance == 'Important' %}selected{% endif %}>Important</option>
+                      </select>
+                  </div>
+          
+                  <div class="dropdown">
+                      <label >Bloom's Taxonomy</label>
+                      <select name="bloom_taxonomy">
+                        <option value="General" {% if question.bloom_taxonomy == 'General' %}selected{% endif %}>General</option>
+                        <option value="Remember" {% if question.bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+                        <option value="Understand" {% if question.bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+                        <option value="Apply" {% if question.bloom_taxonomy == 'Apply' %}selected{% endif %}>Apply</option>
+                        <option value="Analyze" {% if question.bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+                        <option value="Evaluate" {% if question.bloom_taxonomy == 'Evaluate' %}selected{% endif %}>Evaluate</option>
+                        <option value="Create" {% if question.bloom_taxonomy == 'Create' %}selected{% endif %}>Create</option>
+                      </select>
+                  </div>
+          
+                  <div class="dropdown">
+                    <label for="grade">Grade</label>
+                    <div class="input-container">
+                      
+                      <input type="number" name="grade" id="grade" value="{{ question.grade }}" min="1" step="1" />
+                  </div>
+                  </div>
+                  <div class="dropdown">
+                  <label for="times">Time (S)</label>
+                  <div class="input-container">
+          
+                    <i id="set-time-btn" data-expected-time="{{ expected_time }}" class="fas fa-robot"></i>
+                    <input type="number" name="times" id="times" value="{{ question.times }}" min="1" step="1" />
+                  </div>
+                </div>
+              </div>
+          
+      
+                  <div class="answers-div">
+                    <div class="answer">
+                      <input type="radio" name="correct_answer" value="True" id="answer_true" {% if question.correct_answer == True %}checked{% endif %}>
+                      <div class="input-container">
+                         
+                          <label for="answer_true">True</label>
+                      </div>
+                  </div>
+                  
+                  <div class="answer">
+                    <input type="radio" name="correct_answer" value="False" id="answer_false" {% if question.correct_answer == False %}checked{% endif %}>
+                      <div class="input-container">
+                          <label for="answer_false">False</label>
+                      </div>
+                  </div>
+                  </div>
+      
+                  <div class="confirm-btns">
+                      <div class="button-section">
+                          <button type="submit" class="save-btn">Save</button>
+                      </div>
+                  </div>
+              </div>
+          </form>
+      </div>
+      </div>      
+
+    <!-- <script src="Script.js"></script> -->
+    <script>
+      document.getElementById('set-time-btn').addEventListener('click', function() {
+  // الحصول على الوقت المتوقع من data-attribute
+  var expectedTime = this.getAttribute('data-expected-time');
+  
+  // تعيين الوقت المتوقع في حقل الإدخال
+  document.getElementById('times').value = expectedTime;
+});
+
+    </script>
+  </body>
+</html>

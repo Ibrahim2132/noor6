@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Administrators</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .c{
+        padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    background-color: #21797d;
+      }
+      .media-container {
+        gap: 10px;             
+      } 
+      .hidden-file-input {
+  display: none; /* يخفي عنصر الإدخال الافتراضي */
+}
+.media-item img,
+.media-item audio {
+  max-width: 100%;         /* لتأكد من عدم تجاوز العناصر الحدود المحددة */
+  max-height: 100px;       /* تحديد أقصى ارتفاع للمحتويات */
+}
+.answer-container {
+  margin-bottom: 20px; /* زيادة المسافة بين الإجابات */
+}
+label[class="file_upload_image"], label[class="file_upload_audio"] {
+  color: #21797d; /* اللون الأخضر */
+}
+label[class="file_upload_image"], label[class="file_upload_audio"] {
+  color: #21797d; /* اللون الأخضر */
+}
+/* تخصيص الأيقونة */
+.input-container {
+  position: relative;
+}
+
+#set-time-btn {
+  position: absolute;
+  right: 0px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: #21797d; 
+  font-size: 20px; 
+  cursor: pointer; 
+}
+
+input[type="number"] {
+  padding-left: 30px; 
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > mcq multiple answer</span>
+        </div>
+
+        <div class="question-container">
+          <form method="POST"enctype="multipart/form-data">
+              <div class="question-div">
+                  <div class="textarea-div">
+                      <textarea name="question_text" placeholder="Type your question here...">{{ question.question_name }}</textarea>
+                  </div>
+                  <div class="btns-div">
+                    <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                    <input type="file" id="file_upload_image"  class="upload-btn" name="photo" accept="image/*" onchange="displayImage(event)">
+                    <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                    <input type="file" id="file_upload_audio"  class="upload-btn" name="audio" accept="audio/*" onchange="displayAudio(event)">
+                </div>
+                
+                <div class="media-preview">
+                  <div class="media-preview">
+                    {% if question.photo_path %}
+                      <div id="imagePreview" class="media-item">
+                        <img id="previewImage" src="{{ url_for('static', filename='uploads/' + question.photo_path) }}" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                      </div>
+                    {% endif %}
+                  
+                    {% if question.audio_path %}
+                      <div class="media-item">
+                        <audio id="previewAudio" controls>
+                          <source src="{{ url_for('static', filename='uploads/' + question.audio_path) }}" type="audio/mpeg">
+                          Your browser does not support the audio element.
+                        </audio>
+                      </div>
+                    {% endif %}
+                  </div>
+
+                </div>
+                <div class="dropdown-div">
+                  <div class="dropdown">
+                      <label for="">Difficulty</label>
+                      <select name="difficulty">
+                          <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                          <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                          <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                          <option value="Very Hard" {% if question.difficulty == 'Very Hard' %}selected{% endif %}>Very Hard</option>
+                      </select>
+                  </div>
+  
+                  <div class="dropdown">
+                      <label for="">Importance</label>
+                      <select name="importance">
+                          <option value="Necessary" {% if question.importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+                          <option value="Optional" {% if question.importance == 'Optional' %}selected{% endif %}>Optional</option>
+                          <option value="Important" {% if question.importance == 'Important' %}selected{% endif %}>Important</option>
+                      </select>
+                  </div>
+  
+                  <div class="dropdown">
+                      <label >Bloom's Taxonomy</label>
+                      <select name="bloom_taxonomy">
+                        <option value="General" {% if question.bloom_taxonomy == 'General' %}selected{% endif %}>General</option>
+                        <option value="Remember" {% if question.bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+                        <option value="Understand" {% if question.bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+                        <option value="Apply" {% if question.bloom_taxonomy == 'Apply' %}selected{% endif %}>Apply</option>
+                        <option value="Analyze" {% if question.bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+                        <option value="Evaluate" {% if question.bloom_taxonomy == 'Evaluate' %}selected{% endif %}>Evaluate</option>
+                        <option value="Create" {% if question.bloom_taxonomy == 'Create' %}selected{% endif %}>Create</option>
+                      </select>
+                  </div>
+  
+                  <div class="dropdown">
+                    <label for="grade">Grade</label>
+                    <div class="input-container">
+                      
+                      <input type="number" name="grade" id="grade" value="{{ question.grade }}" min="1" step="1" />
+                  </div>
+                  </div>
+                  <div class="dropdown">
+                  <label for="times">Time (S)</label>
+                  <div class="input-container">
+                    <i id="set-time-btn" data-expected-time="{{ expected_time }}" class="fas fa-robot"></i>
+                    <input type="number" name="times" id="times" value="{{ question.times }}" min="1" step="1" />
+                </div>
+                  </div>
+              </div>
+        
+           
+              <div id="answers-container">
+                {% for answer in answers %}
+                  <div class="answer-container" {% if loop.index > 3 and not answer.answer_text and not answer.photo_path and not answer.audio_path %}style="display: none;"{% endif %}>
+                    <div class="answer">
+                      <input type="checkbox" name="correct_{{ loop.index0 }}" {% if answer.is_correct %}checked{% endif %} id="correct_{{ loop.index0 }}">
+                      <div class="input-container">
+                        <input type="text" name="answer_text_{{ loop.index0 }}" value="{{ answer.answer_text or '' }}" placeholder="Enter answer text" class="answer-input">
+                      </div>
+                    </div>
+                    <div class="btns-div">
+                      <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                      <input type="file" class="upload-btn" name="photo_{{ loop.index0 }}" accept="image/*" id="photo_{{ loop.index0 }}" class="file-input">
+                      <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                      <input type="file" class="upload-btn" name="audio_{{ loop.index0 }}" accept="audio/*" id="audio_{{ loop.index0 }}" class="file-input">
+                    </div>
+                  </div>
+              
+                  {% if answer.photo_path or answer.audio_path %}
+                  <div class="media-container">
+                    {% if answer.photo_path %}
+                      <div class="media-item">
+                        <img src="{{ url_for('static', filename='uploads/' + answer.photo_path) }}" width="100">
+                      </div>
+                    {% endif %}
+                
+                    {% if answer.audio_path %}
+                      <div class="media-item">
+                        <audio controls>
+                          <source src="{{ url_for('static', filename='uploads/' + answer.audio_path) }}" type="audio/mpeg">
+                        </audio>
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              
+                {% endfor %}
+              </div>
+              
+              <!-- زر لإظهار الإجابات -->
+              <div class="show-more-btn">
+                <button type="button" class="c" id="show-more-answers">Show More Answers</button>
+              </div>
+              
+              
+                  
+                  </div>
+      
+                  <div class="confirm-btns">
+                      <div class="button-section">
+                          <button type="submit" class="save-btn">Save</button>
+                      </div>
+                  </div>
+              </div>
+          </form>
+      </div>
+      </div>      
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          const answers = document.querySelectorAll(".answer-container");
+          const showMoreBtn = document.getElementById("show-more-answers");
+      
+          // عند الضغط على الزر
+          showMoreBtn.addEventListener("click", function () {
+            const hiddenAnswers = Array.from(answers).filter(answer => answer.style.display === "none");
+            if (hiddenAnswers.length > 0) {
+              hiddenAnswers[0].style.display = "block";
+            }
+      
+            if (hiddenAnswers.length <= 1) {
+              showMoreBtn.style.display = "none";
+            }
+          });
+      
+          // عرض العناصر إذا تم إدخال بيانات أو رفع ملف
+          answers.forEach(answer => {
+            const inputField = answer.querySelector(".answer-input");
+            const fileInputs = answer.querySelectorAll(".file-input");
+      
+            // وظيفة لفحص القيم
+            const checkInputs = () => {
+              const hasText = inputField.value.trim() !== "";
+              const hasFile = Array.from(fileInputs).some(input => input.files.length > 0);
+      
+              if (hasText || hasFile) {
+                answer.style.display = "block";
+              }
+            };
+      
+            // أحداث التحقق عند الكتابة أو رفع الملفات
+            inputField.addEventListener("input", checkInputs);
+            fileInputs.forEach(fileInput => fileInput.addEventListener("change", checkInputs));
+          });
+        });
+        document.getElementById('set-time-btn').addEventListener('click', function() {
+  // الحصول على الوقت المتوقع من data-attribute
+  var expectedTime = this.getAttribute('data-expected-time');
+  
+  // تعيين الوقت المتوقع في حقل الإدخال
+  document.getElementById('times').value = expectedTime;
+});
+      </script>
+      
+      
+  </body>
+</html>
+

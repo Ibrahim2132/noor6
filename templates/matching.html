@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sequence</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      label[class="file_upload_image"], label[class="file_upload_audio"] {
+        color: #21797d; 
+      }
+      #set-time-btn {
+  position: absolute;
+  right: 0px; 
+  top: 50%;
+  transform: translateY(-50%);
+  color: #21797d; 
+  font-size: 20px; 
+  cursor: pointer; 
+}
+
+    </style>
+  </head>
+  <body>
+    <div class="main-content">
+      <div id="sidebar" class="sidebar">
+        <div class="logo">
+          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        </div>
+        <ul>
+          <li>
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
+              ><i class="fa-solid fa-house"></i> Dashboard
+              <i class="fas fa-caret-down"></i
+            ></a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="employee_profile"> profile</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="exam_cards" class="active-page"><i class="fas fa-plus"></i> Create New Exam</a>
+          </li>
+          <li>
+            <a href="gift"><i class="fa-solid fa-trophy"></i> Add Gift</a>
+          </li>
+          <li>
+            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+          </li>
+          <li>
+            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+       
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <i class="fas fa-home"></i>
+          <span>Home > Dashboard > Questions > Sequence </span>
+        </div>
+
+        <div class="question-container">
+          <form method="POST" enctype="multipart/form-data">
+              <div class="question-div">
+                <div class="dropdown-div">
+                  <div class="dropdown">
+                      <label for="">Difficulty</label>
+                      <select name="difficulty">
+                          <option value="Easy" {% if question.difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                          <option value="Medium" {% if question.difficulty == 'Medium' %}selected{% endif %}>Medium</option>
+                          <option value="Hard" {% if question.difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                          <option value="Very Hard" {% if question.difficulty == 'Very Hard' %}selected{% endif %}>Very Hard</option>
+                      </select>
+                  </div>
+          
+                  <div class="dropdown">
+                      <label for="">Importance</label>
+                      <select name="importance">
+                          <option value="Necessary" {% if question.importance == 'Necessary' %}selected{% endif %}>Necessary</option>
+                          <option value="Optional" {% if question.importance == 'Optional' %}selected{% endif %}>Optional</option>
+                          <option value="Important" {% if question.importance == 'Important' %}selected{% endif %}>Important</option>
+                      </select>
+                  </div>
+          
+                  <div class="dropdown">
+                      <label >Bloom's Taxonomy</label>
+                      <select name="bloom_taxonomy">
+                        <option value="General" {% if question.bloom_taxonomy == 'General' %}selected{% endif %}>General</option>
+                        <option value="Remember" {% if question.bloom_taxonomy == 'Remember' %}selected{% endif %}>Remember</option>
+                        <option value="Understand" {% if question.bloom_taxonomy == 'Understand' %}selected{% endif %}>Understand</option>
+                        <option value="Apply" {% if question.bloom_taxonomy == 'Apply' %}selected{% endif %}>Apply</option>
+                        <option value="Analyze" {% if question.bloom_taxonomy == 'Analyze' %}selected{% endif %}>Analyze</option>
+                        <option value="Evaluate" {% if question.bloom_taxonomy == 'Evaluate' %}selected{% endif %}>Evaluate</option>
+                        <option value="Create" {% if question.bloom_taxonomy == 'Create' %}selected{% endif %}>Create</option>
+                      </select>
+                  </div>
+          
+                  <div class="dropdown">
+                    <label for="grade">Grade</label>
+                    <div class="input-container">
+                      
+                      <input type="number" name="grade" id="grade" value="{{ question.grade }}" min="1" step="1" />
+                  </div>
+                  </div>
+                  <div class="dropdown">
+                  <label for="times">Time (S)</label>
+                  <div class="input-container">
+                    <i id="set-time-btn" data-expected-time="{{ expected_time }}" class="fas fa-robot"></i>
+                    <input type="number" name="times" id="times" value="{{ question.times }}" min="1" step="1" />
+                </div>
+                  </div>
+              </div>
+                  <div class="textarea-div">
+                      <textarea name="question_text" placeholder="Type your question here...">{{ question.question_text }}</textarea>
+                  </div>
+      
+                  <div class="btns-div">
+                      <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                      <input type="file" id="file_upload_image" class="upload-btn" name="photo" accept="image/*"
+                             onchange="displayImage(event)">
+                      <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                      <input type="file" id="file_upload_audio" class="upload-btn" name="audio" accept="audio/*"
+                             onchange="displayAudio(event)">
+                  </div>
+      
+                  <div class="media-preview">
+                      <div class="media-preview">
+                          {% if question.photo_path %}
+                              <div id="imagePreview" class="media-item">
+                                  <img id="previewImage"
+                                       src="{{ url_for('static', filename='uploads/' + question.photo_path) }}"
+                                       alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                              </div>
+                          {% endif %}
+      
+                          {% if question.audio_path %}
+                              <div class="media-item">
+                                  <audio id="previewAudio" controls>
+                                      <source src="{{ url_for('static', filename='uploads/' + question.audio_path) }}"
+                                              type="audio/mpeg">
+                                      Your browser does not support the audio element.
+                                  </audio>
+                              </div>
+                          {% endif %}
+                      </div>
+                      <div class="answer">
+                          <div class="input-container">
+                              <input type="text" name="answer_text" value="{{ question.answer_text}}"
+                                     placeholder="Type your answer here..."/>
+                          </div>
+      
+                      </div>
+      
+                      <div class="btns-div">
+                          <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                          <input type="file" id="file_upload_image" class="upload-btn" name="answer_photo" accept="image/*"
+                                 onchange="displayImage(event)">
+                          <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                          <input type="file" id="file_upload_audio" class="upload-btn" name="answer_audio" accept="audio/*"
+                                 onchange="displayAudio(event)">
+                      </div>
+                      <div class="media-preview">
+                          {% if question.answer_photo_path %}
+                              <div id="imagePreview" class="media-item">
+                                  <img id="previewImage"
+                                       src="{{ url_for('static', filename='uploads/' + question.answer_photo_path) }}"
+                                       alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                              </div>
+                          {% endif %}
+      
+                          {% if question.answer_audio_path %}
+                              <div class="media-item">
+                                  <audio id="previewAudio" controls>
+                                      <source src="{{ url_for('static', filename='uploads/' + question.answer_audio_path) }}"
+                                              type="audio/mpeg">
+                                      Your browser does not support the audio element.
+                                  </audio>
+                              </div>
+                          {% endif %}
+                      </div>
+                  <br><br>
+      
+                  <div class="textarea-div">
+                          <textarea name="question_text1" placeholder="Type your question here...">{{ question.question_text1 }}</textarea>
+                      </div>
+                      <div class="btns-div">
+                          <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                          <input type="file" id="file_upload_image" class="upload-btn" name="photo1" accept="image/*"
+                                 onchange="displayImage(event)">
+                          <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                          <input type="file" id="file_upload_audio" class="upload-btn" name="audio1" accept="audio/*"
+                                 onchange="displayAudio(event)">
+                      </div>
+      
+                      <div class="media-preview">
+                          <div class="media-preview">
+                              {% if question.photo_path1 %}
+                                  <div id="imagePreview" class="media-item">
+                                      <img id="previewImage"
+                                           src="{{ url_for('static', filename='uploads/' + question.photo_path1) }}"
+                                           alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                                  </div>
+                              {% endif %}
+      
+                              {% if question.audio_path1 %}
+                                  <div class="media-item">
+                                      <audio id="previewAudio" controls>
+                                          <source src="{{ url_for('static', filename='uploads/' + question.audio_path1) }}"
+                                                  type="audio/mpeg">
+                                          Your browser does not support the audio element.
+                                      </audio>
+                                  </div>
+                              {% endif %}
+                          </div>
+                          <br>
+                          <div class="answer">
+                              <div class="input-container">
+                                  <input type="text" name="answer_text1" value="{{ question.answer_text1 }}"
+                                         placeholder="Type your answer here..."/>
+                              </div>
+      
+                          </div>
+                          <div class="btns-div">
+                              <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                              <input type="file" id="file_upload_image" class="upload-btn" name="answer_photo1"
+                                     accept="image/*" onchange="displayImage(event)">
+                              <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                              <input type="file" id="file_upload_audio" class="upload-btn" name="answer_audio1"
+                                     accept="audio/*" onchange="displayAudio(event)">
+                          </div>
+                          <div class="media-preview">
+                              {% if question.answer_photo_path1 %}
+                                  <div id="imagePreview" class="media-item">
+                                      <img id="previewImage"
+                                           src="{{ url_for('static', filename='uploads/' + question.answer_photo_path1) }}"
+                                           alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                                  </div>
+                              {% endif %}
+      
+                              {% if question.answer_audio_path1 %}
+                                  <div class="media-item">
+                                      <audio id="previewAudio" controls>
+                                          <source
+                                              src="{{ url_for('static', filename='uploads/' + question.answer_audio_path1) }}"
+                                              type="audio/mpeg">
+                                          Your browser does not support the audio element.
+                                      </audio>
+                                  </div>
+                              {% endif %}
+                          </div>
+      
+              <div class="hidden-question" id="question2" {% if question.question_text2 or question.photo_path2 or question.audio_path2 or question.answer_text2 or question.answer_photo_path2 or question.answer_audio_path2 %} style="display: block;" {% endif %}>
+                <br><br>
+                <div class="textarea-div">
+                  <textarea name="question_text2" placeholder="Type your question here...">{{ question.question_text2 }}</textarea>
+                </div>
+                <div class="btns-div">
+                  <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                  <input type="file" id="file_upload_image"  class="upload-btn" name="photo2" accept="image/*" onchange="displayImage(event)">
+                  <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                  <input type="file" id="file_upload_audio"  class="upload-btn" name="audio2" accept="audio/*" onchange="displayAudio(event)">
+                </div>
+              
+              <div class="media-preview">
+                <div class="media-preview">
+                  {% if question.photo_path2 %}
+                    <div id="imagePreview" class="media-item">
+                      <img id="previewImage" src="{{ url_for('static', filename='uploads/' + question.photo_path2) }}" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                    </div>
+                  {% endif %}
+                
+                  {% if question.audio_path2 %}
+                    <div class="media-item">
+                      <audio id="previewAudio" controls>
+                        <source src="{{ url_for('static', filename='uploads/' + question.audio_path2) }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  {% endif %}
+                </div>
+                <br>
+                <div class="answer">
+                    <div class="input-container">
+                      <input type="text" name="answer_text2" value="{{ question.answer_text2 }}" placeholder="Type your answer here..." />
+                    </div>
+                   
+                  </div>
+                  <div class="btns-div">
+                      <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                      <input type="file" id="file_upload_image" class="upload-btn" name="answer_photo2" accept="image/*" onchange="displayImage(event)">
+                      <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                      <input type="file" id="file_upload_audio" class="upload-btn" name="answer_audio2" accept="audio/*" onchange="displayAudio(event)">
+                  </div>
+                  <div class="media-preview">
+                      {% if question.answer_photo_path2 %}
+                          <div id="imagePreview" class="media-item">
+                              <img id="previewImage" src="{{ url_for('static', filename='uploads/' + question.answer_photo_path2) }}" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                          </div>
+                      {% endif %}
+                  
+                      {% if question.answer_audio_path2 %}
+                          <div class="media-item">
+                              <audio id="previewAudio" controls>
+                              <source src="{{ url_for('static', filename='uploads/' + question.answer_audio_path2) }}" type="audio/mpeg">
+                                  Your browser does not support the audio element.
+                              </audio>
+                          </div>
+                      {% endif %}
+                  </div>
+              </div>
+              <div class="hidden-question" id="question3" {% if question.question_text3 or question.photo_path3 or question.audio_path3 or question.answer_text3 or question.answer_photo_path3 or question.answer_audio_path3 %} style="display: block;" {% endif %}>
+                <br><br>
+                  <div class="textarea-div">
+                    <textarea name="question_text3" placeholder="Type your question here...">{{ question.question_text3 or '' }}</textarea>
+                  </div>
+                  <div class="btns-div">
+                    <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                    <input type="file" id="file_upload_image"  class="upload-btn" name="photo3" accept="image/*" onchange="displayImage(event)">
+                    <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                    <input type="file" id="file_upload_audio"  class="upload-btn" name="audio3" accept="audio/*" onchange="displayAudio(event)">
+                  </div>
+                  
+                  <div class="media-preview">
+                    <div class="media-preview">
+                      {% if question.photo_path3 %}
+                        <div id="imagePreview" class="media-item">
+                          <img id="previewImage" src="{{ url_for('static', filename='uploads/' + question.photo_path3) }}" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                        </div>
+                      {% endif %}
+                    
+                      {% if question.audio_path3 %}
+                        <div class="media-item">
+                          <audio id="previewAudio" controls>
+                            <source src="{{ url_for('static', filename='uploads/' + question.audio_path3) }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                          </audio>
+                        </div>
+                      {% endif %}
+                    </div>
+                      <br>
+                      <div class="answer">
+                      <div class="input-container">
+                          <input type="text" name="answer_text3" value="{{ question.answer_text3 or '' }}" placeholder="Type your answer here..." />
+                      </div>
+                  
+                      </div>
+                      <div class="btns-div">
+                          <label class="file_upload_image"><i class="fas fa-image"></i> Upload Image</label>
+                          <input type="file" id="file_upload_image" class="upload-btn" name="answer_photo3" accept="image/*" onchange="displayImage(event)">
+                          <label class="file_upload_audio"><i class="fas fa-volume-up"></i> Upload Audio</label>
+                          <input type="file" id="file_upload_audio" class="upload-btn" name="answer_audio3" accept="audio/*" onchange="displayAudio(event)">
+                      </div>
+                      <div class="media-preview">
+                          {% if question.answer_photo_path3 %}
+                              <div id="imagePreview" class="media-item">
+                                  <img id="previewImage" src="{{ url_for('static', filename='uploads/' + question.answer_photo_path3 ) }}" alt="Image Preview" style="max-width: 100px; max-height: 100px;">
+                               </div>
+                          {% endif %}
+                      
+                          {% if question.answer_audio_path3 %}
+                               <div class="media-item">
+                                  <audio id="previewAudio" controls>
+                                   <source src="{{ url_for('static', filename='uploads/' + question.answer_audio_path3) }}" type="audio/mpeg">
+                                     Your browser does not support the audio element.
+                                  </audio>
+                              </div>
+                          {% endif %}
+                      </div>
+    <br> 
+  <br> 
+      </div>
+     
+            
+          </div>
+          <div class="confirm-btns">
+            <div class="button-section">
+              <button type="button" id="showMoreBtn">Show More</button>
+              <button class="save-btn">Save</button>
+              
+            </div>
+            
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <style>
+      .hidden-question {
+        display: none;
+      }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const showMoreBtn = document.getElementById('showMoreBtn');
+      const question2 = document.getElementById('question2');
+      const question3 = document.getElementById('question3');
+  
+      // دالة لإظهار الأسئلة وإخفاء الزر
+      function showHiddenQuestions() {
+        question2.style.display = 'block';
+        question3.style.display = 'block';
+        showMoreBtn.style.display = 'none';
+      }
+     
+      // إذا كانت الأسئلة مخفية، أضف مستمع للزر لإظهارها. وإلا قم بإخفاء الزر
+      if (question2.style.display === 'none' || question3.style.display === 'none' ){
+          showMoreBtn.addEventListener('click', showHiddenQuestions);
+      } else {
+          showMoreBtn.style.display = "none"
+      }
+    });
+    document.getElementById('set-time-btn').addEventListener('click', function() {
+  // الحصول على الوقت المتوقع من data-attribute
+  var expectedTime = this.getAttribute('data-expected-time');
+  
+  // تعيين الوقت المتوقع في حقل الإدخال
+  document.getElementById('times').value = expectedTime;
+});
+
+  </script>
+  </body>
+</html>

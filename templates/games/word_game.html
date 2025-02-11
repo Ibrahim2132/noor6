@@ -1,0 +1,397 @@
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Puzzle Game</title>
+    <style>
+   body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;  
+    justify-content: center;  
+    justify-content: flex-start; 
+    height: 100vh;
+    margin: 0;
+    background: linear-gradient(135deg, #54a158, #0d7c66cc); 
+    color: #2e7d32; 
+    text-align: center;
+    overflow-y: auto;
+}
+
+h1 {
+    font-size: 2.5rem;  
+    margin-bottom: 10px; 
+    color: #2e7d32;  
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.3);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+    border: 3px solid #2e7d32; 
+    width: 80%;
+    max-width: 600px;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+button {
+    background: #388e3c;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    width: 170px;
+    height: 55px;
+    text-align: center;
+}
+
+button:hover {
+    background: #2e7d32;
+}
+
+.letters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px auto;
+    max-width: 400px;
+}
+
+.letter {
+    background: #43a047; 
+    color: white;
+    font-size: 1.5rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, background 0.3s;
+    cursor: pointer;
+}
+
+.letter:hover {
+    transform: scale(1.2);
+    background: #388e3c; 
+}
+
+input {
+    padding: 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1.2rem;
+    margin: 15px 0;
+    width: 75%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #f1f8f4;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: #2e7d32;
+}
+
+#message {
+    font-weight: bold;
+    margin-top: 10px;
+    color: #d32f2f;
+}
+
+#timer {
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #388e3c;
+}
+
+.word-container {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: #2e7d32;
+}
+.info-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    padding: 0 10px;
+    text-align: center;
+}
+
+.info-item {
+    color: #388e3c;
+    font-size: 1.2rem;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+
+
+#score {
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #388e3c;
+    margin-top: 20px;
+}
+ 
+    @media screen and (max-width: 480px) {
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .container {
+            padding: 15px;
+            width: 80%;
+        }
+        .info-item {
+            font-size: 0.7rem; 
+            padding: 8px 12px;
+        }
+
+      
+        button {
+            width: 120px;
+            height: 40px;
+            font-size: 1rem;
+            padding: 8px 15px;
+        }
+
+        .letter {
+            width: 40px;
+            height: 40px;
+            font-size: 1.1rem;
+        }
+
+        input {
+            font-size: 1rem;
+            padding: 10px;
+        }
+
+        #timer, #score {
+            font-size: 1.2rem;
+        }
+
+        .word-container {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media screen and (max-width: 360px) {
+        .buttons-container {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        button {
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .info-container {
+            gap: 5px;
+        }
+
+        .info-item {
+            font-size: 0.9rem;
+            padding: 5px 10px;
+        }
+    }
+    </style>
+</head>
+<body>
+    <h1>Word Puzzle Game</h1>
+    
+    <div class="container">
+        <div class="info-container">
+            <div class="info-item">{{current_difficulty}}</div>
+            <div class="info-item">{{current_importance}}</div>
+            <div class="info-item">{{current_bloom_taxonomy}}</div>
+            <div class="info-item">Grade: {{current_grade}}</div>
+        </div>
+
+        <p id="score">Score: 0</p>
+        <p id="timer">Time: {{current_times}}</p>
+        <div class="word-container" id="wordContainer"></div>
+        <div class="letters" id="lettersContainer"></div>
+        <input type="text" id="wordInput" placeholder="Type the word" />
+        <div class="buttons-container">
+            <button id="voiceButton">🎙️Voice</button>
+            <button id="submitButton">Submit</button>
+        </div>
+      
+        <h3>Correct Words:</h3>
+        <ul id="wordList"></ul>
+        <p id="message"></p>
+    </div>
+    <ul id="wordListOriginal" style="display: none;">
+        {% for word in word_list %}
+            <li class="word-item">{{ word }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+const dictionary = Array.from(document.querySelectorAll('.word-item')).map(item => item.textContent);
+
+        let currentWord = "";
+        let score = 0;
+        let timer = "{{ current_times }}";
+        let currentIndex = 0; 
+        const correctWords = new Set();
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function generateLetters(word) {
+            const alphabet = "abcdefghijklmnopqrstuvwxyz";
+            const randomLetters = Array.from({ length: 8 }, () => alphabet[Math.floor(Math.random() * 26)]);
+            const wordLetters = Array.from(new Set(word.split('')));
+            const combinedLetters = [...new Set([...randomLetters, ...wordLetters])];
+            return shuffleArray(combinedLetters);
+        }
+
+        function createWordWithMissingLetters() {
+            currentWord = dictionary[currentIndex];
+            const missingIndices = [];
+            while (missingIndices.length < 2) {
+                const randIndex = Math.floor(Math.random() * currentWord.length);
+                if (!missingIndices.includes(randIndex)) {
+                    missingIndices.push(randIndex);
+                }
+            }
+            let wordWithMissing = currentWord.split('');
+            missingIndices.forEach(index => wordWithMissing[index] = '_');
+            return wordWithMissing.join('');
+        }
+
+        function updateGameBoard() {
+            const wordContainer = document.getElementById("wordContainer");
+            const lettersContainer = document.getElementById("lettersContainer");
+
+            
+            if (timer === 0) {
+                currentIndex = (currentIndex + 1) % dictionary.length;
+                currentWord = dictionary[currentIndex];
+                timer = 5; 
+                document.getElementById("timer").textContent = `Time: ${timer}`;
+            }
+
+            wordContainer.textContent = createWordWithMissingLetters();
+            lettersContainer.innerHTML = "";
+            generateLetters(currentWord).forEach(letter => {
+                const letterDiv = document.createElement("div");
+                letterDiv.className = "letter";
+                letterDiv.textContent = letter.toUpperCase();
+                letterDiv.onclick = () => addLetterToWord(letter);
+                lettersContainer.appendChild(letterDiv);
+            });
+        }
+
+        function addLetterToWord(letter) {
+            const wordContainer = document.getElementById("wordContainer");
+            let wordText = wordContainer.textContent;
+            const missingIndex = wordText.indexOf('_');
+            if (missingIndex !== -1) {
+                wordText = wordText.substring(0, missingIndex) + letter + wordText.substring(missingIndex + 1);
+                wordContainer.textContent = wordText;
+                if (!wordText.includes('_')) checkWord(wordText);
+            }
+        }
+
+        function checkWord(word) {
+            const message = document.getElementById("message");
+            if (word === currentWord) {
+                correctWords.add(word);
+                score += word.length;
+                const li = document.createElement("li");
+                li.textContent = word;
+                document.getElementById("wordList").appendChild(li);
+                message.textContent = "Correct word!";
+                message.style.color = "lightgreen";
+                document.getElementById("score").textContent = `Score: ${score}`;
+            } else {
+                message.textContent = "Incorrect word. Try again!";
+                message.style.color = "red";
+            }
+            updateGameBoard();
+        }
+
+        document.getElementById("submitButton").onclick = () => {
+            const wordInput = document.getElementById("wordInput").value.toLowerCase();
+            if (wordInput) checkWord(wordInput);
+            document.getElementById("wordInput").value = "";
+        };
+
+        document.getElementById("voiceButton").onclick = () => {
+            if (!("webkitSpeechRecognition" in window)) {
+                alert("Speech recognition not supported in this browser.");
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = "en-US";
+            recognition.onresult = event => {
+                document.getElementById("wordInput").value = event.results[0][0].transcript;
+            };
+            recognition.start();
+        };
+
+        function countdown() {
+            if (timer > 0) {
+                timer--;
+                document.getElementById("timer").textContent = `Time: ${timer}`;
+            } else {
+                
+              
+            }
+        }
+
+        setInterval(countdown, 1000); 
+
+        updateGameBoard();
+    </script>
+
+</body>
+</html>
