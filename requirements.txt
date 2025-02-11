@@ -30,5 +30,5 @@ flask_cors
 google
 google.generativeai
 python-dotenv
-pywin32
+pypiwin32
 werkzeug
