@@ -30,3 +30,5 @@ flask_cors
 google
 google.generativeai
 python-dotenv
+pythoncom
+werkzeug
