@@ -4,107 +4,107 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Classifier</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
     <style>
         /* General styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #e3f2fd; /* Light blue background */
-            color: #333;
+        body{
+        background-image: url('static/assets/assets/back.jpg');
+        background-size: cover;
+         /* background: rgb(255 255 255 / 91%);  */
+         background-blend-mode: overlay;  
+       } 
+       input[type="file"] {
+            display: none;
         }
 
         /* Centered container */
-        .container {
-            width: 90%;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 30px;
+         .container {
+            width: 100%;
+            
+            margin: 10px 10px;
+            padding: 20px;
             background-color: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             text-align: center;
-        }
+           
+        } 
 
         /* Title styling */
         h1 {
             font-size: 28px;
-            color: #0d47a1; /* Dark blue */
+            color: #0D7C66; /* Dark blue */
             margin-bottom: 20px;
         }
 
         /* Dropdown and input styling */
         .input-group {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-         .input-group > * {
-           flex: 0 0 auto;
-         }
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-bottom: 15px;
+}
 
-         .input-group select,
-        .input-group input[type="number"] {
-            padding: 10px;
-            border: 1px solid #90caf9;
-            border-radius: 6px;
-            font-size: 14px;
-            background-color: #f4f9ff;
-            color: #333;
-            /* Add this to prevent the dropdown arrow from being cropped */
-            appearance: none; /* Remove default browser style */
-           -webkit-appearance: none; /* Remove for chrome and safari */
-           -moz-appearance: none; /* Remove for firefox */
-            padding-right: 2.5em; /* Make space for the arrow */
-           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23757575'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E"); /* Add arrow icon */
-            background-repeat: no-repeat;
-            background-position: right 0.8em top 50%;
+.input-group select, .input-group input {
+    flex: 1;
+}
 
-        }
+ textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    transition: 0.3s;
+    font-size: 16px;
+    height: 100px;
+    resize: none;
+} 
+#textInput::placeholder {
+   color: rgba(0, 0, 0, 0.4);
+}
 
-         .input-group select:focus,
-         .input-group input[type="number"]:focus{
-                border-color: #0d47a1;
-                outline: none;
-        }
 
-        /* Textarea styling */
-        textarea {
-            padding: 12px;
-            margin: 20px 0;
-            width: 100%;
-            background-color: #f4f9ff; /* Subtle blue */
-            border: 1px solid #90caf9; /* Light blue border */
-            border-radius: 6px;
-            resize: vertical;
-            min-height: 120px;
-            font-size: 14px;
-        }
+select:focus, input:focus, textarea:focus {
+    border-color: #0D7C66;
+    box-shadow: 0 0 5px rgba(13, 124, 102, 0.5);
+    outline: none;
+}
 
-        textarea:focus {
-            border-color: #0d47a1;
-            outline: none;
-        }
 
         /* Button styling */
         #classifyButton {
-            padding: 12px 25px;
-            background-color: #1976d2; /* Medium blue */
-            color: #ffffff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+          background: #0D7C66;
+    color: white;
+    padding: 12px;
+    border: none;
+    width: 15%;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
         }
 
         #classifyButton:hover {
-            background-color: #0d47a1; /* Darker blue */
+          background: #095b4b; /* Darker blue */
             transform: scale(1.05);
         }
+        .btns {
+           width: 100%;
+           display: flex;
+           justify-content: space-between; 
+           padding: 10px; 
+        }
+
+        
 
         /* Results styling */
         #result {
@@ -128,11 +128,53 @@
         #result ul ul {
             padding-left: 20px;
         }
+        .dropdown-div {
+          display: flex;
+           gap: 10px;
+          flex-direction: row;
+        }
+        .dropdown-div .dropdowns {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .dropdown-div .dropdowns label {
+           font-weight: 500;
+           font-size: 12px;
+           margin-bottom: 5px;
+           text-align: left;
+        }
+        .dropdown-div .dropdowns select , .dropdown-div .dropdowns input {
+            padding: 8px;
+            border: 1px solid #0d9278;
+            border-radius: 5px;
+             width: 160px;
+             height: 35px;
+        }
+        .text-area {
+             width: 100%;
+             display: flex;
+             flex-direction: column; 
+             align-items: flex-start;
+             gap: 10px; 
+             margin-bottom: 60px;
+}
+.add-btn {
+width: auto;
+margin-top: 10px;
+}
+
+
+
+            
+
+
 
         /* Responsive design */
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
+                margin-top: 80px;
             }
 
             h1 {
@@ -142,21 +184,26 @@
             #classifyButton {
                 font-size: 14px;
             }
+            .dropdown-div {
+       
+         
+          flex-direction: column;
+        }
         }
     </style>
 </head>
 <body>
     <div class="main-content">
-    <div id="sidebar" class="sidebar">
-        <div class="logo">
-          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+      <div id="sidebar" class="sidebar">
+        <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+          <img class="navbar-img" src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" style=" height: auto;">
         </div>
         <ul>
-          <li>
-            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
-              ><i class="fa-solid fa-house"></i> Dashboard
-              <i class="fas fa-caret-down"></i
-            ></a>
+          <li data-target="dropdown-1" style="margin-top: 20px;">
+            <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+              <i class="fa-solid fa-house"></i> Dashboard
+              <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+            </a>
             <ul id="dropdown-1" class="dropdown">
               <li><a href="employee_profile"> profile</a></li>
             </ul>
@@ -176,9 +223,102 @@
         </ul>
        
       </div>
-    <div class="container">
-        <h1>Text Classifier</h1>
-        <div class="input-group">
+      <!-- Burger Menu (Visible on mobile) -->
+    <div class="burger" onclick="toggleSidebar()">
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+      <div class="burger-icon"></div>
+    </div>
+    <div class="main-section">
+       <!-- Navigation Steps -->
+<div class="navigation-steps">
+  <div>
+    <i class="fas fa-home"></i>
+  <span> > Dashboard >Lectures >Lessons >Questions >Generate with ai</span>
+  </div>
+  <div class="notify-bell">
+    <a href="notification" 
+    style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+    onmouseover="this.style.color='#479b8a'" 
+    onmouseout="this.style.color='#0D7C66'">
+   
+   <i class="fa-solid fa-bell"></i>
+ 
+   {% if notification_dot_display %}
+     <span style="
+       position: absolute;
+       top: 0px;
+       right: 0px;
+       width: 10px;
+       height: 10px;
+       background: red;
+       border-radius: 50%;
+       display: inline-block;
+     "></span>
+   {% endif %}
+ </a>
+ 
+    
+  </div><!-- Notification Icon -->
+</div>
+   
+    <div class="first-div">
+       <div class="container">
+         <!-- <h1>Text Classifier</h1> -->
+         <div class="text-area">
+          <textarea id="textInput" placeholder="Copy and paste some text here. Maximum 4000 characters."></textarea>
+        
+         <label for="fileUpload" class="add-btn" style="padding: 10px 15px;">Upload Excel File</label>
+         <input type="file" id="fileUpload"  class="add-btn"  name="excel_file" accept=".xlsx,.xls">
+         </div>
+      
+         <div class="dropdown-div">
+           <div class="dropdowns">
+             <label for="">Difficulty</label>
+             <select name="difficulty">
+                 <option value="Easy" >Easy</option>
+                 <option value="Medium" >Medium</option>
+                 <option value="Hard" >Hard</option>
+                 <option value="Very Hard" >Very Hard</option>
+             </select>
+         </div>
+         <div class="dropdowns">
+           <label for="">Question type</label>
+           <select name="Question-type">
+             <option value="true_false" selected>True/False</option>
+             <option value="mcq">Multiple Choice (Single Correct)</option>
+             <option value="multiple_mcq">Multiple Choice (Multiple Correct)</option>
+             <option value="fill_blank">Fill in the blank</option>
+             <option value="fill_blank_choice">fill_blank_choice</option>
+             <option value="essay">Essay</option>
+              <option value="sequence">Sequence</option>
+             <option value="matching">Matching</option>
+           </select>
+       </div>
+       <div class="dropdowns">
+         <label for="">Numbers of questions</label>
+         <input type="number" id="numberOfQuestionsInput" placeholder="Number of Questions" value="1" min="1">
+     </div>
+     <div class="dropdowns">
+       <label for="">Add timing</label>
+       <select name="Add-timing">
+           <option value="Easy" >yes</option>
+           <option value="Medium" >No</option>
+           
+       </select>
+      </div>
+ 
+         </div>
+       </div>
+        <div class="btns">
+          <button id="classifyButton">Submit</button>
+          <button id="classifyButton">Save</button>
+        </div>
+      
+      </div>
+       
+        
+        <!-- <div class="input-group">
             <select id="questionTypeSelect">
                 <option value="true_false" selected>True/False</option>
                 <option value="mcq">Multiple Choice (Single Correct)</option>
@@ -194,8 +334,9 @@
         <textarea id="textInput" placeholder="Enter text here"></textarea>
         <button id="classifyButton">Classify</button>
         <div id="result"></div>
-    </div>
+    </div> -->
 </div>
+     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const lessonId = urlParams.get('lesson_id');

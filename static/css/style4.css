@@ -11,6 +11,7 @@ body {
   height: 100vh;
   background-color: #f4f4f4;
   overflow-x: hidden;
+  
 }
 
 /* Sidebar Styles */
@@ -115,7 +116,7 @@ body {
 
 .main-section {
   position: relative;
-  background-image: url('assets/img5.png');
+  background-image: url('../static/assets/back.jpg');
   background-size: cover;
   background-attachment: fixed;
   width: 100%;
@@ -220,12 +221,12 @@ body {
   top: 50%;
   left: 12px;
   color: #999;
-  font-size: 12px;
+  font-size: 1em;
   pointer-events: none;
   transform: translateY(-50%);
   transition: all 0.3s ease;
   background: #fff;
-  padding: 0 8px;
+  padding: 0 4px;
 }
 
 .input-container input:focus+label,.input-container input:not(:placeholder-shown) + label,
@@ -234,8 +235,8 @@ body {
 .input-container select:valid+label,
 .input-container textarea:focus + label,
 .input-container textarea:not(:placeholder-shown) + label {
-  top: 1px;
-  font-size: 12px;
+  top: 4px;
+  font-size: 0.75em;
   color: #0D7C66;
 }
 
@@ -593,7 +594,7 @@ table td i {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .card-link {
@@ -608,7 +609,7 @@ table td i {
   width: 100%;
   max-width: 300px;
   margin: 10px;
-  background-color: #e5e5e5;
+  background-color: #efefef;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* transition: transform 0.3s ease; */
@@ -831,7 +832,7 @@ table td i {
 }
 
 .edit {
-  background-color: #21797d;
+  background-color: #0D7C66;
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
 }
 

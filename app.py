@@ -4972,10 +4972,13 @@ def signup_personal():
     return render_template('signup_personal.html')
 
 
-
 @app.route('/', methods=['GET', 'POST'])
+def home():
+    return render_template('index.html') 
+
+@app.route('/register', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')    
+    return render_template('register.html')    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
