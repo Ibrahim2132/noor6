@@ -38,15 +38,15 @@
     <div class="main-content">
       <!-- Sidebar -->
       <div id="sidebar" class="sidebar">
-        <div class="logo">
-          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+          <img class="navbar-img" src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" style=" height: auto;">
         </div>
         <ul>
-          <li>
-            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
-              ><i class="fa-solid fa-house"></i> Dashboard
-              <i class="fas fa-caret-down"></i
-            ></a>
+          <li data-target="dropdown-1" style="margin-top: 20px;">
+            <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+              <i class="fa-solid fa-house"></i> Dashboard
+              <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+            </a>
             <ul id="dropdown-1" class="dropdown">
               {% if sector_id %}
               <li><a href="owner">  profile</a></li>
@@ -56,19 +56,7 @@
               <li><a href="manager">  Managers</a></li>
               <li><a href="managertomanger">  Managers to manager</a></li>
   
-              <li>
-                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Show Data
-                  <i class="fas fa-caret-right"></i>
-                </a>
-                <ul id="nested-dropdown" class="dropdown nested-dropdown">
-                  <li><a href="company_cards">  company cards</a></li>
-                  <li><a href="show_adm">  show administrators</a></li>
-                  <li><a href="show_org">  show organizers</a></li>
-                  <li><a href="show_emp">  show employees</a></li>
-                  <li><a href="show_stu" class="active-page">  show students</a></li>
-  
-                </ul>
-              </li>
+             
               <!--
               <li><a href="organizer">  Organizer</a></li>
               <li><a href="administrator">  Administrators</a></li>
@@ -76,6 +64,20 @@
               <li><a href="managertomanger">  Managers to manager</a></li>-->
              <!-- -->
             
+            </ul>
+          </li>
+          <li style="margin-top: 5px;"data-target="dropdown-1">
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">
+              <i class="bi bi-pie-chart-fill"></i> Show Data
+              <span class="arrow-icon" style="margin-left:15px ;"><i class="fa-solid fa-angle-down"></i></span>
+            </a>
+            <ul id="nested-dropdown" class="dropdown nested-dropdown">
+              <li><a href="company_cards">  company cards</a></li>
+              <li><a href="show_adm">  show administrators</a></li>
+              <li><a href="show_org">  show organizers</a></li>
+              <li><a href="show_emp">  show employees</a></li>
+              <li><a href="show_stu" class="active-page">  show students</a></li>
+
             </ul>
           </li>
           <li>
@@ -88,10 +90,37 @@
        
       </div>
       <div class="main-section">
-        <div class="navigation-steps">
-          <i class="fas fa-home"></i>
-          <span>Home > Dashboard > show students </span>
-        </div>
+        <!-- Navigation Steps -->
+<div class="navigation-steps">
+  <div>
+    <i class="fas fa-home"></i>
+    <span>Home > Dashboard > category </span>
+  </div>
+  <div class="notify-bell">
+    <a href="notification" 
+    style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+    onmouseover="this.style.color='#479b8a'" 
+    onmouseout="this.style.color='#0D7C66'">
+   
+   <i class="fa-solid fa-bell"></i>
+ 
+   {% if notification_dot_display %}
+     <span style="
+       position: absolute;
+       top: 0px;
+       right: 0px;
+       width: 10px;
+       height: 10px;
+       background: red;
+       border-radius: 50%;
+       display: inline-block;
+     "></span>
+   {% endif %}
+ </a>
+ 
+    
+  </div><!-- Notification Icon -->
+</div>
           <div class="second-div">
             <div class="search-filters">
               <div class="input-row">

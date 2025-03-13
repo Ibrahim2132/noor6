@@ -1,0 +1,31 @@
+<div class="cards-container" id="cards-container">
+    {% for lesson in lessons %}
+    <a href="{{ url_for('view_lesson', lesson_id=lesson.id) }}" class="card-link">
+      <div class="card" data-title="{{ lesson.title }}">
+        <div class="card-image">
+          {% if lesson.image_path %}
+          <img src="{{ url_for('static', filename=lesson.image_path.split('static/')[1]) }}" alt="Uploaded Image">
+          {% else %}
+          <img src="{{ url_for('static', filename='assets/img1.jpg') }}" alt="Default Image">
+          {% endif %}
+          <h2 class="lesson-address">{{ lesson.title }}</h2>
+        </div>
+
+        <div class="card-icons">
+          <div class="card-details">
+            <div class="detail"><i class="fa-regular fa-clock"></i>
+              <h3>{{ lesson.created_at.strftime('%I:%M %p %d/%m/%Y') }}</h3>
+            </div>
+            <div class="detail"><i class="fa-solid fa-pen"></i>
+              <h3>{{ lesson.updated_at.strftime('%I:%M %p %d/%m/%Y') }}</h3>
+            </div>
+            <div class="detail">
+
+            </div>
+          </div>
+        </div>
+
+    </a>
+  </div>
+  {% endfor %}
+</div>

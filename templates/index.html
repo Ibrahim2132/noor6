@@ -1,136 +1,915 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register As</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />    <!-- Font Awesome -->
 
-    <!--Fonts-->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <!--Icons-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet" />
 
-  </head>
-  <body>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Poppins", serif;
+
+
+        }
+
+        .navbar-img {
+            transform: translateX(10px);
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            animation: navbarSlide 1s ease-in-out;
+            background-color: #0D7C66;
+
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            width: 40px;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style-type: none;
+            align-items: center;
+
+        }
+
+        .nav-links li {
+            margin-left: 20px;
+        }
+
+        .nav-links a,
+        .login-btn {
+            cursor: pointer;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #fff6c9;
+        }
+
+
+        .login-btn {
+            background-color: #fff6c9;
+            border: none;
+            color: #0D7C66;
+            font-size: 15px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 110px;
+            height: 40px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: #fce68a;
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+
+        }
+
+        .login-btn:active {
+            transform: scale(0.95);
+            box-shadow: none;
+        }
+
+        /* Burger Menu for Mobile */
+        .burger-menu {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .burger-menu div {
+            width: 25px;
+            height: 3px;
+            background-color: #fff;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Transform lines to create an 'X' */
+        .burger-menu.open .line1 {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .burger-menu.open .line2 {
+            opacity: 0;
+        }
+
+        .burger-menu.open .line3 {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+
+        .main,
+        .about-us {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            gap: 50px;
+            padding: 50px;
+            padding-top: 0;
+            position: relative;
+            background-color: #0D7C66;
+        }
+
+        .text-content {
+            width: 45%;
+            height: 550px;
+
+        }
+
+        h1 {
+            font-size: 55px;
+            margin-bottom: 8px;
+            color: white;
+        }
+
+        span {
+            color: #fff6c9;
+
+        }
+
+        p {
+            width: 550px;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .buttons {
+            margin-top: 18px;
+            display: flex;
+        }
+
+        .btn-primary {
+            background: #fff6c9;
+            color: #0D7C66;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 15px 20px;
+            width: 177px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background: #fce68a;
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #0D7C66;
+            border: 1px solid #0D7C66;
+            border-radius: 5px;
+            font-size: 15px;
+            padding: 10px 20px;
+            width: 145px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: #0D7C66;
+            color: white;
+            border-color: #0D7C66;
+            transform: scale(1.05);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.95);
+        }
+
+        .image-content {
+
+            width: 50%;
+            height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+
+        }
+
+        img {
+            width: 80%;
+
+
+        }
+
+        .scroll-container {
+            width: 80%;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-content {
+            display: flex;
+            gap: 80px;
+            white-space: nowrap;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            animation: scrollText 13s linear infinite;
+        }
+
+        .scroll-content h1 {
+            font-size: 20px;
+            font-weight: 500;
+            color: white;
+        }
+
+        @keyframes scrollText {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        .scroll-container {
+            mask-image: linear-gradient(to right, rgba(10, 15, 30, 0), white 40%, white 60%, rgba(10, 15, 30, 0));
+            -webkit-mask-image: linear-gradient(to right, rgba(10, 15, 30, 0), white 40%, white 60%, rgba(10, 15, 30, 0));
+        }
+
+        .about-us {
+            padding-top: 50px;
+            gap: 50px;
+            background-color: #fffdf2;
+        }
+
+        .about-us .image-content {
+            background-image: url(../static/assets/home-three.svg);
+            background-size: contain;
+            width: 40%;
+            height: 550px;
+            background-repeat: no-repeat;
+        }
+
+        .about-us::before {
+            content: "";
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 350px;
+            height: 350px;
+            background: rgba(13, 124, 102, 0.2);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .why-choose-us {
+            text-align: center;
+            padding: 50px;
+            background-color: #EAFAEA;
+
+        }
+
+
+        .heading {
+            margin-bottom: 30px;
+        }
+
+        .heading h1 {
+            font-size: 32px;
+            color: #0D7C66;
+            text-transform: uppercase;
+        }
+
+        .cards {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+
+        .card {
+            width: 300px;
+            height: 250px;
+            background: white;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .big-card {
+            width: 300px;
+            height: 280px;
+        }
+
+        .card i {
+            font-size: 40px;
+            color: #BDE8CA;
+            margin-bottom: 10px;
+        }
+
+
+        .card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #0D7C66;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: rgb(54, 54, 54);
+            font-weight: 500;
+            text-align: center;
+            width: auto;
+        }
+
+        .card:hover {
+            transform: scale(1);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .cards:hover .card:not(:hover) {
+            transform: scale(0.9);
+        }
+
+        .contact-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 40px;
+            background: #0D7C66;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-section::before,
+        .contact-section::after {
+            content: "";
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: float 3s infinite alternate ease-in-out;
+        }
+
+        .contact-section::before {
+            top: -50px;
+            left: -50px;
+        }
+
+        .contact-section::after {
+            bottom: -50px;
+            right: 640px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(40px);
+            }
+        }
+
+        .contact-info,
+        .contact-form {
+            flex: 1;
+            min-width: 350px;
+            padding: 20px;
+        }
+
+        .contact-info h1 {
+            font-size: 35px;
+            margin-bottom: 10px;
+            text-transform: capitalize;
+        }
+
+        .contact-info p {
+            font-size: 16px;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+            width: 48%;
+        }
+
+        .icon-container {
+            background: white;
+            padding: 10px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-container i {
+            color: #0D7C66;
+        }
+
+        .info-text h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .info-text h4 {
+            margin: 5px 0 0;
+            font-size: 14px;
+        }
+
+        .info-item i {
+            color: #E4C584;
+            font-size: 22px;
+        }
+
+        .contact-form {
+            text-align: center;
+            border: 2px solid #0D7C66;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: white;
+        }
+
+        .contact-form h2 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+            color: #000000;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #0D7C66;
+        }
+
+        .input-field {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .input-field:focus {
+            transform: scale(1.01);
+            border-color: #0D7C66;
+            outline: none;
+        }
+
+        .send-btn {
+            background: #0D7C66;
+            color: white;
+            border: none;
+            width: 28%;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #095e4c;
+        }
+
+        .footer {
+            background-color: #075F4D;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .footer-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 50px;
+            margin-left: 50px;
+
+        }
+
+        .footer-section {
+            flex: 1;
+            width: auto;
+            margin: 10px;
+            text-align: left;
+        }
+
+        .footer-section h2 {
+            color: #E4C584;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin: 10px 0;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: #fff6c9;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .social-icons a {
+            text-decoration: none;
+        }
+
+        .social-circle {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: #0D7C66;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 18px;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .social-circle:hover {
+            transform: scale(1.1);
+            background: #21b598;
+            color: white;
+        }
+
+        .info-container {
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+
+        }
+
+        .info-item i {
+            font-size: 18px;
+            color: #21b598;
+
+        }
+
+
+        @keyframes scrollLeft {
+            from {
+                transform: translateX(100%);
+            }
+
+            to {
+                transform: translateX(-100%);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main {
+                flex-direction: column;
+
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                background-color: rgba(0, 0, 0, 0.8);
+                position: absolute;
+                top: 70px;
+                right: 0;
+                width: 100%;
+                height: 100vh;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                gap: 20px;
+                animation: slideIn 0.5s forwards;
+            }
+
+            .nav-links.menu-active {
+                display: flex;
+            }
+
+            .burger-menu {
+                display: flex;
+            }
+
+            .text-content {
+                width: 100%;
+            }
+
+            .text-content p {
+                width: auto;
+            }
+
+            .image-content {
+                display: none;
+            }
+
+            .image-content p {
+                width: auto;
+            }
+
+            .cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
     <!-- Navbar Section -->
     <header>
-      <nav class="navbar">
-        <div class="logo">
-          <img src="{{ url_for('static', filename='assets/logo.png') }}" alt="Logo Icon" class="logo-icon" />
-          <span class="logoname">Your Logo</span>
-        </div>
-        <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#about">About Us</a></li>
-          <li><a href="#contact">Contact Us</a></li>
-          <li><button class="login-btn" onclick="window.location.href='login';">Login</button></li>
-        </ul>
-        <div class="burger-menu" onclick="toggleMenu(this)">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-        </div>
-      </nav>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="" alt="Logo Icon" class="logo-icon" />
+                <span class="logoname">Your Logo</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#aboutus">About Us</a></li>
+                <li><a href="#contact">Contact Us</a></li>
+                <li><a onclick="window.location.href='/login';">Login</a></li>
+                <li><button class="login-btn" onclick="window.location.href='/register';">Register</button></li>
+            </ul>
+            <div class="burger-menu" onclick="toggleMenu(this)">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
     </header>
 
     <!-- Main Section -->
-    <main>
-      <div class="container">
-        <h1>Register as</h1>
-        <div class="card-container">
-          <div class="card" onclick="window.location.href='signup_personal'">
-            <img src="{{ url_for('static', filename='assets/img11.png') }}" alt="Card 1" />
-            <h2>Personal Account</h2>
-          </div>
-          <div class="card" onclick="window.location.href='Education_entity'">
-            <img src="{{ url_for('static', filename='assets/img10.png') }}" alt="Card 2" />
-            <h2>Public or Private sector</h2>
-          </div>
-          <div class="card" onclick="window.location.href='sector_register'">
-            <img src="{{ url_for('static', filename='assets/img3.png') }}" alt="Card 3" />
-            <h2>Educational Entity</h2>
-          </div>
+    <section class="main" style="background-image: url('../static/assets/home-two.svg');
+      background-size: cover;
+      background-repeat: no-repeat;">
+        <div class="text-content" style=" display: flex;
+           flex-direction: column;
+           justify-content: center;">
+            <h1>Welcome to <span>Noor </span>Academy</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit. Quae consequuntur, sint reiciendis alias</p>
+            <div class="buttons" style="flex-direction: row;">
+                <button class="btn-primary" style="display: flex; flex-direction: row;" onclick="window.location.href='/register';">
+                    Get Started<i class="fa-solid fa-arrow-right"></i></button>
+
+            </div>
         </div>
-      </div>
-    </main>
-    <footer>
-      <!-- First Section: Logo and Address -->
-       <!-- <div class="footer-section">
-        
-        <div class="footer-address">
-          <i class="fas fa-map-marker-alt location-icon"></i>
-          <h3>Address</h3>
+        <div class="image-content">
+            <img src="../static/assets/home-one.svg" alt="Illustration">
         </div>
-      </div> 
-     -->
-     
-      <div class="footer-stats">
-        <div class="stat">
-          <h2>100</h2>
-          <h3>Companies</h3>
+
+    </section>
+    <section class="info-bar"
+        style="width: 100%; background-color: #095e4c; height: 90px; display: flex; align-items: center; justify-content: center;">
+        <div class="scroll-container" style="background-color: #095e4c; height: 90px; ">
+            <div class="scroll-content">
+                <h1><span style="color: #E4C584;">40</span> Companies</h1>
+                <h1><span style="color: #E4C584;">5300</span> Students benefiting</h1>
+                <h1><span style="color: #E4C584;">900</span> Subscriptions</h1>
+                <h1><span style="color: #E4C584;">100</span> Remaining subscriptions</h1>
+            </div>
         </div>
-        <div class="stat">
-          <h2>100</h2>
-          <h3>Students benefiting</h3>
+    </section>
+    <div class="about-us" id="aboutus" style=" position: relative;overflow: hidden;">
+
+        <div class="image-content">
+
         </div>
-        <div class="stat">
-          <h2>100</h2>
-          <h3>Subscriptions</h3>
+
+        <div class="text-content">
+            <h1 style="font-size: 30px; color: #0D7C66; text-transform: uppercase; font-weight: 600;">Who are we?</h1>
+            <p style="color: rgb(54, 54, 54); font-size: 16px; line-height: 2;">Lorem ipsum dolor sit amet, consectetur
+                adipiscing elit Lorem ipsum dolor sit amet consectetur, adipisicing elit.Lorem ipsum dolor sit
+                amet,Lorem ipsum dolor sit amet, consectetur adipiscing elit Lorem ipsum dolor sit amet consectetur,
+                adipisicing elit consectetur adipiscing elit Lorem ipsum dolor sit amet consectetur, adipisicing elit
+                Quae consequuntur, sint reiciendis alias</p>
+            <div class="buttons">
+
+                <button class="btn-secondary">Learn More...</button>
+            </div>
         </div>
-        <div class="stat">
-          <h2>100</h2>
-          <h3> Remaining subscriptions</h3>
+
+    </div>
+    <section class="why-choose-us">
+
+        <div class="heading">
+            <h1>Why Choose Us?</h1>
         </div>
-      
-        
-      </div>
-    
-      <!-- <div class="footer-companies">
-        <div class="company">
-          <img src="assets/img16.png" alt="Company 1" class="company-image">
-          <h3>Comp1</h3>
+
+
+        <div class="cards">
+            <div class="card">
+                <i class="fas fa-star"></i>
+                <h3>Quality Service</h3>
+                <p>We provide top-notch services that exceed expectations.</p>
+            </div>
+            <div class="card big-card">
+                <i class="fas fa-user-shield"></i>
+                <h3>Trust & Security</h3>
+                <p>Your data is safe with us, and we ensure maximum security.</p>
+            </div>
+            <div class="card">
+                <i class="fas fa-headset"></i>
+                <h3>24/7 Support</h3>
+                <p>Our support team is available around the clock for you.</p>
+            </div>
         </div>
-        <div class="company">
-          <img src="assets/img17.png" alt="Company 1" class="company-image">
-          <h3>Comp1</h3>
+    </section>
+    <section class="contact-section">
+        <div class="contact-info">
+            <h1>Get in touch.</h1>
+            <p style="width: auto;">If you have any questions, obcaecati ullam est ratione et laborum quas reiciendis.
+                Sapiente, et.</p>
+
+            <div class="info-container">
+                <div class="info-item">
+                    <div class="icon-container">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-text">
+                        <h3>Email</h3>
+                        <h4>example@email.com</h4>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="icon-container">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="info-text">
+                        <h3>Phone</h3>
+                        <h4>+123 456 789</h4>
+                    </div>
+                </div>
+            </div>
         </div>
-            <div class="company">
-          <img src="assets/img18.png" alt="Company 1" class="company-image">
-          <h3>Comp1</h3>
+        <div class="contact-form" id="contact">
+            <h2>Write a Message</h2>
+            <div class="input-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" class="input-field" placeholder="Enter your name">
+            </div>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" class="input-field" placeholder="Enter your email">
+            </div>
+            <div class="input-group">
+                <label for="message">Message</label>
+                <textarea id="message" class="input-field" placeholder="Write your message"></textarea>
+            </div>
+            <button class="send-btn">Send</button>
         </div>
-     
-     
-     
-      </div> -->
+    </section>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h2>Noor Academy</h2>
+                <div class="para">
+                    <p style="text-align: left; width: 225px; font-size: 15px;">Lorem ipsum dolor sit amet, consectetur
+                        adipisicing elit. Eligendi </p>
+                    <div class="social-icons">
+                        <a href="#" class="social-circle"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-circle"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-circle"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+            </div>
+            <div class="footer-section">
+                <h2>Quick Links</h2>
+                <ul class="footer-links">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">About Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h2>Information</h2>
+                <div class="info-container">
+                    <div class="info-item" style="height: 5px;">
+                        <i class="fas fa-phone"></i>
+                        <h5>+123 456 789</h5>
+                    </div>
+                    <div class="info-item" style="height: 5px;">
+                        <i class="fas fa-envelope"></i>
+                        <h5>info@nooracademy.com</h5>
+                    </div>
+                    <div class="info-item" style="height: 5px;">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h5>123 Noor St, Cairo, Egypt</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
-    
-    
-    
-    
+
     <script>
-      const sectorCode = "{{ sector_code }}"; // يتم تمريره من Flask
-  
-  function generateCode() {
-      const fullCode = sectorCode + "M";
-      document.getElementById("sectorCodeDisplay").innerText = fullCode;
-  }
-  
-  function copyToClipboard() {
-      const fullCode = document.getElementById("sectorCodeDisplay").innerText;
-      navigator.clipboard.writeText(fullCode).then(() => {
-          const copyMessage = document.getElementById("copyMessage");
-          copyMessage.style.display = "inline";
-          setTimeout(() => {
-              copyMessage.style.display = "none";
-          }, 2000); // إخفاء الرسالة بعد ثانيتين
-      });
-  }</script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-  </body>
+        function toggleMenu(burger) {
+            burger.classList.toggle("open");
+            document.querySelector(".nav-links").classList.toggle("menu-active");
+        }
+    </script>
+</body>
+
 </html>

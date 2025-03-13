@@ -11,6 +11,7 @@ body {
   height: 100vh;
   background-color: #f4f4f4;
   overflow-x: hidden;
+  
 }
 
 /* Sidebar Styles */
@@ -41,6 +42,7 @@ body {
 
 .sidebar li {
   padding: 2px 2px;
+  margin-bottom: 10px;
 }
 
 .sidebar a {
@@ -115,7 +117,7 @@ body {
 
 .main-section {
   position: relative;
-  background-image: url('assets/img5.png');
+  background-image: url('../static/assets/back.jpg');
   background-size: cover;
   background-attachment: fixed;
   width: 100%;
@@ -220,12 +222,13 @@ body {
   top: 50%;
   left: 12px;
   color: #999;
-  font-size: 12px;
+  font-size: 1em;
   pointer-events: none;
   transform: translateY(-50%);
   transition: all 0.3s ease;
   background: #fff;
-  padding: 0 8px;
+
+  padding: 0 4px;
 }
 
 .input-container input:focus+label,.input-container input:not(:placeholder-shown) + label,
@@ -234,8 +237,8 @@ body {
 .input-container select:valid+label,
 .input-container textarea:focus + label,
 .input-container textarea:not(:placeholder-shown) + label {
-  top: 1px;
-  font-size: 12px;
+  top: 4px;
+  font-size: 0.75em;
   color: #0D7C66;
 }
 
@@ -593,7 +596,7 @@ table td i {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
+  /* justify-content: center; */
 }
 
 .card-link {
@@ -608,7 +611,7 @@ table td i {
   width: 100%;
   max-width: 300px;
   margin: 10px;
-  background-color: #e5e5e5;
+  background-color: #efefef;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   /* transition: transform 0.3s ease; */
@@ -644,7 +647,7 @@ table td i {
   padding: 10px; /* المسافات الداخلية */
   font-size: 12px; /* حجم النص */
   cursor: pointer;
-  width: 10%; /* عرض الزر */
+  width: 120px; /* عرض الزر */
   font-weight: bold; /* نص عريض */
   text-align: center;
   overflow: hidden;
@@ -831,7 +834,7 @@ table td i {
 }
 
 .edit {
-  background-color: #21797d;
+  background-color: #0D7C66;
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
 }
 
@@ -868,7 +871,7 @@ table td i {
   display: flex;
   flex-direction: column;
   width: 95%;
-  background-color: rgba(255, 255, 255);
+  /* background-color: rgba(255, 255, 255); */
   padding: 20px;
   border-radius: 10px;
   margin: 5px 20px 20px 20px;
@@ -890,14 +893,14 @@ table td i {
 }
 
 .textarea-div textarea {
-  width: 90%;
+  width: 100%;
   height: 80px;
   padding: 10px;
   padding-top: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   /* resize: vertical; */
-  font-size: 12px;
+  font-size: 16px;
   color: #21797d;
 }
 
@@ -1337,7 +1340,7 @@ table td i {
   display: flex;
   flex-direction: row;
   align-items: center;
-  background-color: #21797d;
+  background-color: #0D7C66;
   color: #FFFFFF;
   margin-right: 10px;
   padding: 5px 8px;
@@ -1353,7 +1356,7 @@ table td i {
  }
  .question-div .question-details .question-detail .degree h4 {
   font-size: 12px;
-  color: #21797d;
+  color: #0D7C66;
   font-weight: 600;
  }
 
@@ -1384,7 +1387,7 @@ table td i {
 }
 .question-div .question-detail .question-importance .difficulty{
   font-size: 12px;
-  color:#21797d;
+  color:#0D7C66;
   font-weight: 600;
  
  }
@@ -1403,7 +1406,7 @@ table td i {
  }
  .question-div .question .blank-input,.question-div .question .select-blank{
   background-color: #eeeeee;
-  border: 1px solid #21797d;
+  border: 1px solid #0D7C66;
   border-radius: 5px;
   height: 35px;
   margin: 0 5px;
@@ -1417,7 +1420,7 @@ table td i {
  }
  .question-div .btns .nxt-btn{
   width: 120px;
-  border: 1px solid #21797d;
+  border: 1px solid #0D7C66;
   padding: 8px;
   border-radius: 8px;
   font-size: 15px;
@@ -1431,7 +1434,7 @@ table td i {
 
  }
  .question-div .btns .nxt-btn:hover{
-  background-color: #21797d;
+  background-color: #0D7C66;
   color: #ffffff;
  }
 
@@ -1444,7 +1447,7 @@ table td i {
   height: 450px;
   padding: 10px;
   padding-top: 20px;
-  border: 2px solid #21797d;
+  border: 2px solid #0D7C66;
   border-radius: 5px;
   margin-top: 10px;
   font-size: 12px;
@@ -1463,7 +1466,7 @@ table td i {
   transition: background-color 0.3s ease, border 0.3s ease;
 }
 .question-div .answers .circle {
-  background-color: #21797d;
+  background-color: #0D7C66;
   color: white;
   width: 35px;
   height: 35px;
@@ -1478,11 +1481,11 @@ table td i {
 .question-div .answers .text ,
 .question-div .answers .row-container .title {
   font-size: 15px;
-  color: #21797d;
+  color: #0D7C66;
   font-weight: 500;
 }
 .question-div .answers .clickable-div.active{
-  background-color: #21797d;
+  background-color: #0D7C66;
 }
 .question-div .answers .clickable-div.active .circle {
   border: 1px solid white;
@@ -1742,7 +1745,7 @@ table td i {
 
  }
  .question-container .btns .nxt-btn:hover{
-  background-color: #21797d;
+  background-color: #0D7C66;
   color: #ffffff;
  }
  .question-container .btns{
@@ -1826,7 +1829,7 @@ text-align: center; /* محاذاة النص في الوسط */
   display: none;
 }
 .sidebar ul li a.active-page {
-  color: #FFD700; 
+  color: #ffea7f; 
 }
 .question-div .exam-card .card-link {
   text-decoration: none;

@@ -208,6 +208,23 @@ console.log(lessonId); // ستظهر القيمة في الكونسول
         const questionTypeSelect = document.getElementById('questionTypeSelect');
         const numberOfQuestionsInput = document.getElementById('numberOfQuestionsInput');
 
+        // Function to handle enabling/disabling the number of questions input
+        function handleQuestionTypeChange() {
+            const selectedValue = questionTypeSelect.value;
+            if (selectedValue === 'sequence' || selectedValue === 'matching') {
+                numberOfQuestionsInput.disabled = true;
+                numberOfQuestionsInput.value = ''; // Clear the value
+            } else {
+                numberOfQuestionsInput.disabled = false;
+            }
+        }
+
+        // Add event listener to the question type select
+        questionTypeSelect.addEventListener('change', handleQuestionTypeChange);
+
+        // Call the function on page load to set the initial state
+        handleQuestionTypeChange();
+
         classifyButton.addEventListener('click', async () => {
             const text = textInput.value.trim();
             const questionType = questionTypeSelect.value;

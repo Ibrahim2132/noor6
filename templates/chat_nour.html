@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شات بوت</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* تصميم الشات بوت المحدث ليتناسب مع الموقع */
+        body {
+            /* خلفية خضراء متدرجة مع الصورة */
+            background-image: linear-gradient(rgba(13, 124, 102, 0.5), rgba(13, 124, 102, 0.7)), url("{{ url_for('static', filename='assets/assets/back.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            min-height: 100vh;
+            margin: 0; /* إزالة الهوامش الافتراضية */
+            font-family: 'Cairo', sans-serif; /* استخدام نفس الخط */
+            color: #333; /* لون النص الرئيسي */
+        }
+
+        .chat-container {
+            width: 80%; /* جعل عرض الشات بوت متجاوبًا */
+            max-width: 800px; /* تحديد أقصى عرض */
+            margin: 80px auto; /* توسيط عمودي وأفقي */
+            background-color: rgba(255, 255, 255, 0.9); /* خلفية بيضاء شبه شفافة */
+            border-radius: 15px; /* زيادة الانحناء */
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); /* زيادة الظل */
+            overflow: hidden;
+        }
+
+        /* تصميم شريط التنقل (Header) */
+        header {
+            background-color: #0D7C66; /* لون شريط التنقل الأخضر */
+            color: white;
+            padding: 1rem 0;
+            position: relative; /* إضافة تحديد الموضع */
+            z-index: 1000; /* التأكد من أنه فوق العناصر الأخرى */
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo img {
+            height: 40px; /* تحديد ارتفاع الشعار */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .login-btn,
+        .register-btn {
+            padding: 0.75rem 1.25rem; /* زيادة حجم الأزرار قليلاً */
+            border: none;
+            border-radius: 8px; /* زيادة الانحناء */
+            cursor: pointer;
+            text-decoration: none; /* إزالة الخط السفلي */
+            font-size: 1.1rem; /* زيادة حجم الخط قليلاً */
+            transition: background-color 0.3s ease; /* إضافة تأثير الانتقال */
+        }
+
+        .login-btn {
+            color: white;
+            background-color: transparent;
+            border: 2px solid white; /* زيادة سمك الحدود */
+        }
+
+        .register-btn {
+            background-color: #f9ca24; /* لون مميز للتسجيل */
+            color: #333;
+        }
+
+         .register-btn:hover {
+            background-color: #f0b220; /* تغيير اللون عند التحويم */
+        }
+
+        .chat-header {
+            background-color: #0D7C66; /* لون رأس الشات بوت الأخضر */
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 1.75rem; /* زيادة حجم الخط */
+            font-weight: 600;
+        }
+
+        .chat-messages {
+            height: 400px; /* زيادة ارتفاع منطقة الرسائل */
+            padding: 1.5rem; /* زيادة المساحة الداخلية */
+            overflow-y: scroll;
+            direction: rtl; /* تعديل الاتجاه ليناسب اللغة العربية */
+        }
+
+        .chat-messages div {
+            margin-bottom: 12px; /* زيادة التباعد بين الرسائل */
+            padding: 1rem 1.25rem; /* زيادة المساحة الداخلية */
+            border-radius: 10px; /* زيادة الانحناء */
+            max-width: 85%; /* تقليل العرض الأقصى قليلاً */
+            word-wrap: break-word;
+            font-size: 1.1rem; /* زيادة حجم الخط */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* إضافة ظل خفيف */
+        }
+
+        .chat-messages div:nth-child(odd) {
+            background-color: #DCF8C6; /* لون رسائل المستخدم (أخضر فاتح) */
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .chat-messages div:nth-child(even) {
+            background-color: #ECE5DD; /* لون رسائل الشات بوت (رمادي فاتح) */
+            text-align: left;
+            margin-right: auto;
+        }
+
+        .chat-input-area {
+            display: flex;
+            padding: 1rem;
+            background-color: #fff;
+            border-top: 1px solid #ddd; /* إضافة حد علوي */
+        }
+
+        .chat-input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            border: 1px solid #ced4da;
+            border-radius: 8px; /* زيادة الانحناء */
+            margin-right: 1rem;
+            font-size: 1.1rem; /* زيادة حجم الخط */
+            outline: none;
+        }
+
+        .chat-button {
+            padding: 0.75rem 1.5rem; /* زيادة حجم الزر */
+            background-color: #f9ca24; /* لون مميز للزر */
+            color: #333;
+            border: none;
+            border-radius: 8px; /* زيادة الانحناء */
+            cursor: pointer;
+            font-size: 1.1rem; /* زيادة حجم الخط */
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-button:hover {
+            background-color: #f0b220; /* تغيير اللون عند التحويم */
+        }
+    </style>
+</head>
+<body>
+   
+
+    <div class="chat-container">
+        <div class="chat-header">
+            كيف يمكننا مساعدتك اليوم؟
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- هنا ستظهر الرسائل -->
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" class="chat-input" placeholder="اكتب سؤالك هنا...">
+            <button class="chat-button" onclick="sendMessage()">إرسال</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            var message = document.getElementById('chat-input').value;
+            document.getElementById('chat-input').value = '';
+
+            // إضافة رسالة المستخدم إلى الشات
+            var chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML += '<div style="text-align: right;">' + message + '</div>';
+
+            // إرسال الرسالة إلى الخادم
+            fetch('/chatbot_nour', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'message=' + encodeURIComponent(message)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // إضافة رد الشات بوت إلى الشات
+                chatMessages.innerHTML += '<div style="text-align: left;">' + data.response + '</div>';
+                chatMessages.scrollTop = chatMessages.scrollHeight; // تمرير تلقائي إلى آخر رسالة
+            });
+        }
+    </script>
+</body>
+</html>

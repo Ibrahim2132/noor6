@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>درجات الطلاب</title>
+</head>
+<body>
+    <h1>درجات الطلاب (الموظف: {{ employee_id }})</h1>
+
+    {% for lesson_id, exam_data in exam_grades.items() %}
+        <h2>الامتحان: {{ exam_data['exam_name'] }}</h2>
+        {% if exam_data['student_grades'] %}
+            <ul>
+                {% for student_id, student_data in exam_data['student_grades'].items() %}
+                    <li>
+                        الطالب: {{ student_data['username'] }}, الدرجة: {{ student_data['total_grade'] }} / {{ student_data['max_total_grade'] }} , عدد مرات الحل: {{ exam_data['exams_taken'] }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>لا يوجد طلاب أجروا هذا الامتحان.</p>
+        {% endif %}
+    {% endfor %}
+
+</body>
+</html>

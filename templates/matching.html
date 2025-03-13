@@ -34,15 +34,15 @@
   <body>
     <div class="main-content">
       <div id="sidebar" class="sidebar">
-        <div class="logo">
-          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+          <img class="navbar-img" src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" style=" height: auto;">
         </div>
         <ul>
-          <li>
-            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
-              ><i class="fa-solid fa-house"></i> Dashboard
-              <i class="fas fa-caret-down"></i
-            ></a>
+          <li data-target="dropdown-1" style="margin-top: 20px;">
+            <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+              <i class="fa-solid fa-house"></i> Dashboard
+              <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+            </a>
             <ul id="dropdown-1" class="dropdown">
               <li><a href="employee_profile"> profile</a></li>
             </ul>
@@ -62,6 +62,7 @@
         </ul>
        
       </div>
+      
 
       <!-- Burger Menu (Visible on mobile) -->
       <div class="burger" onclick="toggleSidebar()">
@@ -70,11 +71,37 @@
         <div class="burger-icon"></div>
       </div>
       <div class="main-section">
-        <!-- Navigation Steps -->
-        <div class="navigation-steps">
-          <i class="fas fa-home"></i>
-          <span>Home > Dashboard > Questions > Sequence </span>
-        </div>
+       <!-- Navigation Steps -->
+<div class="navigation-steps">
+  <div>
+    <i class="fas fa-home"></i>
+    <span>Home > Dashboard > Questions > Sequence </span>
+  </div>
+  <div class="notify-bell">
+    <a href="notification" 
+    style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+    onmouseover="this.style.color='#479b8a'" 
+    onmouseout="this.style.color='#0D7C66'">
+   
+   <i class="fa-solid fa-bell"></i>
+ 
+   {% if notification_dot_display %}
+     <span style="
+       position: absolute;
+       top: 0px;
+       right: 0px;
+       width: 10px;
+       height: 10px;
+       background: red;
+       border-radius: 50%;
+       display: inline-block;
+     "></span>
+   {% endif %}
+ </a>
+ 
+    
+  </div><!-- Notification Icon -->
+</div>
 
         <div class="question-container">
           <form method="POST" enctype="multipart/form-data">

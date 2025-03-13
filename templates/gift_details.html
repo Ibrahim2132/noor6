@@ -24,6 +24,9 @@
         border-radius: 50%;
         
       }
+      input[type="file"] {
+            display: none;
+        }
 
       .card-btn {
   display: inline-block;
@@ -65,7 +68,7 @@
 }
 
 .popup-content h2 {
-  color: #21797d;
+  color: #0D7C66;
   margin-bottom: 20px;
 }
 
@@ -75,7 +78,7 @@
 }
 
 .popup-btn {
-  background-color: #21797d;
+  background-color: #0D7C66;
   color: #fff;
   padding: 10px 20px;
   border: none;
@@ -106,7 +109,7 @@
   width: 100%;
   padding: 12px;
   margin: 15px 0;
-  border: 2px solid #21797d;
+  border: 2px solid #0D7C66;
   border-radius: 8px;
   font-size: 16px;
   box-sizing: border-box;
@@ -132,26 +135,26 @@
 }
 
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  margin: 0;
-  padding: 0;
-}
+body{
+        background-image: url('static/assets/assets/back.jpg');
+        background-size: cover;
+         /* background: rgb(255 255 255 / 91%);  */
+         background-blend-mode: overlay;  
+       }
 
 .container {
-  width: 90%;
-  margin: auto;
+  background-color: rgba(255, 255, 255);
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  border: 1px solid #0D7C66;
   padding: 20px;
-  background: white;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  margin-top: 50px;
+  border-radius: 10px;
+  margin: 10px 20px 20px 20px;
 }
 
 h1 {
-  text-align: center;
-  color: #21797d;
+  font-size: 20px;
+  font-weight: 600;
+  color: #0D7C66;
 }
 
 .tabs {
@@ -163,15 +166,15 @@ h1 {
 .tab {
   padding: 10px 20px;
   cursor: pointer;
-  border: 1px solid #21797d;
+  border: 1px solid #0D7C66;
   border-radius: 5px;
   margin: 0 5px;
   background-color: white;
-  color: #21797d;
+  color: #0D7C66;
 }
 
 .tab.active {
-  background-color: #21797d;
+  background-color: #0D7C66;
   color: white;
 }
 
@@ -181,10 +184,12 @@ h1 {
 }
 
 .upload-box {
-  border: 2px dashed #21797d;
-  padding: 20px;
-  border-radius: 8px;
+    padding: 50px 20px;
+    border-radius: 8px;
+    border: 2px dashed #0D7C66;
+   
 }
+
 
 .upload-box p {
   margin-bottom: 10px;
@@ -194,7 +199,7 @@ h1 {
 
 .upload-btn {
   padding: 10px 20px;
-  background-color: #21797d;
+  background-color: #0D7C66;
   color: white;
   border: none;
   border-radius: 5px;
@@ -206,8 +211,10 @@ h1 {
 }
 
 .lesson-details h2 {
-  color: #21797d;
+  color: #0D7C66;
   margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .lesson-details input, 
@@ -217,6 +224,7 @@ h1 {
   margin-bottom: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  height: auto;
 }
 .button-group {
     display: flex;
@@ -227,7 +235,7 @@ h1 {
 
   .lesson-details .submit-btn {
     padding: 10px 20px;
-    background-color: #21797d;
+    background-color: #0D7C66;
     color: white;
     border: none;
     border-radius: 5px;
@@ -241,6 +249,7 @@ h1 {
     font-size: 14px;
     margin-bottom: 15px;
     white-space: nowrap; /* منع النص من الالتفاف */
+    
 }
 
 .gift-type label {
@@ -256,28 +265,59 @@ h1 {
 
 .gift-type label[for="internal"],
 .gift-type label[for="external"] {
-    margin-right: 300px; /* تقريب النصوص من بعضها */
+    margin-right: 100px; /* تقريب النصوص من بعضها */
+}
+input:focus, 
+textarea:focus {
+    border-color: #0D7C66; /* Green border */
+    outline: none; /* Removes default focus outline */
+    box-shadow: 0 0 5px rgba(13, 124, 102, 0.5); /* Optional glow effect */
+}
+.input-container input ,.input-container textarea {
+  color: #636f6c;
+}
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Adjust spacing between the radio button and label */
 }
 
 
 .hidden {
   display: none;
 }
+@media (max-width: 768px) { 
+    .input-row {
+        flex-direction: column; 
+        align-items: center; 
+    }
+
+    .inputs-container {
+        width: 100% !important; /* Make each input-container take full width */
+    }
+    .gift-type {
+        flex-direction: column;
+        align-items: flex-start; /* Align to the left */
+    }
+
+
+}
+
     </style>
   </head>
   <body>
     
       <div class="main-content">
         <div id="sidebar" class="sidebar">
-          <div class="logo">
-            <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+          <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+            <img class="navbar-img" src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" style=" height: auto;">
           </div>
           <ul>
-            <li>
-              <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
-                ><i class="fa-solid fa-house"></i> Dashboard
-                <i class="fas fa-caret-down"></i
-              ></a>
+            <li data-target="dropdown-1" style="margin-top: 20px;">
+              <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+                <i class="fa-solid fa-house"></i> Dashboard
+                <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+              </a>
               <ul id="dropdown-1" class="dropdown">
                 <li><a href="employee_profile"> profile</a></li>
               </ul>
@@ -306,8 +346,34 @@ h1 {
         <div class="main-section">
         
           <div class="navigation-steps">
-            <i class="fas fa-home"></i>
-            <span>Home > Dashboard > category > Chapter > lesson</span>
+            <div>
+              <i class="fas fa-home"></i>
+              <span>Home > Dashboard > category </span>
+            </div>
+            <div class="notify-bell">
+              <a href="notification" 
+              style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+              onmouseover="this.style.color='#479b8a'" 
+              onmouseout="this.style.color='#0D7C66'">
+             
+             <i class="fa-solid fa-bell"></i>
+           
+             {% if notification_dot_display %}
+               <span style="
+                 position: absolute;
+                 top: 0px;
+                 right: 0px;
+                 width: 10px;
+                 height: 10px;
+                 background: red;
+                 border-radius: 50%;
+                 display: inline-block;
+               "></span>
+             {% endif %}
+           </a>
+           
+              
+            </div><!-- Notification Icon -->
           </div>
           <div class="container">
             <h1>Create Gift</h1>
@@ -315,9 +381,11 @@ h1 {
             <form action="" method="POST" enctype="multipart/form-data">
                 <div class="upload-section" id="image">
                     <div class="upload-box">
-                        <p>Select Images</p>
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 50px; color: rgba(0, 0, 0, 0.2);margin-bottom: 10px;"></i>
+                        <p style="font-size: 18px; color: rgba(0, 0, 0, 0.2);">Drag & drop gift image or click </p>
                         <br>
-                        <input class="upload-btn" type="file" name="image" id="imageInput" accept="image/*" multiple>
+                        <label for="imageInput" class="add-btn" style="padding: 10px 25px;">Upload image</label>
+                        <input class="add-btn" type="file" name="image" id="imageInput" accept="image/*" multiple>
                     
                         <br><br>
                         {% if gift.image %}
@@ -328,50 +396,114 @@ h1 {
                     </div>
                    
                 </div>
-        
+               
                 <form method="POST">
                   <div class="lesson-details">
                     <h2>Gift Details</h2>
-                    <div class="input-row">
+                    <div class="input-row" style=" width: 100%;" >
+                     <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
                       <input type="text" name="title" placeholder="Gift Name" value="{{ gift.name }}" required>
+                      <label style="font-size: 12px; color: #0D7C66;">Gift Name</label>
+                    
+                     </div>
+                     <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
                       <input type="number" name="number_of_gifts" placeholder="Quantity of Gifts" value="{{ gift.total_gifts }}" required>
+                      <label style="font-size: 12px; color: #0D7C66;">Quantity of Gifts</label>
+                     </div>
                     </div>
                 
                     <div class="hidden-gifts">
-                      <div class="input-row hidden" id="gift1">
-                        <input type="text" name="title1" placeholder="Gift Name" value="{{ gift.name1 or '' }}">
-                        <input type="number" name="number_of_gifts1" placeholder="Quantity of Gifts" value="{{ gift.total_gifts1 or '' }}">
+                      <div class="input-row hidden" id="gift1" style=" width: 100%;">
+                        <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="text" name="title1" placeholder="Gift Name" value="{{ gift.name1 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Gift Name</label>
+                         </div>
+                         <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="number" name="number_of_gifts1" placeholder="Quantity of Gifts" value="{{ gift.total_gifts1 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Quantity of Gifts</label>
+                         </div>
+                      
+                       
                       </div>
-                      <div class="input-row hidden" id="gift2">
-                        <input type="text" name="title2" placeholder="Gift Name" value="{{ gift.name2 or '' }}">
-                        <input type="number" name="number_of_gifts2" placeholder="Quantity of Gifts" value="{{ gift.total_gifts2 or '' }}">
+                      <div class="input-row hidden" id="gift2" style=" width: 100%;">
+                        <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="text" name="title2" placeholder="Gift Name" value="{{ gift.name2 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Gift Name</label>
+                         </div>
+                         <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="number" name="number_of_gifts2" placeholder="Quantity of Gifts" value="{{ gift.total_gifts2 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Quantity of Gifts</label>
+                         </div>
+                       
                       </div>
-                      <div class="input-row hidden" id="gift3">
-                        <input type="text" name="title3" placeholder="Gift Name" value="{{ gift.name3 or '' }}">
-                        <input type="number" name="number_of_gifts3" placeholder="Quantity of Gifts" value="{{ gift.total_gifts3 or '' }}">
+                      <div class="input-row hidden" id="gift3" style=" width: 100%;">
+                        <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="text" name="title3" placeholder="Gift Name" value="{{ gift.name3 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Gift Name</label>
+                         </div>
+                         <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="number" name="number_of_gifts3" placeholder="Quantity of Gifts" value="{{ gift.total_gifts3 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Quantity of Gifts</label>
+                         </div>
+                       
+                       
                       </div>
-                      <div class="input-row hidden" id="gift4">
-                        <input type="text" name="title4" placeholder="Gift Name" value="{{ gift.name4 or '' }}">
-                        <input type="number" name="number_of_gifts4" placeholder="Quantity of Gifts" value="{{ gift.total_gifts4 or '' }}">
+                      <div class="input-row hidden" id="gift4" style=" width: 100%;">
+                        <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="text" name="title4" placeholder="Gift Name" value="{{ gift.name4 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Gift Name</label>
+                         </div>
+                         <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                          <input type="number" name="number_of_gifts4" placeholder="Quantity of Gifts" value="{{ gift.total_gifts4 or '' }}">
+                          <label style="font-size: 12px; color: #0D7C66;">Quantity of Gifts</label>
+                         </div>
+                       
+                       
                       </div>
                     </div>
+                    <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 100%;">
+                      <textarea name="description" placeholder="Gift Description" rows="5" >{{ gift.description }}</textarea>
+                      <label style="font-size: 12px; color: #0D7C66;">Gift Description</label>
+                     </div>
           
-                    <textarea name="description" placeholder="Gift Description" rows="5" >{{ gift.description }}</textarea>
-                    <div class="input-row">
-                      <input type="text" name="start_date" placeholder="Start Date" value="{{ gift.start_date }}" >
-                      <input type="text" name="end_date" placeholder="End Date" value="{{ gift.end_date }}" >
+                    
+                    <div class="input-row" style=" width: 100%;">
+                      <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                        <input type="text" name="start_date" placeholder="Start Date" value="{{ gift.start_date }}" >
+                        <label style="font-size: 12px; color: #0D7C66;">Start Date</label>
+                       </div>
+                       <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                        <input type="text" name="end_date" placeholder="End Date" value="{{ gift.end_date }}" >
+                        <label style="font-size: 12px; color: #0D7C66;">End Date</label>
+                       </div>
+                     
+                      
                     </div>
-                    <div class="input-row">
-                      <input type="text" name="start_time" placeholder="Start Time" value="{{ gift.start_time }}" >
-                      <input type="text" name="end_time" placeholder="End Time" value="{{ gift.end_time }}" >
+                    <div class="input-row" style=" width: 100%;">
+                      <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                        <input type="text" name="start_time" placeholder="Start Time" value="{{ gift.start_time }}" >
+                        <label style="font-size: 12px; color: #0D7C66;">Start Time</label>
+                       </div>
+                       <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                        <input type="text" name="end_time" placeholder="End Time" value="{{ gift.end_time }}" >
+                        <label style="font-size: 12px; color: #0D7C66;">End Time</label>
+                       </div>
+                      
+                     
                     </div>
                 
                     <div class="gift-type">
-                      <label>The Gift is:</label>
-                      <input type="radio" id="internal" name="gift_type" value="Internal" {% if gift.is_internal %}checked{% endif %}>
-                      <label for="internal">Internal</label>
-                      <input type="radio" id="external" name="gift_type" value="External" {% if not gift.is_internal %}checked{% endif %}>
-                      <label for="external">External</label>
+                      <label style="margin-right: 20px;">The Gift is:</label>
+                     
+                      <div class="radio-group">
+                        <input type="radio" id="internal" name="gift_type" value="Internal" {% if gift.is_internal %}checked{% endif %}>
+                        <label for="internal">Internal</label>
+                      </div>
+                      <div class="radio-group">
+                        <input type="radio" id="external" name="gift_type" value="External" {% if not gift.is_internal %}checked{% endif %}>
+                        <label for="external">External</label>
+                      </div>
+                    
                       
                     </div>
                     <button type="button" class="submit-btn" id="add-gift-btn">Add Gift</button>
@@ -381,14 +513,31 @@ h1 {
               <div class="container">
                 <div class="lesson-details">
                   <h2>Gift Additional Details</h2>
-                  <div class="input-row">
-                    <input type="text" name="percentage" placeholder="Percentage in Test" value="{{ gift.percentage }}" required>
-                    <input type="text" name="number_of_tests" placeholder="Number of Tests" value="{{ gift.exam_count }}" required>
+                  <div class="input-row" style=" width: 100%;">
+                    <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                      <input type="text" name="percentage" placeholder="Percentage in Test" value="{{ gift.percentage }}" required>
+                      <label style="font-size: 12px; color: #0D7C66;">Percentage in Teste</label>
+                     </div>
+                     <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                      <input type="text" name="number_of_tests" placeholder="Number of Tests" value="{{ gift.exam_count }}" required>
+                      <label style="font-size: 12px; color: #0D7C66;">Number of Tests</label>
+                     </div>
+                    
+                    
                   </div>
-                  <div class="input-row">
-                    <input type="text" name="number_of_practices" placeholder="Number of Practices" value="{{ gift.practice_count }}" required>
-                    <input type="text" name="account_type" placeholder="Account Type" value="{{ gift.account_type }}" required>
+                  <div class="input-row" style=" width: 100%;">
+                    <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                      <input type="text" name="number_of_practices" placeholder="Number of Practices" value="{{ gift.practice_count }}" required>
+                      <label style="font-size: 12px; color: #0D7C66;">Number of Practices</label>
+                     </div>
+                     <div class="inputs-container" style="display: flex; flex-direction: column-reverse; width: 50%;">
+                      <input type="text" name="account_type" placeholder="Account Type" value="{{ gift.account_type }}" required>
+                      <label style="font-size: 12px; color: #0D7C66;">Account Type</label>
+                     </div>
+                    
+                   
                   </div>
+                  
                   <div class="button-group">
                     <button type="submit" class="submit-btn">Submit</button>
                   </div>

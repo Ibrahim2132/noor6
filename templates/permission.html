@@ -1,289 +1,314 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>permission</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/style4.css') }}"
-    />
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      .navbar-img {
-        transform: translateX(10px);
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 50%;
-        
-      }
 
-      .hidden {
-        display: none;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="main-content">
-      <div id="sidebar" class="sidebar">
-        <div class="logo">
-          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
-        </div>
-        <ul>
-          <li>
-            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
-              ><i class="fa-solid fa-house"></i> Dashboard
-              <i class="fas fa-caret-down"></i
-            ></a>
-            <ul id="dropdown-1" class="dropdown">
-              <li><a href="administrator" >  Administrators</a></li>
-              <li><a href="permission" class="active-page">  permission</a></li>
-              <li><a href="manager_adm">  Managers</a></li>
-              <li><a href="managertomanger_adm">  Managers to manager</a></li>
-              <li><a href="company_cards_adm">  company cards</a></li>
-              
-              <li>
-                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
-                  <i class="fas fa-caret-right"></i>
-                </a>
-                <ul id="nested-dropdown" class="dropdown nested-dropdown">
-                  <li><a href="student"> Add Students</a></li>
-                  <li><a href="employee"> Add Employees</a></li>
-                </ul>
-              </li>
-            
-            </ul>
-          </li>
-          <li>
-            <a href="notification_admin">
-              <i class="fa-solid fa-bell"></i>
-              Notifications
-              {% if notification_dot_display %}
-                <span class="notification-dot"></span>
-              {% endif %}
-            </a>
-          </li>
-          <li>
-            <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
-          </li>
-          <li>
-            <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
-          </li>
-        </ul>
-       
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>permission</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet" />
+  <style>
+    body {
+      background-image: url('static/assets/assets/back.jpg');
+      background-size: cover;
+      background-blend-mode: overlay;
+    }
+
+    .navbar-img {
+      transform: translateX(10px);
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 50%;
+
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main-content">
+    <div id="sidebar" class="sidebar">
+      <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+        <img class="navbar-img"
+          src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}"
+          alt="Logo" style=" height: auto;">
       </div>
-      <div class="main-section">
-        <div class="navigation-steps">
+      <ul>
+        <li data-target="dropdown-1" style="margin-top: 20px;">
+          <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+            <i class="fa-solid fa-house"></i> Dashboard
+            <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+          </a>
+          <ul id="dropdown-1" class="dropdown">
+            <li><a href="administrator"> Administrators</a></li>
+            <li><a href="permission" class="active-page"> permission</a></li>
+            <li><a href="manager_adm"> Managers</a></li>
+            <li><a href="managertomanger_adm"> Managers to manager</a></li>
+            <li><a href="company_cards_adm"> company cards</a></li>
+          </ul>
+        </li>
+        <li data-target="dropdown-1" style="margin-top: 5px;">
+          <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')"><i
+              class="fa-solid fa-users"></i>Users
+            <span class="arrow-icon" style="margin-left:20px ;"><i class="fa-solid fa-angle-down"></i></span>
+          </a>
+          <ul id="nested-dropdown" class="dropdown nested-dropdown">
+            <li><a href="student"> Add Students</a></li>
+            <li><a href="employee"> Add Employees</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="notification_admin">
+            <i class="fa-solid fa-bell"></i>
+            Notifications
+            {% if notification_dot_display %}
+            <span class="notification-dot"></span>
+            {% endif %}
+          </a>
+        </li>
+        <li>
+          <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
+        </li>
+        <li>
+          <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </li>
+      </ul>
+
+    </div>
+    <div class="main-section">
+      <!-- Navigation Steps -->
+      <div class="navigation-steps">
+        <div>
           <i class="fas fa-home"></i>
           <span>Home > Dashboard > permission </span>
         </div>
-          <div class="second-div">
-            <!-- First Table Filter -->
-            <div class="search-filters">
-              <div class="input-row">
-                <div class="input-container">
-                  <input
-                  type="text"
-                  id="search-query1"
-                  placeholder="Enter keywords separated by space"
-                  oninput="filterTable1()"
-                />
-                </div>
-              </div>
-            </div>
-            <div class="table-section">
-              <table  id="table1">
-                <thead>
-                  <tr>
-              
-                    <th>Name</th>
-                    <th>major</th>
-                    <th>country</th>
-                    <th>province</th>
-                    <th>branch</th>
-                    <th>is manger</th>
-                    <th>permission to add exam</th>
-                    <th>change</th>
-                    <th>permission to add permission</th>
-                    <th>change</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for employee in employees %}
-                  <tr>
-    
-                    <td>{{ employee.username }}</td>
-          
-                    <td>{{ employee.major }}</td>
-                    <td>{{ employee.country }}</td>
-                    <td>{{ employee.province }}</td>
-                    <td>{{ employee.branch }}</td>
-                    <td>{{ employee.is_manager }}</td>
-                    <td>{% if employee.permission_add_exam %}
-                      accept
-                              
-                      {% else %}
-      
-                      deny
-                      {% endif %}
+        <div class="notify-bell">
+          <a href="notification"
+            style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+            onmouseover="this.style.color='#479b8a'" onmouseout="this.style.color='#0D7C66'">
 
-                    </td>
-                    <td>
-                      
-                      <form action="/update_permission" method="POST">
-                          <input type="hidden" name="id" value="{{ employee.id }}">
-                          <input type="hidden" name="field" value="permission_add_exam">
-                          <input type="hidden" name="value" value="{{ not employee.permission_add_exam }}">
-                          <button type="submit" style="background: none; border: none;">
-                              {% if employee.permission_add_exam %}
-                              
-                              <i class="fa-solid fa-edit text-warning"></i>
+            <i class="fa-solid fa-bell"></i>
 
-                              
-                              {% else %}
-              
-                              <i class="fa-solid fa-edit text-warning"></i>
-                              {% endif %}
-                          </button>
-                      </form>
-                  </td>
-                  <td>
-                    {% if employee.permission_add_permission %}
-                      accept
-                              
-                      {% else %}
-      
-                      deny
-                      {% endif %}
-                  </td>
-                  <td>
-                    
-                      <form action="/update_permission" method="POST">
-                          <input type="hidden" name="id" value="{{ employee.id }}">
-                          <input type="hidden" name="field" value="permission_add_permission">
-                          <input type="hidden" name="value" value="{{ not employee.permission_add_permission }}">
-                          <button type="submit" style="background: none; border: none;">
-                              {% if employee.permission_add_permission %}
-                              
-                              <i class="fa-solid fa-edit text-warning"></i>
-                              
-                              {% else %}
-                              
-                              <i class="fa-solid fa-edit text-warning"></i>
-                              {% endif %}
-                          </button>
-                      </form>
-                  </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
+            {% if notification_dot_display %}
+            <span style="
+       position: absolute;
+       top: 0px;
+       right: 0px;
+       width: 10px;
+       height: 10px;
+       background: red;
+       border-radius: 50%;
+       display: inline-block;
+     "></span>
+            {% endif %}
+          </a>
 
+
+        </div><!-- Notification Icon -->
+      </div>
+      <div class="second-div">
+        <!-- First Table Filter -->
+        <div class="search-filters">
+          <div class="input-row">
+            <div class="input-container">
+              <input type="text" id="search-query1" placeholder="Enter keywords separated by space"
+                oninput="filterTable1()" />
             </div>
           </div>
+        </div>
+        <div class="table-section">
+          <table id="table1">
+            <thead>
+              <tr>
+
+                <th>Name</th>
+                <th>major</th>
+                <th>country</th>
+                <th>province</th>
+                <th>branch</th>
+                <th>is manger</th>
+                <th>permission to add exam</th>
+                <th>change</th>
+                <th>permission to add permission</th>
+                <th>change</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for employee in employees %}
+              <tr>
+
+                <td>{{ employee.username }}</td>
+
+                <td>{{ employee.major }}</td>
+                <td>{{ employee.country }}</td>
+                <td>{{ employee.province }}</td>
+                <td>{{ employee.branch }}</td>
+                <td>{{ employee.is_manager }}</td>
+                <td>{% if employee.permission_add_exam %}
+                  accept
+
+                  {% else %}
+
+                  deny
+                  {% endif %}
+
+                </td>
+                <td>
+
+                  <form action="/update_permission" method="POST">
+                    <input type="hidden" name="id" value="{{ employee.id }}">
+                    <input type="hidden" name="field" value="permission_add_exam">
+                    <input type="hidden" name="value" value="{{ not employee.permission_add_exam }}">
+                    <button type="submit" style="background: none; border: none;">
+                      {% if employee.permission_add_exam %}
+
+                      <i class="fa-solid fa-edit text-warning"></i>
+
+
+                      {% else %}
+
+                      <i class="fa-solid fa-edit text-warning"></i>
+                      {% endif %}
+                    </button>
+                  </form>
+                </td>
+                <td>
+                  {% if employee.permission_add_permission %}
+                  accept
+
+                  {% else %}
+
+                  deny
+                  {% endif %}
+                </td>
+                <td>
+
+                  <form action="/update_permission" method="POST">
+                    <input type="hidden" name="id" value="{{ employee.id }}">
+                    <input type="hidden" name="field" value="permission_add_permission">
+                    <input type="hidden" name="value" value="{{ not employee.permission_add_permission }}">
+                    <button type="submit" style="background: none; border: none;">
+                      {% if employee.permission_add_permission %}
+
+                      <i class="fa-solid fa-edit text-warning"></i>
+
+                      {% else %}
+
+                      <i class="fa-solid fa-edit text-warning"></i>
+                      {% endif %}
+                    </button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </div>
+  </div>
+  </div>
 
-    <script>
-      document.querySelectorAll(".employee-checkbox").forEach((checkbox) => {
-  checkbox.addEventListener("change", () => {
-    const allCheckboxes = document.querySelectorAll(
-      "#table2 tbody .employee-checkbox"
-    );
-    const allChecked = Array.from(allCheckboxes).every(
-      (cb) => cb.checked || cb.closest("tr").style.display === "none"
-    );
+  <script>
+    document.querySelectorAll(".employee-checkbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", () => {
+        const allCheckboxes = document.querySelectorAll(
+          "#table2 tbody .employee-checkbox"
+        );
+        const allChecked = Array.from(allCheckboxes).every(
+          (cb) => cb.checked || cb.closest("tr").style.display === "none"
+        );
 
-    document.getElementById("select-all").checked = allChecked;
-  });
-});
+        document.getElementById("select-all").checked = allChecked;
+      });
+    });
 
-      function toggleSelectAll() {
-  // جلب حالة مربع "تحديد الكل"
-  const selectAllCheckbox = document.getElementById("select-all");
-  const isChecked = selectAllCheckbox.checked;
+    function toggleSelectAll() {
+      // جلب حالة مربع "تحديد الكل"
+      const selectAllCheckbox = document.getElementById("select-all");
+      const isChecked = selectAllCheckbox.checked;
 
-  // جلب كل صفوف الجدول
-  const rows = document.querySelectorAll("#table2 tbody tr");
+      // جلب كل صفوف الجدول
+      const rows = document.querySelectorAll("#table2 tbody tr");
 
-  rows.forEach((row) => {
-    // إذا كان الصف مرئيًا، قم بتحديد أو إلغاء تحديد مربع الاختيار
-    if (row.style.display !== "none") {
-      const checkbox = row.querySelector(".employee-checkbox");
-      if (checkbox) {
-        checkbox.checked = isChecked;
-      }
+      rows.forEach((row) => {
+        // إذا كان الصف مرئيًا، قم بتحديد أو إلغاء تحديد مربع الاختيار
+        if (row.style.display !== "none") {
+          const checkbox = row.querySelector(".employee-checkbox");
+          if (checkbox) {
+            checkbox.checked = isChecked;
+          }
+        }
+      });
     }
-  });
-}
 
     function filterTable() {
-  // جلب النص المدخل
-  let searchQuery = document.getElementById("search-query").value.toLowerCase();
+      // جلب النص المدخل
+      let searchQuery = document.getElementById("search-query").value.toLowerCase();
 
-  // تقسيم النص إلى كلمات مفتاحية
-  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+      // تقسيم النص إلى كلمات مفتاحية
+      let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
 
-  // جلب الجدول والصفوف
-  let table = document.getElementById("table2");
-  let rows = table.getElementsByTagName("tr");
+      // جلب الجدول والصفوف
+      let table = document.getElementById("table2");
+      let rows = table.getElementsByTagName("tr");
 
-  for (let i = 1; i < rows.length; i++) {
-    let cells = rows[i].getElementsByTagName("td");
-    let rowText = "";
+      for (let i = 1; i < rows.length; i++) {
+        let cells = rows[i].getElementsByTagName("td");
+        let rowText = "";
 
-    // دمج النصوص داخل الصف
-    for (let j = 0; j < cells.length; j++) {
-      rowText += cells[j].textContent.toLowerCase() + " ";
+        // دمج النصوص داخل الصف
+        for (let j = 0; j < cells.length; j++) {
+          rowText += cells[j].textContent.toLowerCase() + " ";
+        }
+
+        // التحقق من تطابق جميع الكلمات المفتاحية
+        let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+
+        // إظهار أو إخفاء الصف بناءً على النتيجة
+        rows[i].style.display = allMatch ? "" : "none";
+      }
     }
+    function filterTable1() {
+      // جلب النص المدخل
+      let searchQuery = document.getElementById("search-query1").value.toLowerCase();
 
-    // التحقق من تطابق جميع الكلمات المفتاحية
-    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
+      // تقسيم النص إلى كلمات مفتاحية
+      let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
 
-    // إظهار أو إخفاء الصف بناءً على النتيجة
-    rows[i].style.display = allMatch ? "" : "none";
-  }
-}
-function filterTable1() {
-  // جلب النص المدخل
-  let searchQuery = document.getElementById("search-query1").value.toLowerCase();
+      // جلب الجدول والصفوف
+      let table = document.getElementById("table1");
+      let rows = table.getElementsByTagName("tr");
 
-  // تقسيم النص إلى كلمات مفتاحية
-  let keywords = searchQuery.split(" ").filter((word) => word.trim() !== "");
+      for (let i = 1; i < rows.length; i++) {
+        let cells = rows[i].getElementsByTagName("td");
+        let rowText = "";
 
-  // جلب الجدول والصفوف
-  let table = document.getElementById("table1");
-  let rows = table.getElementsByTagName("tr");
+        // دمج النصوص داخل الصف
+        for (let j = 0; j < cells.length; j++) {
+          rowText += cells[j].textContent.toLowerCase() + " ";
+        }
 
-  for (let i = 1; i < rows.length; i++) {
-    let cells = rows[i].getElementsByTagName("td");
-    let rowText = "";
+        // التحقق من تطابق جميع الكلمات المفتاحية
+        let allMatch = keywords.every((keyword) => rowText.includes(keyword));
 
-    // دمج النصوص داخل الصف
-    for (let j = 0; j < cells.length; j++) {
-      rowText += cells[j].textContent.toLowerCase() + " ";
+        // إظهار أو إخفاء الصف بناءً على النتيجة
+        rows[i].style.display = allMatch ? "" : "none";
+      }
     }
+  </script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
 
-    // التحقق من تطابق جميع الكلمات المفتاحية
-    let allMatch = keywords.every((keyword) => rowText.includes(keyword));
-
-    // إظهار أو إخفاء الصف بناءً على النتيجة
-    rows[i].style.display = allMatch ? "" : "none";
-  }
-}
-    </script>
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-  </body>
 </html>

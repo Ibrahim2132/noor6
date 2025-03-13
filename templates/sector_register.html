@@ -23,10 +23,10 @@
           <span class="logoname">Your Logo</span>
         </div>
         <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
+          <li><a onclick="window.location.href='/';">Home</a></li>
           <li><a href="#about">About Us</a></li>
           <li><a href="#contact">Contact Us</a></li>
-          <li><button class="login-btn" onclick="window.location.href='login.html';">Login</button></li>
+          <li><button class="login-btn" onclick="window.location.href='login';">Login</button></li>
         </ul>
         <div class="burger-menu" onclick="toggleMenu(this)">
             <div class="line1"></div>
@@ -69,9 +69,7 @@
 </div>
     </main>
 
-    <footer>
-    
-      <!-- Remaining Sections (Companies Count, Company Icons) -->
+    <!-- <footer>
       <div class="footer-stats">
         <div class="stat">
           <h2>100</h2>
@@ -96,7 +94,7 @@
      
      
       </div>
-    </footer>
+    </footer> -->
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   </body>

@@ -17,6 +17,20 @@
       rel="stylesheet"
     />
     <style>
+       body{
+        background-image: url('static/assets/assets/back.jpg');
+        background-size: cover;
+         /* background: rgb(255 255 255 / 91%);  */
+         background-blend-mode: overlay;  
+       } 
+      
+      .students-section{
+      margin-top: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    border: 1px solid #00000017;
+}
       .navbar-img {
         transform: translateX(10px);
         width: 60px;
@@ -26,10 +40,11 @@
         
       }
       .div-title {
-    text-align: center; /* توسيط النص */
-    font-size: 24px; /* تكبير حجم الخط إذا لزم الأمر */
-    font-weight: bold; /* جعل النص عريضًا */
-    margin: 20px 0; /* إضافة مساحة من الأعلى والأسفل */
+        text-align: center;
+        font-size: 18px;
+        font-weight: 500;
+        margin: 20px 0 10px 0;
+        text-transform: capitalize;
 }
 
       .hidden {
@@ -53,6 +68,12 @@
       transform: translateX(10px); /* تحريك النقطة قليلاً إلى اليمين */
       display: inline-block;    /* جعل النقطة تظهر بشكل بلوك مدمج */
     }
+ 
+@keyframes hourglass {
+  0% { transform: rotate(0deg); }
+  66% { transform: rotate(180deg); } /* Rotate within 2s */
+  100% { transform: rotate(180deg); } /* Pause at 180deg for 1s */
+}
 
     </style>
   </head>
@@ -62,15 +83,15 @@
     <div class="main-content ">
       <!-- Sidebar -->
       <div id="sidebar" class="sidebar">
-        <div class="logo">
-          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+          <img class="navbar-img" src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" style=" height: auto;">
         </div>
         <ul>
-          <li>
-            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
-              ><i class="fa-solid fa-house"></i> Dashboard
-              <i class="fas fa-caret-down"></i
-            ></a>
+          <li data-target="dropdown-1" style="margin-top: 20px;">
+            <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+              <i class="fa-solid fa-house"></i> Dashboard
+              <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+            </a>
             <ul id="dropdown-1" class="dropdown">
               <li><a href="administrator"class="active-page" >  Administrators</a></li>
               <li><a href="permission" >  permission</a></li>
@@ -78,27 +99,20 @@
               <li><a href="managertomanger_adm">  Managers to manager</a></li>
               <li><a href="company_cards_adm">  company cards</a></li>
               
-              <li>
-                <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')">Users
-                  <i class="fas fa-caret-right"></i>
-                </a>
-                <ul id="nested-dropdown" class="dropdown nested-dropdown">
-                  <li><a href="student"> Add Students</a></li>
-                  <li><a href="employee"> Add Employees</a></li>
-                </ul>
-              </li>
+           
             
             </ul>
           </li>
-          <li>
-            <a href="notification_admin">
-              <i class="fa-solid fa-bell"></i>
-              Notifications
-              {% if notification_dot_display %}
-                <span class="notification-dot"></span>
-              {% endif %}
+          <li data-target="dropdown-1" style="margin-top: 5px;">
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')"><i class="fa-solid fa-users"></i>Users
+              <span class="arrow-icon" style="margin-left:20px ;"><i class="fa-solid fa-angle-down"></i></span>
             </a>
+            <ul id="nested-dropdown" class="dropdown nested-dropdown">
+              <li><a href="student"> Add Students</a></li>
+              <li><a href="employee"> Add Employees</a></li>
+            </ul>
           </li>
+         
           <li>
             <a href="#"><i class="fa-solid fa-globe"></i> Language</a>
           </li>
@@ -115,12 +129,39 @@
       <div class="burger-icon"></div>
       <div class="burger-icon"></div>
     </div>
+    
       <div class="main-section">
          <!-- Navigation Steps -->
-         <div class="navigation-steps">
-          <i class="fas fa-home"></i>
-          <span>Home > Dashboard > Administrator </span>
-        </div>
+<div class="navigation-steps">
+  <div>
+    <i class="fas fa-home"></i>
+    <span>Home > Dashboard > Administrator </span>
+  </div>
+  <div class="notify-bell">
+    <a href="notification" 
+    style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+    onmouseover="this.style.color='#479b8a'" 
+    onmouseout="this.style.color='#0D7C66'">
+   
+   <i class="fa-solid fa-bell"></i>
+ 
+   {% if notification_dot_display %}
+     <span style="
+       position: absolute;
+       top: 1px;
+       left: 11px;
+       width: 10px;
+       height: 10px;
+       background: red;
+       border-radius: 50%;
+       display: inline-block;
+     "></span>
+   {% endif %}
+ </a>
+ 
+    
+  </div><!-- Notification Icon -->
+</div>
 
         <div class="first-div">
           
@@ -183,7 +224,8 @@
           {% endif %}
           
           <div class="students-section">
-            <h1 class="div-title">Students Awaiting Approval</h1>
+            <h1 class="div-title"><i class="fa-solid fa-hourglass-start" style=" display: inline-block;
+  animation: hourglass 2s infinite linear; margin-right: 6px;"></i>Students Awaiting Approval</h1>
             
             <table  border=".5" class="table-section">
               <thead>
@@ -213,7 +255,10 @@
               </tbody>
             </table>
             <br>
-            <h1 class="div-title">accepted students</h1>
+           
+          </div> 
+          <div class="students-section">
+            <h1 class="div-title"> <i class="fa-solid fa-check"></i>accepted students</h1>
             <table border=".5" class="table-section">
               <thead>
                 <tr>
@@ -252,7 +297,7 @@
                 {% endfor %}
               </tbody>
             </table>
-          </div> 
+          </div>
         </div>
 
       <script src="{{ url_for('static', filename='js/script.js') }}"></script>

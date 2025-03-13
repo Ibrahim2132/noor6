@@ -17,7 +17,19 @@
       rel="stylesheet"
     />
     <style>
+      /* body {
+            background-image: url('static/assets/question.jpg');
+            background-color: white;
+            background-size: cover;
+            background-blend-mode: overlay;
+        } */
       
+        body {
+            background-image: url('static/assets/assets/back.jpg');
+            background-size: cover;
+            background-blend-mode: overlay;
+        }
+
       .navbar-img {
         transform: translateX(10px);
         width: 60px;
@@ -35,15 +47,15 @@
   <body>
     <div class="main-content">
       <div id="sidebar" class="sidebar">
-        <div class="logo">
-          <img class="navbar-img"  src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" />
+        <div class="logo" style="display: flex; justify-content: center; align-items: center; ">
+          <img class="navbar-img" src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}" alt="Logo" style=" height: auto;">
         </div>
         <ul>
-          <li>
-            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')"
-              ><i class="fa-solid fa-house"></i> Dashboard
-              <i class="fas fa-caret-down"></i
-            ></a>
+          <li data-target="dropdown-1" style="margin-top: 20px;">
+            <a href="#" id="dashboard-link" class="dropdown-toggle" onclick="toggleDropdown(event, 'dropdown-1')">
+              <i class="fa-solid fa-house"></i> Dashboard
+              <span class="arrow-icon" style="margin-left:10px ;"><i class="fa-solid fa-angle-down"></i></span>
+            </a>
             <ul id="dropdown-1" class="dropdown">
               <li><a href="employee_profile"> profile</a></li>
             </ul>
@@ -73,10 +85,36 @@
 
       <div class="main-section">
         <!-- Navigation Steps -->
-        <div class="navigation-steps">
-          <i class="fas fa-home"></i>
-          <span>Home > Dashboard >Questions  </span>
-        </div>
+<div class="navigation-steps">
+  <div>
+    <i class="fas fa-home"></i>
+    <span>Home > Dashboard >Questions  </span>
+  </div>
+  <div class="notify-bell">
+    <a href="notification" 
+    style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+    onmouseover="this.style.color='#479b8a'" 
+    onmouseout="this.style.color='#0D7C66'">
+   
+   <i class="fa-solid fa-bell"></i>
+ 
+   {% if notification_dot_display %}
+     <span style="
+       position: absolute;
+       top: 0px;
+       right: 0px;
+       width: 10px;
+       height: 10px;
+       background: red;
+       border-radius: 50%;
+       display: inline-block;
+     "></span>
+   {% endif %}
+ </a>
+ 
+    
+  </div><!-- Notification Icon -->
+</div>
         <div class="first-div">
             <div class="question-div">
               <div class="container">
@@ -92,7 +130,7 @@
                    
                       <div class="card">
                         <a href="{{ url_for('edit_question_Multiple_Multiple', lesson_id=lesson_id) }}">
-                        <img src="{{ url_for('static', filename='assets/mcq-one.png') }}" alt="Image 1">
+                        <img src="{{ url_for('static', filename='assets/multi-one.svg') }}" alt="Image 1">
                         <h3>Multiple Choice Multiple Answers</h3>
                       </a>
                       </div>
@@ -101,7 +139,7 @@
                     
                       <div class="card">
                         <a href="{{ url_for('edit_question_true_or_false', lesson_id=lesson_id) }}">
-                        <img src="{{ url_for('static', filename='assets/true&false.png') }}" alt="Image 2">
+                        <img src="{{ url_for('static', filename='assets/true&false.svg') }}" alt="Image 2">
                         <h3>True or False</h3>
                       </a>
                       </div>
@@ -111,7 +149,7 @@
                       
                       <div class="card">
                         <a href="{{ url_for('edit_fill_in_blank', lesson_id=lesson_id) }}">
-                        <img src="{{ url_for('static', filename='assets/fill in the blank.png') }}" alt="Image 3">
+                        <img src="{{ url_for('static', filename='assets/fill in the blank.svg') }}" alt="Image 3">
                         <h3>Fill in the Blank</h3>
                       </a>
                       </div>
@@ -120,7 +158,7 @@
                     <div class="card">
     
                         <a href="{{ url_for('edit_question_sequence', lesson_id=lesson_id) }}">
-                        <img src="{{ url_for('static', filename='assets/seq.png') }}" alt="Image 3">
+                        <img src="{{ url_for('static', filename='assets/seq.svg') }}" alt="Image 3">
                         <h3>Sequence</h3>
                       </a>
                   
@@ -128,7 +166,7 @@
                       <div class="card">
          
                         <a href="{{ url_for('edit_matching', lesson_id=lesson_id) }}">
-                        <img src="{{ url_for('static', filename='assets/match.png') }}" alt="Image 3">
+                        <img src="{{ url_for('static', filename='assets/match.svg') }}" alt="Image 3">
                         <h3>Matching</h3>
                         </a>
                       </div>
@@ -136,7 +174,7 @@
                 
                         <a href="{{ url_for('edit_question_Multiple_single', lesson_id=lesson_id) }}">
                           
-                        <img src="{{ url_for('static', filename='assets/mcq-multi.png') }}" alt="Image 1">
+                        <img src="{{ url_for('static', filename='assets/mcq-multi.svg') }}" alt="Image 1">
                         <h3>Multiple choice one answer</h3>
                         </a>
                       </div>
@@ -144,21 +182,21 @@
                       <div class="card">
                         <a href="{{ url_for('edit_classification', lesson_id=lesson_id) }}">
                     
-                        <img src="{{ url_for('static', filename='assets/classification.png') }}" alt="Image 1">
+                        <img src="{{ url_for('static', filename='assets/classification.svg') }}" alt="Image 1">
                         <h3>classification </h3>
                         </a>
                       </div>
                       <div class="card">
                         
                         <a href="{{ url_for('edit_fill_in_blank_choice', lesson_id=lesson_id) }}">
-                        <img src="{{ url_for('static', filename='assets/fill in the blank mc.png') }}" alt="Image 1">
+                        <img src="{{ url_for('static', filename='assets/fill in the blank mc.svg') }}" alt="Image 1">
                         <h3>Fill the blank MCQ</h3>
                      
                         </a>
                       </div>
                       <div class="card">
                         <a href="{{ url_for('ai', lesson_id=lesson_id) }}">
-                        <img src="{{ url_for('static', filename='assets/Ai.png') }}" alt="Image 1">
+                        <img src="{{ url_for('static', filename='assets/Ai.svg') }}" alt="Image 1">
                         <h3>Generate with AI</h3>
                       </a>
                       </div>
@@ -174,7 +212,7 @@
                                 <div class="card">
                                   <a href="{{ url_for('article', lesson_id=lesson_id) }}">
                                   
-                                  <img src="{{ url_for('static', filename='assets/article.png') }}" alt="Image 1">
+                                  <img src="{{ url_for('static', filename='assets/article.svg') }}" alt="Image 1">
                                   <h3>Article</h3>
                                 </a>
                                 </div>
@@ -190,38 +228,38 @@
                      
                       <div class="card">
                         <a href="{{ url_for('Word_Puzzle', lesson_id=lesson_id) }}">
-                          <img src="{{ url_for('static', filename='assets/games.png') }}" alt="Image 1">
+                          <img src="{{ url_for('static', filename='assets/games.svg') }}" alt="Image 1">
                           <h3>word</h3>
                         </a>
                       </div>
                           <div class="card">
                             <a href="{{ url_for('match', lesson_id=lesson_id) }}">
-                              <img src="{{ url_for('static', filename='assets/Game1.png') }}" alt="Image 1">
+                              <img src="{{ url_for('static', filename='assets/Game1.svg') }}" alt="Image 1">
                               <h3>Match</h3>
                             </a>
                             </div>
                             <div class="card">
                               <a href="{{ url_for('reverse', lesson_id=lesson_id) }}">
-                                <img src="{{ url_for('static', filename='assets/game2.png') }}" alt="Image 1">
+                                <img src="{{ url_for('static', filename='assets/game2.svg') }}" alt="Image 1">
                                 <h3>Arrange</h3>
                               </a>
                               </div>
                               <div class="card">
                                 <a href="{{ url_for('traslate', lesson_id=lesson_id) }}">
-                                  <img src="{{ url_for('static', filename='assets/game3.png') }}" alt="Image 1">
+                                  <img src="{{ url_for('static', filename='assets/game3.svg') }}" alt="Image 1">
                                   <h3>translate arabic</h3>
                                 </a>
                                 </div>
 
                                 <div class="card">
                                   <a href="{{ url_for('traslate_icon', lesson_id=lesson_id) }}">
-                                    <img src="{{ url_for('static', filename='assets/games.png') }}" alt="Image 1">
+                                    <img src="{{ url_for('static', filename='assets/games.svg') }}" alt="Image 1">
                                     <h3>translate emoji</h3>
                                   </a>
                                   </div>
                                   <div class="card">
                                     <a href="{{ url_for('quess', lesson_id=lesson_id) }}">
-                                      <img src="{{ url_for('static', filename='assets/games.png') }}" alt="Image 1">
+                                      <img src="{{ url_for('static', filename='assets/games.svg') }}" alt="Image 1">
                                       <h3>quess</h3>
                                     </a>
                                     </div>

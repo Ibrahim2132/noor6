@@ -23,7 +23,7 @@
           <span class="logoname">Your Logo</span>
         </div>
         <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
+          <li><a onclick="window.location.href='/';">Home</a></li>
           <li><a href="#about">About Us</a></li>
           <li><a href="#contact">Contact Us</a></li>
           <li><button class="login-btn" onclick="window.location.href='/';">Register</button></li>
@@ -53,7 +53,7 @@
         </div>
       </div>
        <div id="code-container" class="code-container hidden">
-    <h1>Please Enter your Account type</h1>
+    <h1>Choose your Account type</h1>
     <form action="/validate_code1" method="POST">
       <div class="input-container">
           <label for="codeInput">Account type</label>
@@ -73,7 +73,7 @@
 </div>
     </main>
 
-    <footer>
+    <!-- <footer>
     
       <div class="footer-stats">
         <div class="stat">
@@ -99,7 +99,7 @@
      
      
       </div>
-    </footer>
+    </footer> -->
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
   </body>

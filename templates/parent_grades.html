@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Grades</title>
+</head>
+<body>
+    
+
+    {% if exam_grades %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Exam Name</th>
+                    <th>Grade</th>  <!-- عدّل هذا العمود -->
+                    <th>Times Taken</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lesson_id, grade_data in exam_grades.items() %}
+                    <tr onclick="window.location='/index2?lesson_id={{ lesson_id }}';" style="cursor: pointer;">
+                        <td>{{ grade_data.exam_name }}</td>
+                        <td>{{ grade_data.total_grade }} / {{ grade_data.max_total_grade }}</td>  <!-- اعرض الدرجة من الدرجة الكلية -->
+                        <td>{{ grade_data.exams_taken }}</td> 
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No grades found for this student.</p>
+    {% endif %}
+</body>
+</html>

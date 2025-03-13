@@ -35,7 +35,7 @@
         <tbody>
             {% for answer in answers %}
                 <tr>
-                   <td>{{ answer.question_id }}</td>
+                   <td>{{ loop.index }}</td>  <!-- تم التغيير هنا -->
                    <td>{{ answer.is_correct }}</td>
                     <td>{{ answer.time_taken }}</td>
                     <td>{{ answer.time_allowed }}</td>

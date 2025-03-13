@@ -16,6 +16,8 @@ from werkzeug.utils import secure_filename
 import os
 import re
 import json
+from datetime import datetime, timedelta
+
 
 app = Flask(__name__)
 CORS(app)
@@ -444,16 +446,25 @@ class category(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now) 
     employee_id = db.Column(db.Integer, nullable=False)  
 
-class UserAnswer2(db.Model):
+class UserAnswer4(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)  # ID المستخدم
     question_id = db.Column(db.Integer, nullable=False)  # ID السؤال
     lesson_id = db.Column(db.Integer, nullable=False)  # ID الدرس
     is_correct = db.Column(db.Boolean, default=False)  # هل الإجابة صحيحة؟
     time_taken = db.Column(db.Float, nullable=False)  # الوقت المستغرق لحل السؤال
-    grade = db.Column(db.Integer, nullable=False)  # درجة السؤال
+    grade = db.Column(db.Integer, nullable=False)  
+    grade_real=db.Column(db.Integer, nullable=False) 
     time_allowed = db.Column(db.Float, nullable=False) 
+    type = db.Column(db.String(200), nullable=True) 
     created_at = db.Column(db.DateTime, default=datetime.now)
+    exams_taken = db.Column(db.Integer, default=0)  # إضافة هذا العمود
+
+class UserExam1(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lesson_id = db.Column(db.Integer, nullable=False)
+    exams_taken = db.Column(db.Integer, default=0)
+    last_exam_date = db.Column(db.DateTime, default=datetime.now)
 
 class ManagerEmployee(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -477,6 +488,11 @@ class ManagerEmployee(db.Model):
     branch = db.Column(db.String(100), nullable=True) 
     manager_id = db.Column(db.Integer, nullable=True)
     manager_name = db.Column(db.String(50), nullable=True)
+
+class prvatebank(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    lesson_id = db.Column(db.Integer, nullable=False)
+    student_id = db.Column(db.Integer, nullable=False)
 
 class head(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -773,6 +789,141 @@ class Questionfort_or_f(db.Model):
 with app.app_context():
     #db.drop_all()
     db.create_all()
+
+
+@app.route('/parent_grades')
+def parent_grades():
+    user_id = request.args.get('user_id')  # احصل على user_id من الـ query string
+    if not user_id:
+        return "User ID is required in the query string."
+
+    # استعلام لاسترجاع جميع إجابات المستخدم، مرتبة حسب lesson_id (الامتحان)
+    user_answers = UserAnswer4.query.filter_by(user_id=user_id).order_by(UserAnswer4.lesson_id).all()
+
+    # تجميع الدرجات لكل امتحان
+    exam_grades = {}
+    for answer in user_answers:
+        if answer.lesson_id not in exam_grades:
+            user_exam = UserExam1.query.filter_by(lesson_id=answer.lesson_id).first()
+            exams_taken = user_exam.exams_taken if user_exam else 0 
+            exam_grades[answer.lesson_id] = {'total_grade': 0,'exams_taken': exams_taken ,'max_total_grade': 0, 'exam_name': f'Exam {answer.lesson_id}'}  # يمكنك استبدال exam_name باسم الامتحان الفعلي إذا كان لديك
+        exam_grades[answer.lesson_id]['total_grade'] += answer.grade
+        
+        exam_grades[answer.lesson_id]['max_total_grade'] += answer.grade_real
+
+    return render_template('parent_grades.html', exam_grades=exam_grades, user_id=user_id,exams_taken=exams_taken)
+
+company_nour = """
+"أنت روبوت دردشة تم تدريبه خصيصًا على فهم نظام عمل موقع شركة نور التعليمية في عمان. مهمتك هي الإجابة على أسئلة المستخدمين حول كيفية عمل الموقع، مع التركيز على عملية التسجيل، والأدوار المختلفة للمستخدمين، وكيفية تفاعلهم مع بعضهم البعض.
+
+إليك ملخص لكيفية عمل الموقع:
+
+التسجيل:
+
+أول من يسجل هو المدير.
+
+يقوم المدير بإنشاء أكواد خاصة.
+
+يعطي المدير هذه الأكواد إلى المنظمين.
+
+يستخدم المنظمون الأكواد للتسجيل في الموقع باستخدام البريد الإلكتروني وكلمة المرور.
+
+بعد التسجيل، يقوم المنظمون بإنشاء فروع الشركة.
+
+يعطي المنظمون أكوادًا أخرى لرؤساء الأقسام.
+
+يستخدم رؤساء الأقسام الأكواد للتسجيل في الموقع باستخدام البريد الإلكتروني وكلمة المرور.
+
+بعد التسجيل، يقوم رؤساء الأقسام بإضافة بيانات الموظفين والطلاب.
+
+يعطي رؤساء الأقسام أكوادًا أخرى للموظفين والطلاب.
+
+يستخدم الموظفون والطلاب الأكواد للتسجيل في الموقع باستخدام البريد الإلكتروني وكلمة المرور بالإضافة إلى بيانات أخرى.
+
+بعد تسجيل الطالب، يجب أن يتم قبول تسجيله من قبل رئيس القسم قبل أن يتمكن من الوصول إلى المواد التعليمية.
+
+الأدوار والصلاحيات:
+
+المدير: لديه صلاحيات كاملة على الموقع.
+
+المنظمون: مسؤولون عن إنشاء فروع الشركة.
+
+رؤساء الأقسام: مسؤولون عن إضافة بيانات الموظفين والطلاب، وقبول تسجيل الطلاب.
+
+الموظفون: يقومون بإنشاء امتحانات، وورش عمل، ودروس مخصصة. يمكنهم الاستعانة بالذكاء الاصطناعي لتحديد الوقت المناسب للامتحانات. تتضمن أنواع أسئلة الامتحانات: أكمل، صح وخطأ، اختيار من متعدد، وتوصيل/إدراج.
+
+الطلاب: يتلقون الامتحانات والدروس، ويتم تقييمهم من قبل الموظفين.
+
+التفاعل:
+
+يرسل الموظفون الامتحانات والدروس إلى الطلاب.
+
+يتابع الموظفون درجات الطلاب وتقدمهم.
+
+يمكن للموظفين منح جوائز للطلاب المتميزين.
+
+عندما يسألك المستخدم سؤالاً، قم بما يلي:
+
+فهم السؤال: تأكد من أنك فهمت السؤال جيدًا قبل الإجابة.
+
+الاستناد إلى الملخص: استخدم الملخص أعلاه كأساس لإجاباتك.
+
+التفصيل: قدم إجابات مفصلة وواضحة.
+
+الأمثلة: استخدم أمثلة لتوضيح الأفكار إذا لزم الأمر.
+
+اللهجة: حافظ على لهجة ودية ومهنية.
+
+مثال:
+
+المستخدم: "كيف يمكنني التسجيل كطالب؟"
+
+أنت: "للتسجيل كطالب، تحتاج إلى الحصول على كود من رئيس القسم المسؤول عنك. بعد ذلك، يمكنك الذهاب إلى صفحة التسجيل وإدخال الكود مع بريدك الإلكتروني وكلمة المرور وبعض البيانات الأخرى المطلوبة. بعد التسجيل، سيحتاج رئيس القسم إلى قبول تسجيلك قبل أن تتمكن من الوصول إلى المواد التعليمية."
+
+تذكر أن هدفك هو مساعدة المستخدمين على فهم كيفية عمل موقع شركة نور التعليمية."
+"""
+
+
+def generate_chatbot_nour(prompt):
+    augmented_prompt = f"{company_nour}\n\n{prompt}"
+    try:
+        response = model.generate_content(augmented_prompt)
+        return response.text
+    except Exception as e:
+        print(f"Error generating response: {e}")
+        return "حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى."
+
+@app.route('/chatbot_nour', methods=['POST'])
+def chatbot_nour():
+    message = request.form['message']
+    response = generate_chatbot_nour(message)
+    return jsonify({'response': response})
+
+@app.route('/chat_nour', methods=['GET', 'POST'])
+def chat_nour():
+    return render_template('chat_nour.html')
+@app.route('/student_grades')
+def student_grades():
+    user_id = session.get('student_id')  # احصل على user_id من الـ query string
+
+    if not user_id:
+        return "User ID is required in the query string."
+
+    # استعلام لاسترجاع جميع إجابات المستخدم، مرتبة حسب lesson_id (الامتحان)
+    user_answers = UserAnswer4.query.filter_by(user_id=user_id).order_by(UserAnswer4.lesson_id).all()
+
+    # تجميع الدرجات لكل امتحان
+    exam_grades = {}
+    for answer in user_answers:
+        if answer.lesson_id not in exam_grades:
+            user_exam = UserExam1.query.filter_by(lesson_id=answer.lesson_id).first()
+            exams_taken = user_exam.exams_taken if user_exam else 0 
+            exam_grades[answer.lesson_id] = {'total_grade': 0,'exams_taken': exams_taken ,'max_total_grade': 0, 'exam_name': f'Exam {answer.lesson_id}'}  # يمكنك استبدال exam_name باسم الامتحان الفعلي إذا كان لديك
+        exam_grades[answer.lesson_id]['total_grade'] += answer.grade
+        
+        exam_grades[answer.lesson_id]['max_total_grade'] += answer.grade_real
+
+    return render_template('student_grades.html', exam_grades=exam_grades, user_id=user_id,exams_taken=exams_taken)
 @app.route('/student_lessons')
 def student_lessons():
     student_id = session.get('student_id')
@@ -865,7 +1016,17 @@ def update_preferences():
     return render_template('update_preferences.html')
 @app.route('/exam', methods=['GET', 'POST'])
 def exam():
-    lesson_id = request.args.get('lesson_id', type=int)
+    lesson_id = request.args.get('lesson_id')  # استخراج قيمة lesson_id
+    data_type = request.args.get('type')      # استخراج قيمة type
+
+    if lesson_id:
+        print(f"Lesson ID: {lesson_id}")
+    else:
+        print("Lesson ID not provided.")
+    if data_type=='s':
+        id=session.get('student_id')
+    else:
+        id=session.get('employee_id')
     if not lesson_id:
         return "Lesson ID is required", 400
 
@@ -891,7 +1052,18 @@ def exam():
         session.pop('question_order', None)
         session.pop('current_question_index', None)
         session.pop('current_lesson_id', None)
-        return redirect(url_for('exam_summary', lesson_id=lesson_id))
+         # Update UserExam1 table
+        user_exam = UserExam1.query.filter_by(lesson_id=lesson_id).first()
+       
+        if user_exam:
+            user_exam.exams_taken += 1
+            user_exam.last_exam_date = datetime.now()  # Update last exam date
+        else:
+            user_exam = UserExam1( lesson_id=lesson_id, exams_taken=1)
+            db.session.add(user_exam)
+
+        db.session.commit()
+        return redirect(url_for('index2', lesson_id=lesson_id))
 
     # get the question using the question id from the question order
     current_question_id = session['question_order'][current_question_index]
@@ -1069,14 +1241,16 @@ def exam():
             if is_correct:
                 question_grade = current_question.grade
 
-        new_answer = UserAnswer2(
-            user_id=session.get('user_id'),
+        new_answer = UserAnswer4(
+            user_id=id,
             question_id=current_question.question_id,
             time_allowed=current_question.times,
             lesson_id=lesson_id,
             is_correct=is_correct,
             time_taken=time_taken,
-            grade=question_grade
+            grade=question_grade,
+            grade_real=current_question.grade, 
+            type=id
         )
         db.session.add(new_answer)
         db.session.commit()
@@ -1086,6 +1260,11 @@ def exam():
 
     question_data = {
         'type': current_question.type,
+        'difficulty': current_question.difficulty,
+        'importance': current_question.importance,
+        'bloom_taxonomy': current_question.bloom_taxonomy,
+        'grade': current_question.grade,
+        'times': current_question.times,
         'question_text': current_question.question_name if isinstance(current_question,
                                                                      Question_Multipleone_choice) or isinstance(
             current_question, QuestionMultipleMultiple_choice) or isinstance(current_question,
@@ -1178,7 +1357,7 @@ def exam_summary():
     if not lesson_id or not user_id:
       return "Lesson ID and User ID is required", 400
 
-    user_answers = UserAnswer2.query.filter_by(user_id=user_id, lesson_id=lesson_id).all()
+    user_answers = UserAnswer4.query.filter_by(user_id=user_id, lesson_id=lesson_id).all()
 
     total_grade = sum([answer.grade for answer in user_answers if answer.is_correct])
     total_questions = len(user_answers)
@@ -1196,6 +1375,75 @@ def exam_summary():
       answers=user_answers,  
       correct_in_time_count = correct_in_time_count
 
+    )
+@app.route('/index2')
+def index2():
+    lesson_id = request.args.get('lesson_id', type=int)
+    user_id = session.get('user_id')
+
+    if not lesson_id or not user_id:
+      return "Lesson ID and User ID is required", 400
+
+    user_answers = UserAnswer4.query.filter_by(user_id=user_id, lesson_id=lesson_id).all()
+
+    total_grade = sum([answer.grade for answer in user_answers if answer.is_correct])
+    total_questions = len(user_answers)
+    correct_answers_count = sum([1 for answer in user_answers if answer.is_correct])
+    incorrect_answers_count = total_questions - correct_answers_count
+    correct_in_time_count = sum([1 for answer in user_answers if answer.is_correct and answer.time_taken <= answer.time_allowed])
+    late=total_questions - correct_in_time_count
+    
+    percentage_correct_In_Time= (correct_in_time_count / total_questions) * 100
+    
+    # حساب النسبة المئوية
+    if total_questions > 0:
+        percentage_correct = (correct_answers_count / total_questions) * 100
+    else:
+        percentage_correct = 0  # أو None، أو قيمة افتراضية أخرى
+
+    # Get exam data from UserExam1 table
+    user_exam = UserExam1.query.filter_by(lesson_id=lesson_id).first()
+    print(f"UserExam1 object: {late}")
+    print(f"UserExam1 object: {user_exam}")  # Print the UserExam1 object
+    if user_exam:
+        num_practices = user_exam.exams_taken
+        last_practice_date = user_exam.last_exam_date
+    else:
+        num_practices = 0
+        last_practice_date = None
+
+    print(f"num_practices: {num_practices}, type: {type(num_practices)}")  # Print num_practices and its type
+    print(f"last_practice_date: {last_practice_date}, type: {type(last_practice_date)}")  # Print last_practice_date and its type
+
+    # Calculate time since last practice
+    if last_practice_date:
+        time_since_last_practice = datetime.now() - last_practice_date
+        if time_since_last_practice < timedelta(hours=24):
+            last_practice_text = f"{int(time_since_last_practice.total_seconds() // 3600)} hours ago"
+        elif time_since_last_practice < timedelta(days=30):
+             last_practice_text = f"{int(time_since_last_practice.days)} days ago"
+        else:
+            last_practice_text = last_practice_date.strftime("%Y-%m-%d")
+    else:
+        last_practice_text = "No practices yet"
+
+    print(f"last_practice_text: {last_practice_text}, type: {type(last_practice_text)}")  # Print last_practice_text and its type
+
+    return render_template(
+      'index2.html', 
+      total_grade=total_grade,
+      total_questions=total_questions,
+      correct_answers_count=correct_answers_count,
+      incorrect_answers_count=incorrect_answers_count,
+      answers=user_answers,  
+      percentage_correct_In_Time=percentage_correct_In_Time,
+      correct_in_time_count = correct_in_time_count,
+      percentage_correct=percentage_correct,  
+      num_practices=num_practices,  # عدد مرات الممارسة
+      last_practice_text=last_practice_text,   # تاريخ آخر ممارسة
+      late=late,
+      
+      lesson_id=lesson_id
     )
 @app.route('/signup_education', methods=['GET', 'POST'])
 def signup_education():
@@ -4373,7 +4621,7 @@ def view_lesson():
     if not lesson:
         return "Lesson not found", 404
 
-    return render_template('view_lesson.html', lesson=lesson)
+    return render_template('view_lesson.html', lesson=lesson,lesson_id=lesson_id)
 def delete_file(file_path):
     full_path = os.path.join('static', file_path)
     if os.path.exists(full_path):
@@ -4972,10 +5220,13 @@ def signup_personal():
     return render_template('signup_personal.html')
 
 
-
 @app.route('/', methods=['GET', 'POST'])
+def home():
+    return render_template('index.html') 
+
+@app.route('/register', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')    
+    return render_template('register.html')    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -5477,7 +5728,13 @@ def validate_code():
                 break
 
     sector = Sector.query.filter_by(code=sector_code).first()  
-
+    if user_code and user_code.lower().startswith('pa'):  # تحقق من البادئة "pa" (بغض النظر عن حالة الأحرف)
+        try:
+            person_code = int(user_code[2:])  # استخرج الرقم بعد "pa" وحاول تحويله إلى عدد صحيح
+            return redirect(url_for('parent_grades', user_id=person_code))  # توجيه إلى parent_grades مع تمرير user_id
+        except ValueError:
+            print("Invalid code format. Please enter 'pa' followed by a number.", "error")
+            return redirect(url_for('sector_register'))  # أو صفحة مناسبة في حالة وجود تنسيق غير صحيح
     if sector:
         if user_type == 'S': 
             return redirect(url_for('signup_student', sector_code=sector_code, id=person_code))
@@ -6416,6 +6673,7 @@ def owner():
         state = request.form.get('state')
         country = request.form.get('country')
         description = request.form.get('description')
+        email = request.form.get('email')
 
        
         if len(foundation_name) < 3:
@@ -6433,7 +6691,7 @@ def owner():
         sector.state = state
         sector.country = country
         sector.description = description or None
-
+        sector.email=email
         db.session.commit()
         return redirect(url_for('owner'))
 
@@ -6735,6 +6993,43 @@ def show_stu():
     employees = SectorStudent8.query.filter_by(code=sector_code).all()
     return render_template('show_stu.html', employees=employees,sector_code=sector_code,organizer_id=organizer_id,sector_id=sector_id)
 
+@app.route('/private_bank')
+def private_bank():
+    lesson_id = request.args.get('id')
+    student_id = session.get('student_id')
+
+    if student_id and lesson_id:
+        # التحقق مما إذا كان السجل موجودًا بالفعل
+        existing_record = prvatebank.query.filter_by(lesson_id=lesson_id, student_id=student_id).first()
+
+        if existing_record:
+            return f"Lesson ID {lesson_id} already saved for student ID {student_id}"
+        else:
+            # إنشاء السجل الجديد وإضافته
+            student_lesson = prvatebank(lesson_id=lesson_id, student_id=student_id)
+            db.session.add(student_lesson)
+            db.session.commit()
+
+            return f"Lesson ID {lesson_id} saved for student ID {student_id}"
+    else:
+        return "Error: Student ID not found in session or Lesson ID is missing."
+@app.route('/privatebank')
+def privatebank():
+    student_id = session.get('student_id')
+    if not student_id:
+        return redirect(url_for('access'))  # Redirect if student_id is missing
+
+    # استعلام عن جميع الدروس التي قام الطالب بتسجيلها في جدول prvatebank
+    student_lessons_records = prvatebank.query.filter_by(student_id=student_id).all()
+
+    # استخراج معرفات الدروس من سجلات prvatebank
+    lesson_ids = [record.lesson_id for record in student_lessons_records]
+
+    # استعلام عن تفاصيل الدروس من جدول Lesson8 بناءً على معرفات الدروس
+    lessons = Lesson8.query.filter(Lesson8.id.in_(lesson_ids)).all()
+
+    return render_template('privatebank.html', lessons=lessons)
+
 @app.route('/permission', methods=['GET', 'POST'])
 def permission():
     user_id = session.get('user_id')
@@ -6963,7 +7258,7 @@ if not GOOGLE_API_KEY:
     raise ValueError("No API key found, please set it in the .env file")
 
 genai.configure(api_key=GOOGLE_API_KEY) # Changed here
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel('gemini-2.0-flash-thinking-exp-01-21')
 
 # Test the connection to see if it works
 try:
@@ -6980,7 +7275,8 @@ def generate_true_false_questions(text,num):
         بناءً على النص التالي، قم بإنشاء {num} أسئلة صح أو خطأ (True/False) مباشرة وواضحة.
         يجب أن تكون الأسئلة متنوعة ومختلفة وتستخلص من المعلومات الموجودة في النص تحديدًا.
         يجب أن تكون الأسئلة واقعية وتعكس محتوى النص بشكل دقيق.
-        يجب أن يكون كل سؤال وإجابته في سطر منفصل، بحيث يبدأ السطر بالسؤال، يتبعه فاصلة (,) ثم الإجابة الصحيحة (True أو False).
+        يجب أن يكون كل سؤال وإجابته في سطر منفصل، بحيث يبدأ السطر بالسؤال، يتبعه فاصلة (,) ثم الإجابة الصحيحة (True أو False). مترقمش الاسئله اللى طالعه او تحط اى علامه
+        ونوع اعمل اسئله true على false مش كله false
         مثال:
         هل الشمس نجم؟,True
         هل الأرض مسطحة؟,False
@@ -6993,7 +7289,7 @@ def generate_true_false_questions(text,num):
         print(f"Error generating true/false questions: {e}")
         return None
 
-def generate_matching_questions(text):
+def generate_matching_questions(text,num):
     try:
         prompt = f"""
         بناءً على النص التالي، قم بإنشاء 4 أسئلة مطابقة (Matching Questions) مباشرة وواضحة.
@@ -7033,7 +7329,7 @@ def generate_matching_questions(text):
     except Exception as e:
         print(f"Error generating matching questions: {e}")
         return None
-def generate_mcq_questions(textc):
+def generate_mcq_questions(text,num):
     try:
         prompt = f"""
         بناءً على النص التالي، قم بإنشاء {num} أسئلة اختيار من متعدد (Multiple Choice Questions) مباشرة وواضحة.
@@ -7115,10 +7411,10 @@ def generate_multiple_multiple_choice_questions(text,num):
     except Exception as e:
         print(f"Error generating Multiple multiple choice questions: {e}")
         return None
-def generate_fill_in_the_blank_questions(text):
+def generate_fill_in_the_blank_questions(text,num):
     try:
         prompt = f"""
-        بناءً على النص التالي، قم بإنشاء 4 أسئلة "أكمل الفراغ" (Fill in the blanks) مباشرة وواضحة.
+        بناءً على النص التالي، قم بإنشاء  4 أسئلة "أكمل الفراغ" (Fill in the blanks) مباشرة وواضحة.
         يجب أن تكون الأسئلة متنوعة ومختلفة وتستخلص من المعلومات الموجودة في النص تحديدًا.
         يجب أن تكون الأسئلة واقعية وتعكس محتوى النص بشكل دقيق.
         يجب أن يكون كل سؤال عبارة عن فراغ واحد فقط مع إجابة واحدة فقط.
@@ -7193,7 +7489,7 @@ def generate_essay_questions(text,num):
         print(f"Error generating essay questions: {e}")
         return None
 
-def generate_sequence_questions(text):
+def generate_sequence_questions(text,num):
     try:
       prompt = f"""
         بناءً على النص التالي، قم بإنشاء سؤال يتطلب ترتيب إجابات مع 4 خيارات إجابة مباشرة وواضحة.
@@ -7260,7 +7556,8 @@ def parse_matching_questions(response_text):
     if not response_text:
         return []
     try:
-         questions = json.loads(response_text)
+         cleaned_json = clean_json_response(response_text)
+         questions = json.loads(cleaned_json)
          formatted_questions = []
          for q in questions:
               formatted_questions.append({
@@ -7278,21 +7575,60 @@ def parse_matching_questions(response_text):
     except Exception as e:
         print(f"Error parsing matching questions: {e}")
         return []
+def clean_json_response(text):
+    """
+    حاول تنظيف النص الذي من المفترض أن يكون JSON.
+    إزالة المقدمات والخواتم النصية المحتملة.
+    """
+    try:
+        # ابحث عن بداية أول قوس مربع وبداية آخر قوس مربع
+        start_index = text.find('[')
+        end_index = text.rfind(']')
+
+        if start_index != -1 and end_index != -1 and start_index < end_index:
+            # استخراج جزء JSON المحتمل
+            json_string = text[start_index:end_index + 1]
+
+            # محاولة تحميل JSON للتأكد من أنه صالح.  إذا لم يكن كذلك، سيتم التقاط الخطأ.
+            json.loads(json_string)
+            return json_string
+        else:
+            return None  # لا يوجد JSON صالح
+    except json.JSONDecodeError:
+        return None  # JSON غير صالح
+
 def parse_mcq_questions(response_text):
     if not response_text:
         return []
     try:
-        questions = json.loads(response_text)
+        cleaned_json = clean_json_response(response_text)
+        if not cleaned_json:
+            print("Error: No valid JSON found in response.")
+            return []
+
+        questions = json.loads(cleaned_json)
         formatted_questions = []
         for q in questions:
+            options = q.get("options", [])  # احصل على قائمة الخيارات
+            correct_indices = q.get("correct_answers", [])  # احصل على قائمة الأرقام الصحيحة
+
+            # تحويل الأرقام الصحيحة إلى نصوص الخيارات الصحيحة
+            correct_answers = []
+            for index in correct_indices:
+                if 0 < index <= len(options):  # تحقق من أن الرقم ضمن النطاق
+                    correct_answers.append(options[index - 1])  # أضف النص المقابل للرقم
+                else:
+                    print(f"Warning: Invalid correct_answers index: {index}")
+
             formatted_questions.append({
                 "question": q.get("question", ""),
-                "options": q.get("options", []),
-                "correct_answers": [q.get("options", [])[index - 1] for index in q.get("correct_answers", []) if
-                                    0 < index <= len(q.get("options", []))] if q.get("options", []) else []
-
+                "options": options,
+                "correct_answers": correct_answers  # استخدم النصوص الصحيحة هنا
             })
         return formatted_questions
+    except json.JSONDecodeError as e:
+        print(f"Error parsing MCQ questions: Invalid JSON - {e}")
+        return []
     except Exception as e:
         print(f"Error parsing MCQ questions: {e}")
         return []
@@ -7301,7 +7637,8 @@ def parse_multiple_multiple_choice_questions(response_text):
     if not response_text:
         return []
     try:
-        questions = json.loads(response_text)
+        cleaned_json = clean_json_response(response_text)
+        questions = json.loads(cleaned_json)
         formatted_questions = []
         for q in questions:
             formatted_questions.append({
@@ -7318,7 +7655,8 @@ def parse_fill_in_the_blank_questions(response_text):
     if not response_text:
         return []
     try:
-        questions = json.loads(response_text)
+        cleaned_json = clean_json_response(response_text)
+        questions = json.loads(cleaned_json)
         formatted_questions = []
         for q in questions:
             formatted_questions.append({
@@ -7334,29 +7672,81 @@ def parse_essay_questions(response_text):
     if not response_text:
         return []
     try:
-        questions = json.loads(response_text)
+        cleaned_json = clean_json_response(response_text)
+        questions = json.loads(cleaned_json)
         return [{"question": q} for q in questions]
     except Exception as e:
         print(f"Error parsing essay questions: {e}")
         return []
-
 def parse_sequence_questions(response_text):
     if not response_text:
-      return []
+      return {}  # Return an empty dictionary
+
     try:
-        data = json.loads(response_text)
+        cleaned_json = clean_json_response_s(response_text)
+        if not cleaned_json:
+            return {}  # Return empty dictionary if cleaning fails
+
+        data = json.loads(cleaned_json)
+
+        # Check if 'question' and 'answers' keys exist
+        if not isinstance(data, dict) or 'question' not in data or 'answers' not in data:
+            print("JSON data is missing 'question' or 'answers' keys, or is not a dictionary")
+            return {}
+
         question_text = data.get("question", "")
         answers = data.get("answers", [])
+
+        if not isinstance(answers, list):
+            print("The 'answers' value is not a list")
+            return {} # Return empty dictionary if answers is not a list
+
+
         formatted_answers = []
         for answer in answers:
+          if not isinstance(answer, dict):
+            print("An item in answers is not a dictionary")
+            return {}
           formatted_answers.append({
               "text": answer.get("text",""),
                "index":answer.get("index","")
           })
         return {"question":question_text, "answers":formatted_answers}
+    except json.JSONDecodeError as e:
+        print(f"JSONDecodeError: {e}")
+        print(f"Failed to parse: {response_text}")  # Print the problematic text
+        return {}
     except Exception as e:
         print(f"Error parsing sequence questions: {e}")
-        return []
+        return {}
+
+def clean_json_response_s(text):
+    """
+    Clean a text string to extract a valid JSON object.
+    Remove leading/trailing text.
+    """
+    try:
+        # Find the first and last curly braces
+        start_index = text.find('{')
+        end_index = text.rfind('}')
+
+        if start_index != -1 and end_index != -1 and start_index < end_index:
+            # Extract the potential JSON string
+            json_string = text[start_index:end_index + 1]
+
+            # Attempt to parse the JSON string to validate it
+            json.loads(json_string)
+            return json_string
+        else:
+            print("No valid JSON object found")
+            return None
+    except json.JSONDecodeError as e:
+        print(f"JSON Decode Error in clean_json_response: {e}")  # Print the error
+        print(f"Attempted to clean: {text}")  # Print the text being cleaned
+        return None
+    except Exception as e:
+        print(f"Error cleaning JSON: {e}")
+        return None
 import random
 
 def generate_difficulty():
@@ -7379,13 +7769,14 @@ def classify():
             return jsonify({'error': 'Text and question type are required'}), 400
 
         text = data['text']
+        
         question_type = data['questionType']
 
         if question_type == "true_false":
             response_text = generate_true_false_questions(text,number_of_questions)
             if not response_text:
                 return jsonify({'error': 'Failed to generate true/false questions'}), 500
-
+            print(response_text)
             questions_data = parse_true_false_questions(response_text)
             if not questions_data:
                 return jsonify({'error': 'Failed to parse true/false questions'}), 500
@@ -7421,6 +7812,7 @@ def classify():
 
         elif question_type == "mcq":
             response_text = generate_mcq_questions(text,number_of_questions)
+            print(response_text)
             if not response_text:
                 return jsonify({'error': 'Failed to generate MCQ questions'}), 500
 
@@ -7434,8 +7826,10 @@ def classify():
                     lesson_id=lesson_id,
                     question_name=q_data['question']
                 )
+              
                 db.session.add(question_obj)
                 db.session.flush()
+                answers = []  # تهيئة القائمة قبل الحلقة
                 for option in q_data["options"]:
                     is_correct = option in q_data["correct_answers"]
                     answer_obj = Answer_Multiple_Multiple_choice(
@@ -7444,7 +7838,10 @@ def classify():
                         is_correct=is_correct
                     )
                     db.session.add(answer_obj)
+                    answers.append(answer_obj)  
 
+                expected_time = calculate_expected_time_MCQ(question_obj, answers)
+                question_obj.times = expected_time  
             db.session.commit()
 
             all_questions = Question_Multipleone_choice.query.all()
@@ -7471,6 +7868,7 @@ def classify():
                     lesson_id=lesson_id,
                     question_name=q_data['question']
                 )
+                answers = []  
                 db.session.add(question_obj)
                 db.session.flush()
                 for option in q_data["options"]:
@@ -7481,7 +7879,10 @@ def classify():
                         is_correct=is_correct
                       )
                      db.session.add(answer_obj)
+                     answers.append(answer_obj)  
 
+                expected_time = calculate_expected_time_MCQ(question_obj, answers)
+                question_obj.times = expected_time  
              db.session.commit()
 
              all_questions = QuestionMultipleMultiple_choice.query.all()
@@ -7496,7 +7897,7 @@ def classify():
              return jsonify(
                 {'message': 'Multiple MCQ questions generated and saved to database successfully', 'questions': questions_data,'redirect_url': redirect_url})
         elif question_type == "fill_blank":
-             response_text = generate_fill_in_the_blank_questions(text)
+             response_text = generate_fill_in_the_blank_questions(text,number_of_questions)
              if not response_text:
                 return jsonify({'error': 'Failed to generate fill in the blank questions'}), 500
 
@@ -7526,6 +7927,7 @@ def classify():
                       question_obj.answer_text3 = answers[0] if len(answers) > 0 else None
 
              db.session.add(question_obj)
+             question_obj.times = calculate_expected_time_fill(question_obj)
              db.session.commit()
 
              all_questions = Question_Fillin_blank4.query.all()
@@ -7540,7 +7942,7 @@ def classify():
                  'questions': questions_data,'redirect_url': redirect_url})
 
         elif question_type == "fill_blank_choice":
-             response_text = generate_fill_in_the_blank_questions(text)
+             response_text = generate_fill_in_the_blank_questions(text,number_of_questions)
              if not response_text:
                 return jsonify({'error': 'Failed to generate fill in the blank questions'}), 500
 
@@ -7569,6 +7971,7 @@ def classify():
                       question_obj.answer_text3 = answers[0] if len(answers) > 0 else None
 
              db.session.add(question_obj)
+             question_obj.times = calculate_expected_time_fill(question_obj)
              db.session.commit()
              redirect_url = url_for('edit_fill_in_blank_choice', lesson_id=lesson_id)
              all_questions = Question_Fillin_blank_choice2.query.all()
@@ -7597,6 +8000,7 @@ def classify():
                       question_text=q_data['question']
                   )
                   db.session.add(question_obj)
+                  
             db.session.commit()
             
             # Print all essay questions from the database
@@ -7612,7 +8016,7 @@ def classify():
                  ,'redirect_url': redirect_url
             })
         elif question_type == "sequence":
-            response_text = generate_sequence_questions(text)
+            response_text = generate_sequence_questions(text,number_of_questions)
             if not response_text:
               return jsonify({'error': 'Failed to generate sequence questions'}), 500
             
@@ -7626,7 +8030,9 @@ def classify():
                     question_name=question_data['question']
                 )
             db.session.add(question_obj)
+            
             db.session.flush()
+            answers = []  
             for answer in question_data['answers']:
               answer_obj = Answer_sequence(
                   question_id = question_obj.question_id,
@@ -7634,6 +8040,10 @@ def classify():
                   index = answer["index"]
               )
               db.session.add(answer_obj)
+              answers.append(answer_obj)  
+
+            expected_time = calculate_expected_time_sequence(question_obj, answers)
+            question_obj.times = expected_time  
             db.session.commit()
 
             all_questions = Questionsequence1.query.all()
@@ -7650,7 +8060,7 @@ def classify():
                  'questions': question_data,'redirect_url': redirect_url
             })
         elif question_type == "matching":
-            response_text = generate_matching_questions(text)
+            response_text = generate_matching_questions(text,number_of_questions)
             if not response_text:
                 return jsonify({'error': 'Failed to generate matching questions'}), 500
 
@@ -7672,6 +8082,7 @@ def classify():
                     answer_text3=q_data['answer_text3'],
                 )
                 db.session.add(question_obj)
+                question_obj.times = calculate_expected_time_matching(question_obj, app)
             db.session.commit()
 
             # Print all matching questions from the database
@@ -7769,10 +8180,68 @@ def get_essay_questions():
             'question_text': question.question_text,
         })
     return jsonify({'questions': questions_list})
+@app.route('/bank')
+def bank():
+    student_id = session.get('student_id')
+    if not student_id:
+        return redirect(url_for('access'))  # Redirect if student_id is missing
 
+    # Fetch all the lessons IDs for the provided student_id
+    lesson_employees = SubmittionLesson.query.filter_by().all()
+    
+    lessons_data = []
+    for lesson_employee in lesson_employees:
+         lesson = Lesson8.query.filter_by(id=lesson_employee.lesson_id).first()
+         if lesson:
+            lessons_data.append(lesson)
+
+    return render_template('bank.html', lessons=lessons_data)
 @app.route('/ai')
 def ai():
+    for m in genai.list_models():
+        if 'generateContent' in m.supported_generation_methods:
+            print(m.name)
     return render_template('ai.html')
+
+@app.route('/employee_grades')
+def employee_grades():
+    employee_id = session.get('employee_id')  
+
+    if not employee_id:
+        return "Employee ID is required in the session. Please log in."
+
+    # استعلام لاسترجاع جميع الامتحانات التي أنشأها هذا الموظف
+    lessons = Lesson8.query.filter_by(employee_id=employee_id).all()
+
+    exam_grades = {}  # قاموس لتجميع درجات الطلاب لكل امتحان
+
+    for lesson in lessons:
+        lesson_id = lesson.id
+
+        # استعلام لاسترجاع جميع إجابات الطلاب في هذا الامتحان
+        user_answers = UserAnswer4.query.filter_by(lesson_id=lesson_id).all()
+
+        # تجميع درجات الطلاب في هذا الامتحان
+        student_grades = {}
+        for answer in user_answers:
+            student_id = answer.user_id
+            if student_id not in student_grades:
+                student = SectorStudent8.query.get(student_id)
+                username = student.username if student else "Unknown User"  # Get username of the student
+                student_grades[student_id] = {'username': username, 'total_grade': 0, 'max_total_grade': 0}
+            student_grades[student_id]['total_grade'] += answer.grade
+            student_grades[student_id]['max_total_grade'] += answer.grade_real
+        
+        user_exam = UserExam1.query.filter_by(lesson_id=lesson_id).first()
+        exams_taken = user_exam.exams_taken if user_exam else 0
+
+        exam_grades[lesson_id] = {
+            'exam_name': lesson.title,  # اسم الامتحان
+            'student_grades': student_grades,  # درجات الطلاب في هذا الامتحان
+            'exams_taken': exams_taken #عدد مرات الحل
+        }
+
+    return render_template('employee_grades.html', exam_grades=exam_grades, employee_id=employee_id)
 
 
 

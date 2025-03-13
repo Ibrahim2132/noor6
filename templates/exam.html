@@ -1,303 +1,784 @@
 <!DOCTYPE html>
 <html lang="ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>امتحان</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style4.css') }}" />
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-         .fill-in-blank-container {
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-start;
+          body {
+            background-image: url('static/assets/assets/back.jpg');
+            background-size: cover;
+            background-blend-mode: overlay;
         }
-        .question-area {
-            width: 40%;
-        }
-        .answers-area {
-            width: 40%;
-        }
-        .answers-container {
-            display:flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-        }
-        .draggable {
-             background-color: #4caf50;
-            color: white;
-            padding: 10px;
-            margin: 5px;
-            cursor: move;
-            display: inline-block;
-            text-align: center;
-        }
-         .drop-area {
-           display: flex;
-            flex-direction: column;
-            justify-content:flex-start;
-            align-items: center;
-         
-        }
-        .dropzone {
-           width: 200px;
-            height: 30px;
-            border: 2px dashed #ccc;
-            margin: 5px 0;
-            text-align: center;
-            line-height: 30px;
-            background-color: #f0f0f0;
+      /* --- أنماط إضافية (يمكن نقلها إلى style4.css إذا أردت) --- */
+      .fill-in-blank-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-direction: column;
+        width: 100%;
+      }
+      .question-area {
+        width: 40%;
+      }
+      .answers-area {
+        width: 40%;
+      }
+      .answers-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .draggable {
+        background-color: #0D7C66;
+        color: white;
+        padding: 15px 10px 15px 10px;
+        margin: 5px;
+        cursor: move;
+        border-radius: 5px;
+        display: inline-block;
+        text-align: center;
+      }
+      .drop-area {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      .dropzone {
+        width: 250px;
+        height: 45px;
+        border: 2px dashed #0D7C66;
+        color: #0D7C66;
+        margin: 5px 0;
+        text-align: center;
+        line-height: 30px;
+        background-color: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .fill-in-blank-choice-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .question-text {
+        margin-bottom: 10px;
+        font-size: 20px;
+        color: #0D7C66;
+        
+      }
+      select {
+        background-color: #ffffff;
+  border: 2px solid #0D7C66;
+  border-radius: 5px;
+  height: 50px;
+  margin: 0 5px;
+  padding: 10px;
+  font-size: 18px;
+  width: 200px;
+      }
+      .classification-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: flex-start;
+      }
+      .classification-labels {
+        width: 25%;
+        display: flex;
+        flex-direction: column;
+      }
+      .classification-answers {
+        width: 70%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+      }
+      .classification-dropzone {
+        width: 100%;
+        height: 30px;
+        border: 2px dashed #ccc;
+        margin: 5px 0;
+        text-align: center;
+        line-height: 30px;
+        background-color: #f0f0f0;
+        min-height: 50px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+      }
+      .classification-dropzone .draggable {
+        margin: 5px;
+      }
+      /*multi choice style*/
+      #answer-options {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 40px;
+      }
 
+      #answer-options label {
+        display: flex;
+        align-items: center;
+      }
+
+      #answer-options input[type="radio"],
+      #answer-options input[type="checkbox"] {
+        margin-right: 10px;
+        /* Add more styling for better appearance */
+      }
+      /*styles*/
+      .question-container {
+        width:98%; 
+        margin: 0;
+        padding: 0;
+
+      }
+
+      .question-div {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .question-div .exam-details .exam-name{
+        font-size: 25px;
+        text-align: left;
+      }
+
+      .exam-details {
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .exam-name {
+        color: #333;
+        font-size: 1.8em;
+      }
+
+      .question-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .question-type h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: black;
+      }
+
+      .question-detail {
+        display: flex;
+        gap: 20px;
+      }
+
+      .question-timer {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .question-timer i {
+        color: #ffffff;
+      }
+
+      .time {
+        color: #ffffff;
+        font-size: 1em;
+      }
+
+      .degree h4 {
+        color: #27ae60;
+        font-size: 1em;
+      }
+
+      .question-detail.head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .question-header {
+        color: #3498db;
+        font-size: 1.5em;
+        margin: 0;
+      }
+
+      .question-importance {
+        display: flex;
+        gap: 10px;
+      }
+
+      .question-importance h4 {
+        color: #8e44ad;
+        font-size: 0.9em;
+      }
+
+      .the-question {
+        margin-bottom: 20px;
+      }
+
+      .article-question {
+        color: #333;
+        font-size: 1.2em;
+        line-height: 1.6;
+      }
+
+      .answers {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .clickable-div ,#answer-options label {
+        display: flex;
+  align-items: center;
+  background-color: rgba(0, 128, 0, 0.1); 
+  border-radius: 45px;
+  padding: 20px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease, border 0.3s ease;
+      }
+
+      .clickable-div:hover,
+      .clickable-div.active,#answer-options label:hover,#answer-options .clickable-div.active {
+        background-color: #0D7C66;
+      }
+
+      .circle {
+        background-color: #0D7C66;
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 400;
+  margin-right: 12px;
+  transition: border 0.3s ease;
+      }
+      .clickable-div.active .circle ,#answer-options label .circle {
+  border: 1px solid white;
+}
+
+      .text {
+       font-size: 18px;
+       font-weight: 500;
+       color: #0D7C66;
+       transition:  0.3s ease;
+      }
+      .clickable-div.active .text,.clickable-div .text:hover{
+        color: white;
+      }
+      .btns {
+        text-align: right;
+      }
+
+      .nxt-btn {
+        width: 120px;
+  border: 1px solid #21797d;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #21797d;
+  transition: 0.3s ease;
+      }
+      .nxt-btn:hover{
+        background-color: #21797d;
+        color: #ffffff;
+      }
+
+      .bloom {
+        color: #f39c12;
+      }
+
+    
+input[type="checkbox"] {
+  display: none;
+}
+input[type="radio"] {
+  display: none;
+}
+
+.sequence-input{
+  width: 80%; height: 50px;
+   border: 1px solid #0D7C66;
+    border-radius: 5px; padding: 10px; 
+    color: #0D7C66; 
+    font-size: 15px; 
+    font-weight: 500;
+  transition: transform 0.3s ease-in-out;
         }
-         .fill-in-blank-choice-container {
-                                    display: flex;
-                                    flex-direction: column;
-                                    align-items: flex-start;
-                                 }
-                                .question-text {
-                                   margin-bottom: 10px;
-                                   font-size: 18px; /* Optional: Adjust font size as needed */
-                                }
-                                select {
-                                 margin-left: 10px; /* Optional: Add some spacing between question and select */
-                                 padding: 8px;      /* Optional: Adjust padding as needed */
-                                 border: 1px solid #ccc;
-                                border-radius: 4px; /* Optional: Add border radius for nicer look */
-                                 }
-          .classification-container {
-                display: flex;
-                justify-content: space-around;
-                align-items: flex-start;
-            }
-            .classification-labels {
-                width: 25%;
-                 display: flex;
-                 flex-direction: column;
-            }
-             .classification-answers {
-               width: 70%;
-               display: flex;
-                flex-wrap: wrap;
-                justify-content: space-around;
-           }
-           .classification-dropzone {
-               width: 100%;
-                height: 30px;
-                border: 2px dashed #ccc;
-                margin: 5px 0;
-                text-align: center;
-                line-height: 30px;
-                background-color: #f0f0f0;
-                 min-height: 50px;
-                 display:flex;
-                 flex-wrap: wrap;
-                align-items:center;
-                justify-content: center;
-            }
-            .classification-dropzone .draggable{
-               margin:5px;
-            }
+
+        .sequence-input:focus {
+            transform: scale(1.01);
+            border-color: #0D7C66;
+            outline: none;
+        }
+/* Mobile Styling */
+@media screen and (max-width: 768px) {
+  .question-details ,.question-detail.head {
+    flex-direction: column-reverse;
+    align-items: start;
+    gap: 10px;
+  }
+}
+
+       /* ... الأنماط السابقة ... */
+
+      
     </style>
-</head>
-<body>
-    <h1>السؤال {{ question_index + 1 }} من {{ total_questions }}</h1>
-
-    <form method="POST">
-        <input type="hidden" name="start_time" value="{{ start_time }}">
-
-        <div>
-            {% if question.audio_path %}
-                <audio controls>
-                    <source src="{{ question.audio_path }}" type="audio/mpeg">
-                </audio>
-            {% endif %}
-            {% if question.photo_path %}
-                <img src="{{ question.photo_path }}" alt="صورة السؤال">
-            {% endif %}
-            <p>{{ question.question_text }}</p>
+  </head>
+  <body>
+    <div class="main-content">
+      <!-- Sidebar (كما في الصفحة الأولى) -->
+      <div id="sidebar" class="sidebar">
+        <div class="logo" style="display: flex; justify-content: center; align-items: center;">
+            <img class="navbar-img"
+                 src="{{ url_for('static', filename='uploads/' + (sector_code+'.png' if sector_code else 'default.jpg')) }}"
+                 alt="Logo" style=" height: auto;">
         </div>
+        <ul>
+          <li data-target="dropdown-1" style="margin-top: 20px;">
+              <a href="#" id="dashboard-link" class="dropdown-toggle"
+                 onclick="toggleDropdown(event, 'dropdown-1')">
+                  <i class="fa-solid fa-house"></i> Dashboard
+                  <span class="arrow-icon" style="margin-left:10px;"><i class="fa-solid fa-angle-down"></i></span>
+              </a>
+            <ul id="dropdown-1" class="dropdown">
+              <li><a href="owner.html"> > Company owner</a></li>
+              <li><a href="organizer.html"> > Organizer</a></li>
+              <li><a href="administrator.html"> > Administrators</a></li>
+              <li><a href="manager.html"> > Managers</a></li>
 
-        <div id="answer-options">
-            {% if question.type == "multiple_choice" %}
-                {% for answer in question.answers if answer.answer_text %}
-                    <label>
-                        <input type="radio" name="answer" value="{{ answer.answer_text }}" required>
-                        {{ answer.answer_text }}
-                    </label><br>
-                {% endfor %}
-            {% elif question.type == "true_false" %}
-                <label>
-                    <input type="radio" name="answer" value="True" required> صح
-                </label>
-                <label>
-                    <input type="radio" name="answer" value="False" required> خطأ
-                </label>
-            {% elif question.type == "multiple_multiple_choice" %}
-                 {% for answer in question.answers if answer.answer_text %}
-                     <label>
-                         <input type="checkbox" name="answer" value="{{ answer.answer_text }}" >
-                         {{ answer.answer_text }}
-                     </label><br>
-                 {% endfor %}
-            {% elif question.type == "sequence" %}
-                {% for answer in question.answers if answer.answer_text %}
-                    <p>{{ answer.answer_text }}</p>
-                     <input type="hidden" name="answer_id" value="{{answer.answer_id}}">
-                     <input type="number" name="answer" placeholder="ادخل الرقم هنا" required>
-                   <br>
-                {% endfor %}
-            {% elif question.type == "fill_in_blank" %}
-                <div class="fill-in-blank-container">
-                    <div class="question-area">
-                        {% for q_text in question.question_texts if q_text %}
-                            <p class="question-text">{{ q_text }}</p>
-                        {% endfor %}
-                    </div>
-                    <div class="answers-area">
-                        <div class="answers-container">
-                            {% for answer in question.answers if answer %}
-                                <div class="draggable" draggable="true" data-answer="{{ answer }}">{{ answer }}</div>
-                            {% endfor %}
+              <li>
+                <a href="manager to manager.html"> > Managers to manager</a>
+              </li>
+
+
+              <li><a href="lectures.html"> > Lectures</a></li>
+            </ul>
+          </li>
+          <li data-target="dropdown-1" style="margin-top: 5px;">
+            <a href="#" class="dropdown-toggle" onclick="toggleDropdown(event, 'nested-dropdown')"><i class="fa-solid fa-users"></i>Users
+              <span class="arrow-icon" style="margin-left:20px ;"><i class="fa-solid fa-angle-down"></i></span>
+            </a>
+            <ul id="nested-dropdown" class="dropdown nested-dropdown">
+              <li><a href="student"> Add Students</a></li>
+              <li><a href="employee"> Add Employees</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="#"><i class="fa-solid fa-gear"></i> Settings</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Burger Menu (Visible on mobile) -->
+      <div class="burger" onclick="toggleSidebar()">
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+        <div class="burger-icon"></div>
+      </div>
+
+      <div class="main-section">
+        <!-- Navigation Steps -->
+        <div class="navigation-steps">
+          <div>
+              <i class="fas fa-home"></i>
+              <span>Home > Dashboard > Quiz</span>
+          </div>
+          <div class="notify-bell">
+              <a href="notification"
+                 style="position: relative; display: inline-block; text-decoration: none; color: #0D7C66; font-size: 22px;"
+                 onmouseover="this.style.color='#479b8a'"
+                 onmouseout="this.style.color='#0D7C66'">
+
+                  <i class="fa-solid fa-bell"></i>
+
+                  {% if notification_dot_display %}
+                  <span style="
+     position: absolute;
+     top: 0px;
+     right: 0px;
+     width: 10px;
+     height: 10px;
+     background: red;
+     border-radius: 50%;
+     display: inline-block;
+   "></span>
+                  {% endif %}
+              </a>
+
+
+          </div>
+      </div>
+        <div class="question-container">
+          <div class="question-div" style="gap: 15px;">
+            <div class="exam-details">
+              <h1 class="exam-name">lesson name Quiz</h1>
+            </div>
+            <div class="question-details">
+              <div class="question-type">
+                <h3 style="font-size: 20px; font-weight: 500;">
+                  Question {{ question_index + 1 }} from {{ total_questions }} :
+                  <span class="bloom">({{ question.bloom_taxonomy }})</span>
+                </h3>
+              </div>
+              <div class="question-detail">
+                <div class="question-timer">
+                  <i class="fa-solid fa-stopwatch"></i>
+                  <h4 class="time" id="timer">{{ question.times }}</h4>
+                </div>
+                <div class="degree">
+                  <h4>{{ question.grade }} degree</h4>
+                </div>
+                <div class="question-importance">
+                  <h4 class="importance"> * {{ question.importance }}</h4>
+                  <h4 class="difficulty">{{ question.difficulty }}</h4>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="question-detail head">
+              <h2 class="question-header">
+                Choose the correct answer:                <span class="multiple-ans"
+                  >*You can choose one or more answers</span
+                >
+              </h2>
+              <div class="question-importance">
+                <h4 class="importance"> * {{ question.importance }}</h4>
+                <h4 class="difficulty">{{ question.difficulty }}</h4>
+              </div>
+            </div> -->
+            <form method="POST">
+              <input type="hidden" name="start_time" value="{{ start_time }}" />
+
+              <div class="the-question">
+                {% if question.audio_path %}
+                <audio controls>
+                  <source src="{{ question.audio_path }}" type="audio/mpeg" />
+                </audio>
+                {% endif %} {% if question.photo_path %}
+                <img src="{{ question.photo_path }}" alt="صورة السؤال" />
+                {% endif %}
+                <p class="article-question" style="text-transform: capitalize; font-size: 20px;">{{ question.question_text }}</p>
+                <div id="answer-options">
+                  {% if question.type == "multiple_choice" %} {% for answer in
+                  question.answers if answer.answer_text %}
+                  <label class="clickable-div">
+                    <span class="circle"></span>
+                    <input
+                      type="radio"
+                      name="answer"
+                      value="{{ answer.answer_text }}"
+                      required
+                    />
+                    {{ answer.answer_text }}
+                  </label>
+                  <br />
+                  {% endfor %} {% elif question.type == "true_false" %}
+                  <label class="clickable-div">
+                    <span class="circle">A</span>
+                    <input type="radio" name="answer" value="True" required />
+                    صح
+                  </label>
+                  <label class="clickable-div">
+                    <span class="circle">B</span>
+                    <input type="radio" name="answer" value="False" required />
+                    خطأ
+                  </label>
+                  {% elif question.type == "multiple_multiple_choice" %} {% for
+                  answer in question.answers if answer.answer_text %}
+                  <label class="clickable-div">
+                    <input
+                      type="checkbox"
+                      name="answer"
+                      value="{{ answer.answer_text }}"
+                      class="hidden-checkbox"
+                    />
+                    <span class="circle"></span>
+                    <h3 class="text">{{ answer.answer_text }}</h3>
+                  </label>
+                  <br />
+                  {% endfor %} 
+                  {% elif question.type == "sequence" %} {% for
+                  answer in question.answers if answer.answer_text %}
+                  <p style="color: #0D7C66; font-size: 18px; text-transform: capitalize;">{{ answer.answer_text }}</p>
+                  <input
+                    type="hidden"
+                    name="answer_id"
+                    value="{{answer.answer_id}}"
+                  />
+                  <input
+                    type="number"
+                    name="answer"
+                    placeholder="  Enter Number here.."
+                    class="sequence-input"
+                    required 
+                  />
+                  <br />
+                  {% endfor %} {% elif question.type == "fill_in_blank" %}
+                  <div class="fill-in-blank-container">
+                    <div class="answers-area" style="display: flex; flex-direction: row;">
+                      <div class="answers-container">
+                        {% for answer in question.answers if answer %}
+                        <div
+                          class="draggable"
+                          draggable="true"
+                          data-answer="{{ answer }}"
+                        >
+                          {{ answer }}
                         </div>
-                    </div>
-                </div>
-                <div class="drop-area">
-                    {% for _ in question.question_texts if question.question_texts %}
-                        <div class="dropzone"></div>
-                    {% endfor %}
-                </div>
-                <input type="hidden" name="answer" id="final-answers" required>
-            {% elif question.type == "fill_in_blank_choice" %}
-                <div class="fill-in-blank-choice-container">
-                    {% for q_text in question.question_texts if q_text %}
-                        <p class="question-text">
-                            {{ q_text }}
-                            <select name="answer" required>
-                                <option value="" disabled selected>اختر الإجابة</option>
-                                {% for answer in question.answers if answer %}
-                                    <option value="{{ answer }}">{{ answer }}</option>
-                                {% endfor %}
-                            </select>
-                        </p>
-                   {% endfor %}
-                 </div>
-            {% elif question.type == "classification" %}
-                  <div class="classification-container">
-                   <div class="classification-labels">
-                         {% for label in question.labels %}
-                              <h3>{{ label }}</h3>
-                              <div class="classification-dropzone" data-label="{{ label }}"></div>
-                           {% endfor %}
-                    </div>
-                     <div class="classification-answers">
-                         {% for answer in question.answers %}
-                         <div class="draggable" draggable="true" data-answer="{{ answer.answer_text }}"  data-answer_id="{{answer.answer_id}}">{{answer.answer_text}}</div>
                         {% endfor %}
+                      </div>
+                      
+                    </div>
+                    <div class="question-area" style="display:flex ; flex-direction: row; width: 100%; margin-top: 50px;">
+                     <div class="the-questions" style="width: auto; margin-right: 20px;">
+                      {% for q_text in question.question_texts if q_text %}
+                      <p class="question-text" style="padding: 10px;">{{ q_text }}</p>
+                      {% endfor %}
                      </div>
-                   </div>
-                   <input type="hidden" name="answer" id="final-classification-answers" required>
-                   <input type="hidden" name="answer_id" id="final-classification-ids" required>
+                      <div class="drop-area">
+                        {% for _ in question.question_texts if question.question_texts
+                        %}
+                        <div class="dropzone"></div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                
+                    
+                  </div>
+                 
+                  <input
+                    type="hidden"
+                    name="answer"
+                    id="final-answers"
+                    required
+                  />
+                  {% elif question.type == "fill_in_blank_choice" %}
+                  <div class="fill-in-blank-choice-container">
+                    {% for q_text in question.question_texts if q_text %}
+                    <p class="question-text">
+                      {{ q_text }}
+                      <select name="answer" required>
+                        <option value="" disabled selected>Select Answer</option>
+                        {% for answer in question.answers if answer %}
+                        <option value="{{ answer }}">{{ answer }}</option>
+                        {% endfor %}
+                      </select>
+                    </p>
+                    {% endfor %}
+                  </div>
+                  {% elif question.type == "classification" %}
+                  <div class="classification-container">
+                    <div class="classification-labels">
+                      {% for label in question.labels %}
+                      <h3>{{ label }}</h3>
+                      <div
+                        class="classification-dropzone"
+                        data-label="{{ label }}"
+                      ></div>
+                      {% endfor %}
+                    </div>
+                    <div class="classification-answers">
+                      {% for answer in question.answers %}
+                      <div
+                        class="draggable"
+                        draggable="true"
+                        data-answer="{{ answer.answer_text }}"
+                        data-answer_id="{{answer.answer_id}}"
+                      >
+                        {{answer.answer_text}}
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                  <input
+                    type="hidden"
+                    name="answer"
+                    id="final-classification-answers"
+                    required
+                  />
+                  <input
+                    type="hidden"
+                    name="answer_id"
+                    id="final-classification-ids"
+                    required
+                  />
 
-               {% endif %}
-           </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="btns">
+                <button type="submit" class="nxt-btn">
+                  <i class="fa-solid fa-arrow-right"></i> Next
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
-           <button type="submit">السؤال التالي</button>
-       </form>
-       <script>
-             
-       document.addEventListener('DOMContentLoaded', function () {
-            // Fill in blank
-           const draggables = document.querySelectorAll('.draggable');
-           const dropzones = document.querySelectorAll('.dropzone');
-           const finalAnswersInput = document.getElementById('final-answers');
-           let droppedAnswers = [];
-           
-           draggables.forEach(draggable => {
-           draggable.addEventListener('dragstart', (e) => {
-               e.dataTransfer.setData('text', e.target.dataset.answer);
-               
-             });
-            });
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+      const divs = document.querySelectorAll(".clickable-div");
 
-           dropzones.forEach((dropzone, index) => {
-               dropzone.addEventListener('dragover', (e) => {
-                   e.preventDefault();
-               });
+      divs.forEach((div) => {
+        div.addEventListener("click", () => {
+          div.classList.toggle("active"); // Toggle the active class on each click
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Fill in blank
+        const draggables = document.querySelectorAll(".draggable");
+        const dropzones = document.querySelectorAll(".dropzone");
+        const finalAnswersInput = document.getElementById("final-answers");
+        let droppedAnswers = [];
 
-               dropzone.addEventListener('drop', (e) => {
-                   e.preventDefault();
-                   const data = e.dataTransfer.getData('text');
+        draggables.forEach((draggable) => {
+          draggable.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("text", e.target.dataset.answer);
+          });
+        });
 
-                   // Clear content before appending new answer
-                   dropzone.innerHTML = '';
-                   dropzone.textContent = data;
+        dropzones.forEach((dropzone, index) => {
+          dropzone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+          });
 
-                    // Store answer in droppedAnswers array
-                   droppedAnswers[index] = data;
-                   finalAnswersInput.value = JSON.stringify(droppedAnswers);
-               });
+          dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const data = e.dataTransfer.getData("text");
 
-               
-           });
+            // Clear content before appending new answer
+            dropzone.innerHTML = "";
+            dropzone.textContent = data;
 
-           // Classification questions
-            const classificationDraggables = document.querySelectorAll('.classification-answers .draggable');
-            const classificationDropzones = document.querySelectorAll('.classification-dropzone');
-            const finalClassificationAnswersInput = document.getElementById('final-classification-answers');
-            const finalClassificationIdsInput = document.getElementById('final-classification-ids');
-            let classificationDroppedAnswers = {};
+            // Store answer in droppedAnswers array
+            droppedAnswers[index] = data;
+            finalAnswersInput.value = JSON.stringify(droppedAnswers);
+          });
+        });
 
-            function updateClassificationInputs() {
-                const answersArray = [];
-                const idsArray = [];
-                for (const answerId in classificationDroppedAnswers) {
-                    if (classificationDroppedAnswers.hasOwnProperty(answerId)) {
-                        const labels = classificationDroppedAnswers[answerId];
-                        labels.forEach(label => {
-                            answersArray.push(label);
-                            idsArray.push(answerId);
-                        });
-                    }
-                }
-                finalClassificationAnswersInput.value = answersArray.join(',');
-                finalClassificationIdsInput.value = idsArray.join(',');
+        // Classification questions
+        const classificationDraggables = document.querySelectorAll(
+          ".classification-answers .draggable"
+        );
+        const classificationDropzones = document.querySelectorAll(
+          ".classification-dropzone"
+        );
+        const finalClassificationAnswersInput = document.getElementById(
+          "final-classification-answers"
+        );
+        const finalClassificationIdsInput = document.getElementById(
+          "final-classification-ids"
+        );
+        let classificationDroppedAnswers = {};
+
+        function updateClassificationInputs() {
+          const answersArray = [];
+          const idsArray = [];
+          for (const answerId in classificationDroppedAnswers) {
+            if (classificationDroppedAnswers.hasOwnProperty(answerId)) {
+              const labels = classificationDroppedAnswers[answerId];
+              labels.forEach((label) => {
+                answersArray.push(label);
+                idsArray.push(answerId);
+              });
             }
+          }
+          finalClassificationAnswersInput.value = answersArray.join(",");
+          finalClassificationIdsInput.value = idsArray.join(",");
+        }
 
+        classificationDraggables.forEach((draggable) => {
+          draggable.addEventListener("dragstart", (e) => {
+            e.dataTransfer.setData("text", e.target.dataset.answer);
+            e.dataTransfer.setData("answer_id", e.target.dataset.answer_id);
+          });
+        });
 
-            classificationDraggables.forEach(draggable => {
-                draggable.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text', e.target.dataset.answer);
-                    e.dataTransfer.setData('answer_id', e.target.dataset.answer_id);
-                   
-                });
-            });
+        classificationDropzones.forEach((dropzone) => {
+          dropzone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+          });
 
+          dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const answer = e.dataTransfer.getData("text");
+            const answerId = e.dataTransfer.getData("answer_id");
 
-            classificationDropzones.forEach(dropzone => {
-                dropzone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                });
+            if (!classificationDroppedAnswers[answerId]) {
+              classificationDroppedAnswers[answerId] = [];
+            }
+            classificationDroppedAnswers[answerId].push(dropzone.dataset.label);
 
-                dropzone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    const answer = e.dataTransfer.getData('text');
-                    const answerId = e.dataTransfer.getData('answer_id');
+            const draggableElement = document.createElement("div");
+            draggableElement.classList.add("draggable");
+            draggableElement.setAttribute("draggable", "false");
+            draggableElement.textContent = answer;
 
-                    if (!classificationDroppedAnswers[answerId]) {
-                        classificationDroppedAnswers[answerId] = [];
-                    }
-                   classificationDroppedAnswers[answerId].push(dropzone.dataset.label);
+            dropzone.appendChild(draggableElement);
+            updateClassificationInputs();
+          });
+        });
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // جلب الوقت من قالب جانغو  (تأكد من تمرير القيمة الصحيحة من الخلفية)
+        let time = parseInt("{{ question.times }}");
 
+        // تحديث الوقت كل ثانية
+        const timerDisplay = document.getElementById("timer"); // جلب العنصر لعرض الوقت
+        if (timerDisplay) {
+          // تأكد من وجود العنصر
+          setInterval(function () {
+            if (time > 0) {
+              time--;
+              timerDisplay.textContent = time; // عرض الوقت
+            } else {
+              // هنا يمكنك إضافة ما يحدث عند انتهاء الوقت (مثلاً، إرسال النموذج تلقائيًا)
 
-                   const draggableElement = document.createElement('div');
-                   draggableElement.classList.add('draggable');
-                   draggableElement.setAttribute('draggable', 'false');
-                   draggableElement.textContent = answer;
-
-                   dropzone.appendChild(draggableElement);
-                   updateClassificationInputs();
-                });
-            });
-
-         });
-       </script>
-   </body>
-   </html>
+            }
+          }, 1000);
+        }
+      });
+    </script>
+  </body>
+</html>
